@@ -32,6 +32,18 @@ live_identifiers=(
   "khaoyaiart.org"
   "github.com/HeartBrains/khaoyaiart-next"
 )
+
+# Explicitly approved staging identifiers may share the parent domain with
+# production (for example, dev.khaoyaiart.org). They are still checked against
+# the live list unless listed here.
+allowed_staging_identifiers=(
+  "dev.khaoyaiart.org"
+  "q42026.content.khaoyaiart.org"
+)
+if [[ -n "${DUPLICATE_ALLOWED_IDENTIFIERS:-}" ]]; then
+  IFS=',' read -r -a extra_allowed <<< "$DUPLICATE_ALLOWED_IDENTIFIERS"
+  allowed_staging_identifiers+=("${extra_allowed[@]}")
+fi
 if [[ -n "${LIVE_TARGET_IDENTIFIERS:-}" ]]; then
   IFS=',' read -r -a extra_identifiers <<< "$LIVE_TARGET_IDENTIFIERS"
   live_identifiers+=("${extra_identifiers[@]}")
@@ -46,8 +58,27 @@ targets=(
 )
 
 for target in "${targets[@]}"; do
+  normalized_target="${target,,}"
+  is_allowed=false
+  for allowed in "${allowed_staging_identifiers[@]}"; do
+    normalized_allowed="${allowed,,}"
+    if [[ -n "$normalized_allowed" && (
+      "$normalized_target" == "$normalized_allowed" ||
+      "$normalized_target" == "https://$normalized_allowed" ||
+      "$normalized_target" == "https://$normalized_allowed/"* ||
+      "$normalized_target" == "http://$normalized_allowed" ||
+      "$normalized_target" == "http://$normalized_allowed/"*
+    ) ]]; then
+      is_allowed=true
+      break
+    fi
+  done
+  if [[ "$is_allowed" == true ]]; then
+    continue
+  fi
   for live in "${live_identifiers[@]}"; do
-    if [[ -n "$live" && "$target" == *"$live"* ]]; then
+    normalized_live="${live,,}"
+    if [[ -n "$normalized_live" && "$normalized_target" == *"$normalized_live"* ]]; then
       printf 'Duplicate preflight failed: duplicate target contains live identifier %q\n' "$live" >&2
       exit 3
     fi

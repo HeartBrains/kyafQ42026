@@ -169,7 +169,7 @@ The duplicate frontend remains a static export. The duplicate WordPress instance
 ## Open decisions before implementation
 
 - Destination repository is approved as the private GitHub repository `HeartBrains/kyafQ42026`; confirm the default branch when GitHub creation access is available.
-- Duplicate frontend and WordPress domains/subdomains.
+- Duplicate frontend is approved as `https://dev.khaoyaiart.org`; duplicate WordPress is `https://q42026.content.khaoyaiart.org`.
 - Hosting provider and access method for the duplicate static host and WordPress host.
 - Whether the duplicate should be indexed after validation or remain blocked by robots/authentication.
 - Which integrations may safely remain active on the exact private copy, and who approves them.

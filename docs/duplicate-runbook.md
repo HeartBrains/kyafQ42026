@@ -11,7 +11,8 @@ export DUPLICATE_REPO_URL='https://git.example.invalid/duplicate/khaoyaiart-next
 export DUPLICATE_HOST='duplicate.example.invalid'
 export DUPLICATE_DOCUMENT_ROOT='/srv/duplicate-site'
 export DUPLICATE_WP_BASE_URL='https://wp-duplicate.example.invalid'
-export DUPLICATE_SITE_URL='https://duplicate.example.invalid'
+export DUPLICATE_SITE_URL='https://dev.khaoyaiart.org'
+export DUPLICATE_ALLOWED_IDENTIFIERS='dev.khaoyaiart.org,q42026.content.khaoyaiart.org'
 ```
 
 If production has additional hostnames or repository identifiers, provide them as a comma-separated list:
@@ -26,7 +27,7 @@ Run the guard before every initial duplicate build/deploy:
 npm run verify:duplicate
 ```
 
-The guard fails when required values are missing, a target contains a known live identifier, or the document root is broad enough to risk overwriting unrelated files. It does not contact or modify any external service.
+The guard fails when required values are missing, a target contains a known live identifier, or the document root is broad enough to risk overwriting unrelated files. The approved staging hosts are explicitly allowlisted because they share the `khaoyaiart.org` parent domain. It does not contact or modify any external service.
 
 ## Repository and GitLab backup
 
