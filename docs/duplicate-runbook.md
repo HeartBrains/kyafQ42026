@@ -46,5 +46,6 @@ Before creating or connecting the WordPress clone:
 3. Confirm deployment automation runs only from the duplicate repository and has no permission to the live repository, host, database, or WordPress admin.
 4. Confirm duplicate cron jobs, webhooks, email, payments, analytics writes, and third-party integrations are disabled or explicitly approved.
 5. Run `npm run verify:duplicate` with the final destination values and retain its output with the deployment record.
+6. Keep the staging frontend blocked from indexing. Its `robots.txt` must contain `Disallow: /` and must not reference production sitemap URLs.
 
 If any check is ambiguous, stop. Do not substitute a live credential or destination to make the build pass.

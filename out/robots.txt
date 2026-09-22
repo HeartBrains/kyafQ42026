@@ -1,6 +1,2 @@
 User-agent: *
-Allow: /
-
-Sitemap: https://khaoyai.bkkkapp.com/sitemap.xml
-Sitemap: https://bkkk.bkkkapp.com/bk/sitemap.xml
-Sitemap: https://khaoyai.bkkkapp.com/kyaf/sitemap.xml
+Disallow: /
