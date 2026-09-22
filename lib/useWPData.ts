@@ -7,7 +7,7 @@ import {
   mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember, mapPressItem, mapBlogPost,
 } from './wp-mappers';
 
-const _WP_URL = (process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://content.khaoyaiart.org').replace(/\/$/, '');
+const _WP_URL = (process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://q42026.content.khaoyaiart.org').replace(/\/$/, '');
 const WP_BASE = _WP_URL.endsWith('/wp-json/wp/v2') ? _WP_URL : `${_WP_URL}/wp-json/wp/v2`;
 
 async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
-const BKKK_BASE_URL = (process.env.BKKK_BASE_URL ?? 'https://khaoyaiart.org/bk').replace(/\/$/, '');
-const KYAF_BASE_URL = (process.env.KYAF_BASE_URL ?? 'https://khaoyaiart.org/kyaf').replace(/\/$/, '');
+const BKKK_BASE_URL = (process.env.BKKK_BASE_URL ?? 'https://dev.khaoyaiart.org/bk').replace(/\/$/, '');
+const KYAF_BASE_URL = (process.env.KYAF_BASE_URL ?? 'https://dev.khaoyaiart.org/kyaf').replace(/\/$/, '');
 
 export const BKKK_DEFAULT_OG_IMAGE = `${BKKK_BASE_URL}/og-bkkk.jpg`;
 export const KYAF_DEFAULT_OG_IMAGE = `${KYAF_BASE_URL}/og-kyaf.jpg`;

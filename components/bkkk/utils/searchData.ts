@@ -9,7 +9,7 @@ export interface SearchDocument {
   lang: 'en' | 'th';
 }
 
-const WP_URL = (process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://content.khaoyaiart.org').replace(/\/$/, '');
+const WP_URL = (process.env.NEXT_PUBLIC_WP_BASE_URL ?? 'https://q42026.content.khaoyaiart.org').replace(/\/$/, '');
 const WP_BASE = WP_URL.endsWith('/wp-json/wp/v2') ? WP_URL : `${WP_URL}/wp-json/wp/v2`;
 
 function stripHtml(html: string): string {

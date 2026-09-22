@@ -35,13 +35,13 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
-          NEXT_PUBLIC_WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL }}
+          WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL || 'https://q42026.content.khaoyaiart.org' }}
+          NEXT_PUBLIC_WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL || 'https://q42026.content.khaoyaiart.org' }}
           WP_AUTH_USER: ${{ secrets.WP_AUTH_USER }}
           WP_AUTH_PASS: ${{ secrets.WP_AUTH_PASS }}
-          BKKK_BASE_URL: ${{ secrets.BKKK_BASE_URL || 'https://khaoyaiart.org/bk' }}
-          KYAF_BASE_URL: ${{ secrets.KYAF_BASE_URL || 'https://khaoyaiart.org/kyaf' }}
-          SITE_URL: ${{ secrets.SITE_URL || 'https://khaoyaiart.org' }}
+          BKKK_BASE_URL: ${{ secrets.BKKK_BASE_URL || 'https://dev.khaoyaiart.org/bk' }}
+          KYAF_BASE_URL: ${{ secrets.KYAF_BASE_URL || 'https://dev.khaoyaiart.org/kyaf' }}
+          SITE_URL: ${{ secrets.SITE_URL || 'https://dev.khaoyaiart.org' }}
 
       - name: Commit build output
         run: |

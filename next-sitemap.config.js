@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://khaoyaiart.org',
+  siteUrl: process.env.SITE_URL || 'https://dev.khaoyaiart.org',
   generateRobotsTxt: false, // robots.txt is managed manually in public/robots.txt
   outDir: './out',
   exclude: ['/404', '/500'],
