@@ -10,7 +10,7 @@ Set these values from the duplicate environment's secret store or an untracked l
 export DUPLICATE_REPO_URL='https://git.example.invalid/duplicate/khaoyaiart-next.git'
 export DUPLICATE_HOST='duplicate.example.invalid'
 export DUPLICATE_DOCUMENT_ROOT='/srv/duplicate-site'
-export DUPLICATE_WP_BASE_URL='https://wp-duplicate.example.invalid'
+export DUPLICATE_WP_BASE_URL='https://q42026.content.khaoyaiart.org'
 export DUPLICATE_SITE_URL='https://dev.khaoyaiart.org'
 export DUPLICATE_ALLOWED_IDENTIFIERS='dev.khaoyaiart.org,q42026.content.khaoyaiart.org'
 ```
