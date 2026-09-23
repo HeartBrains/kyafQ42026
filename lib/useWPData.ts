@@ -43,7 +43,7 @@ async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRaw
     const allPosts: WPRawPost[] = [];
     let page = 1;
     while (true) {
-      const url = `${WP_BASE}/${cpt}?per_page=100&page=${page}&_embed=wp:term&_fields=id,slug,title,content,date,modified,meta,featured_media,_embedded`;
+      const url = `${WP_BASE}/${cpt}?per_page=100&page=${page}&_embed=wp:term&_fields=id,slug,title,content,date,modified,meta,featured_media,activity_tag,_embedded`;
       const res = await fetch(url);
       if (!res.ok) break;
       const data: WPRawPost[] = await res.json();
