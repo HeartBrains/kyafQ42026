@@ -24,6 +24,20 @@ async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
   }
 }
 
+async function batchResolveActivityTerms(ids: number[]) {
+  const unique = [...new Set(ids.filter(id => id > 0))];
+  if (unique.length === 0) return new Map<number, { id: number; name: string; slug: string; taxonomy: string }>();
+  try {
+    const url = `${WP_BASE}/activity_tag?include=${unique.join(',')}&per_page=100&_fields=id,name,slug,taxonomy`;
+    const res = await fetch(url);
+    if (!res.ok) return new Map();
+    const terms: Array<{ id: number; name: string; slug: string; taxonomy: string }> = await res.json();
+    return new Map(terms.map(term => [term.id, term]));
+  } catch {
+    return new Map();
+  }
+}
+
 async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRawPost[]> {
   try {
     const allPosts: WPRawPost[] = [];
@@ -40,6 +54,7 @@ async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRaw
       page++;
     }
     const filtered = allPosts.filter(p => !p.meta?.site || p.meta.site === site);
+    const activityTerms = await batchResolveActivityTerms(filtered.flatMap(post => post.activity_tag ?? []));
 
     // Collect and batch-resolve all media IDs
     const mediaIds: number[] = [];
@@ -72,7 +87,17 @@ async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRaw
       // Priority: WP featured_media → featured_image_url direct URL string (no gallery fallback)
       const fiuStr = typeof fiu === 'string' && fiu.startsWith('http') ? fiu : '';
       const resolvedFeaturedImage = featuredUrl || fiuStr || '';
-      return { ...post, resolvedFeaturedImage, resolvedGallery: galleryUrls };
+      const taxonomyTerms = (post.activity_tag ?? [])
+        .map(id => activityTerms.get(Number(id)))
+        .filter((term): term is { id: number; name: string; slug: string; taxonomy: string } => Boolean(term));
+      return {
+        ...post,
+        _embedded: taxonomyTerms.length
+          ? { ...post._embedded, 'wp:term': [taxonomyTerms] }
+          : post._embedded,
+        resolvedFeaturedImage,
+        resolvedGallery: galleryUrls,
+      };
     });
   } catch {
     return [];
