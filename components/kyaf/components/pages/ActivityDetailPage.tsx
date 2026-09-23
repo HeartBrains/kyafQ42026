@@ -7,6 +7,8 @@ import Autoplay from 'embla-carousel-autoplay';
 import { ArrowLeft } from 'lucide-react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useActivityBySlug } from '@/lib/useWPData';
+import { VideoPlayerEmbed } from '@/components/shared/VideoPlayerEmbed';
+import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
 
 interface ActivityDetailPageProps {
   onNavigate: (page: string) => void;
@@ -97,7 +99,7 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-x-8">
           <div className="md:col-span-6 flex flex-col gap-8">
             <div className="flex flex-col gap-0 px-0 md:px-[28px] py-[0px]">
-              <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
+              <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
               {dateDisplay && dateDisplay.split(',').map((d, i) => (
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
@@ -112,7 +114,7 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
                 </p>
               )}
               {data.additionalInfo && (
-                <div className="mt-6 text-xl md:text-2xl text-black font-normal leading-tight">
+                <div className="mt-6 text-base md:text-lg text-black font-normal leading-relaxed">
                   <RichContent content={data.additionalInfo} />
                 </div>
               )}
@@ -146,6 +148,8 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
             )}
           </div>
         </div>
+        <VideoPlayerEmbed url={data.videoEmbedUrl} title={title || 'Activity video'} />
+        <RelatedContentSection items={data.relatedContent} currentId={data.id} site="kyaf" language={language} />
       </div>
     </div>
   );

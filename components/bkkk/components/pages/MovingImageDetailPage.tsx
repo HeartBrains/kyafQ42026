@@ -6,6 +6,8 @@ import { useMovingImageBySlug } from '@/lib/useWPData';
 import { ArrowLeft } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '../ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
+import { VideoPlayerEmbed } from '@/components/shared/VideoPlayerEmbed';
+import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
 
 interface MovingImageDetailPageProps {
   slug: string;
@@ -96,7 +98,7 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-x-8">
           <div className="md:col-span-6 flex flex-col gap-8">
             <div className="flex flex-col gap-0 px-0 md:px-[28px]">
-              <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
+              <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
               {curator && (
                 <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   {language === 'th' ? `ภัณฑารักษ์: ${curator}` : `Curated by ${curator}`}
@@ -140,6 +142,8 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
             )}
           </div>
         </div>
+        <VideoPlayerEmbed url={data.videoEmbedUrl} title={`${title || 'Moving image'} video`} />
+        <RelatedContentSection items={data.relatedContent} currentId={data.id} site="bkkk" language={language} />
       </div>
     </div>
   );

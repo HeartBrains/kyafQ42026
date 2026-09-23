@@ -166,12 +166,253 @@ The duplicate frontend remains a static export. The duplicate WordPress instance
 - Backups and a tested rollback procedure exist for the duplicate, and production health checks show no change after the exercise.
 - A GitLab restore drill can recreate a usable working repository without access to the original repository or production credentials.
 
-## Open decisions before implementation
+## Recorded decisions and pre-release inputs
 
-- Destination repository is approved as the private GitHub repository `HeartBrains/kyafQ42026`; confirm the default branch when GitHub creation access is available.
+- Destination repository is the private GitHub repository `HeartBrains/kyafQ42026`; verify its protected/default branch as part of release preparation.
 - Duplicate frontend is approved as `https://dev.khaoyaiart.org`; duplicate WordPress is `https://q42026.content.khaoyaiart.org`.
-- Hosting provider and access method for the duplicate static host and WordPress host.
-- Whether the duplicate should be indexed after validation or remain blocked by robots/authentication.
-- Which integrations may safely remain active on the exact private copy, and who approves them.
-- Retention period and storage location for duplicate database/filesystem backups.
-- GitLab namespace/project name and the owner of the manual backup/restore responsibility.
+- Hostinger is the duplicate static/WordPress host; deployment is through the isolated GitHub/Hostinger workflow rather than direct production access.
+- Staging remains blocked from indexing throughout this work.
+- Outbound integrations default to disabled on staging unless a staging-safe destination and owner approval are recorded.
+- The GitLab backup is a new private project named `kyafQ42026`; its namespace/access owner and the backup retention/storage owner must be recorded before the backup and restore-drill steps are signed off. These are operational inputs, not reasons to weaken repository or staging isolation.
+
+---
+
+# KYAF v2 catalog and design implementation plan
+
+## Scope and objective
+
+Implement the KYAF/BKKK catalog and visual updates represented by the supplied September 2026 design references. Work happens first in the isolated `kyafQ42026` repository and staging environment:
+
+- Frontend: `https://dev.khaoyaiart.org`
+- WordPress staging: `https://q42026.content.khaoyaiart.org`
+- Source repository: `HeartBrains/kyafQ42026`
+- Production remains unchanged until a separately approved release.
+
+The plan is organized by screen and implementation phase. The proposed 14-day calendar is intentionally omitted; delivery is controlled by dependency gates and acceptance criteria instead of fixed dates.
+
+GA4 is deferred. No analytics property, Measurement ID, analytics events, or production tracking changes are required for this scope.
+
+## Current technical baseline
+
+- Next.js App Router with static export to `out/`.
+- WordPress REST API is the currently working content transport; the frontend must continue to support the existing REST response shapes while the backend schema is prepared.
+- WordPress taxonomy, relations, custom fields, and WPGraphQL are not configured yet.
+- Hostinger pulls the duplicate repository's generated `out/` output for the staging frontend.
+- The current duplicate build must remain pointed at staging WordPress and must not fall back to production endpoints.
+- Preserve the repository's URL-to-site mapping: `/bk/` uses internal site ID `bkkk` and `components/bkkk/`; `/kyaf/` uses internal site ID `kyaf` and `components/kyaf/`. Any new CPT/detail route must also be registered in `app/not-found.tsx` when runtime fallback support is required.
+- Existing source contains some absolute production or placeholder service URLs outside the main content adapter. Phase 0 must inventory every outbound browser/build request, including contact submission and tracking, and replace, disable, or explicitly approve it for staging. Staging must never submit a form or analytics/conversion event to production.
+
+## Requirements by screen
+
+### 1. Home page
+
+- Add a two-state hero switcher for Khao Yai Art Forest and Bangkok Kunsthalle.
+- Use the correct hero image, title/mark, overlay treatment, and soft fade transition for each state.
+- Place the vector logo/mark at the lower-right of the hero at desktop and the corresponding safe position on mobile.
+- Make slideshow/hero items deep-link to the relevant section or detail route; links must be keyboard accessible and preserve normal browser navigation.
+- Remove the content sections marked for removal in the design reference and rebalance bottom spacing.
+- Keep the footer visually anchored after the hero/slideshow boundary without covering content or trapping keyboard focus.
+- Preserve both `/kyaf/` and `/bk/` site modes and their language behavior.
+- Default `/kyaf/` to the Khao Yai state and `/bk/` to the Bangkok Kunsthalle state. The switcher is user-controlled and does not auto-rotate. Each state links only to an approved route within its matching site prefix.
+
+### 2. Activities listing/archive
+
+- Add the activity tag control with `All`, `Talks & Lectures`, `Performances`, `Screening`, `Workshops`, `Gastronomy`, and `Sound`.
+- Render the control as a horizontal, touch-scrollable strip on narrow screens.
+- Filter cards client-side without a full document reload.
+- Synchronize the selected tag with `?tag=<slug>`; loading a shared URL must restore the same filter.
+- Define empty, loading, error, and reset states.
+- Keep the existing site filter (`kyaf`/`bkkk`) and current/upcoming/past grouping behavior intact unless the approved design explicitly changes it.
+- Browser Back/Forward, direct reload, and copied URLs must retain the filter. Missing or unknown tags must fall back to `All` without an error or redirect loop.
+
+### 3. Activity and exhibition detail pages
+
+- Recompose the detail view as an editorial two-column layout: summary/date/meta on the left and long-form/editorial content on the right.
+- Collapse to a readable single-column layout on mobile.
+- Support an optional video embed with an accessible large play affordance and safe aspect ratio.
+- Support a responsive image gallery with stable dimensions, captions/credits where supplied, and no layout shift.
+- Establish title and supporting-information hierarchy from the design tokens.
+- Add card hover/focus treatment for secondary imagery or short preview media only when that asset exists; never hide the primary title/link.
+- Keep detail routes statically buildable and retain the smart 404/runtime fallback behavior for newly added slugs.
+- Validate video providers/URLs before embedding, use privacy-conscious embed settings where the provider supports them, and show a non-broken fallback when a video is unavailable.
+- Require meaningful image alternative text and optional captions/credits from WordPress; decorative images use empty alternative text.
+
+### 4. Related-content section
+
+- Add a reusable `RelatedContentSection` to detail pages for exhibitions, activities, residency, archives/blog, and moving-image content.
+- Display related cards with image, title, date, content type, and available tag/category.
+- Support bidirectional relations from WordPress and map them to stable frontend route types.
+- Hide the section when no related content exists; do not render an empty heading or spacer.
+- Keep cards keyboard accessible and ensure hover behavior has an equivalent focus treatment.
+- Preserve editor-defined relation order, display at most three cards per related-content group, deduplicate records, prevent the current record from relating to itself, and ensure every card resolves to the correct `/bk/` or `/kyaf/` route. If stored order is unavailable, use newest published first with ID as a stable tie-breaker.
+
+### 5. Global visual/performance system
+
+- Define shared design tokens for the supplied palette and spacing; keep tokens in one source rather than scattering literal values.
+- Load Prompt and Inter using a font-swap strategy with appropriate fallbacks and Thai readability.
+- Reserve image dimensions/aspect ratios to reduce cumulative layout shift.
+- Preserve static-host `.htaccess` behavior and verify cache rules do not cache HTML or stale deployment manifests incorrectly.
+- Measure performance in staging after the visual work. Lighthouse ≥90 and LCP <1.5s are targets, not a reason to hide content or degrade accessibility.
+- Defer GA4 and custom event instrumentation until a separate approved analytics task supplies the Measurement ID and event ownership.
+
+## WordPress/backend work (prerequisite)
+
+Backend schema is currently unconfigured. Before frontend filtering and relations are considered complete:
+
+1. Create a non-hierarchical `activity_tag` taxonomy and expose it on the activity CPT. Use stable English slugs: `talks-lectures`, `performances`, `screening`, `workshops`, `gastronomy`, and `sound`. `All` is a UI state, not a stored term.
+2. Map existing activity records to the taxonomy and produce a reviewable mapping report for AE/client approval.
+3. Add custom fields for video embed URL, gallery/media, hero landscape/portrait assets, and any secondary-card image/preview fields required by the design.
+4. Configure bidirectional relations among the five content families: exhibitions, activities, residency, archives/blog, and moving-image. Record relation direction, cardinality, and empty-state behavior.
+   - Required initial relation pairs from the supplied brief are exhibition ↔ activity, exhibition ↔ residency, exhibition ↔ archive/blog, activity ↔ residency, and activity ↔ archive/blog.
+   - The schema must technically permit editor-selected relationships between any of the five families, including moving image. Seed/migrate only the five explicitly supplied pairs above; additional pairs remain empty until editors create them.
+5. Decide and document the API contract. WPGraphQL may be enabled for relations if it is approved and tested, but the first implementation must not break the currently working REST API. A REST adapter is required until GraphQL queries and permissions are verified in staging.
+   - Map editorial names to the actual REST slugs used by this repository, including `activity`, `exhibition`, `moving_image`, `residency_artist`, and `blog_post`, and verify both `kyaf` and `bkkk` site filters.
+6. Test authenticated and unauthenticated read access, pagination, media URLs, taxonomy filtering, relation queries, and staging CORS before frontend integration.
+7. Take a WordPress staging backup before schema migration and record a rollback procedure for taxonomy, fields, and relations.
+
+## Frontend architecture
+
+```text
+WordPress staging schema
+  |-- activity_tag taxonomy
+  |-- video/gallery/secondary-image fields
+  |-- bidirectional relations
+  `-- REST contract (GraphQL adapter optional after verification)
+             |
+             v
+Data adapter layer
+  |-- normalize taxonomy, relation, media, and date shapes
+  |-- preserve existing site/CPT mappings
+  `-- return typed empty/loading/error states
+             |
+             +--> HeroDualSwitcher / slideshow links
+             +--> ActivityTagFilter + URL search params
+             +--> editorial detail layout + video/gallery
+             +--> RelatedContentSection
+             `--> shared cards, design tokens, fonts, and footer
+             |
+             v
+Static Next.js export (`out/`) -> GitHub Actions -> Hostinger staging
+```
+
+Use small, reusable components rather than duplicating page-specific filtering, cards, relation mapping, or media logic. Keep browser-only state in client components and keep build-time data fetching resilient to empty or temporarily unavailable WordPress responses.
+
+## Implementation phases and gates
+
+### Phase 0 — baseline and safety
+
+- Create a development branch from the tagged staging backup (`backup-staging-2026-09-23`) and keep production branches untouched.
+- Capture screenshots and route/API baselines for home, activities, one activity detail, one exhibition detail, one residency, one blog/archive, and one moving-image page.
+- Confirm staging-only environment variables and run the duplicate-target preflight.
+- Inventory absolute URLs and network destinations in source and generated output. Contact forms, search, media, API requests, webhooks, analytics, and conversion tracking must use staging-safe destinations or be disabled with an explanatory UI.
+
+**Gate A:** baseline pages, current build, staging API, and restore tag are recorded.
+
+### Phase 1 — backend schema and content mapping
+
+- Implement taxonomy, terms, field definitions, and relations in WordPress staging.
+- Map existing content and verify REST/GraphQL responses.
+- Obtain AE/client approval for taxonomy labels, relation semantics, and empty states.
+
+**Gate B:** schema review passes and representative API fixtures are available.
+
+### Phase 2 — home and shared visual foundations
+
+- Add design tokens, fonts, image sizing, hero switcher, slideshow deep links, logo placement, removed sections, and footer behavior.
+- Validate desktop, tablet, mobile, keyboard navigation, reduced motion, and both site modes.
+
+**Gate C:** visual review passes against the supplied design references without regressions to existing routes.
+
+### Phase 3 — activities and detail templates
+
+- Build the tag filter and URL synchronization.
+- Implement editorial detail layout, video embed, gallery, typography hierarchy, and card hover/focus behavior.
+- Verify all existing detail route types and newly added staging content.
+
+**Gate D:** activities and detail pages pass functional, responsive, accessibility, and build tests.
+
+### Phase 4 — relations and performance
+
+- Implement the normalized relation adapter and reusable related-content section.
+- Add auto-hide behavior, route validation, media fallbacks, cache rules, and performance checks.
+- Keep GA4 explicitly deferred.
+
+**Gate E:** relation fixtures pass, empty states are correct, and performance/accessibility targets are measured.
+
+### Phase 5 — QA, client review, and release preparation
+
+- Run clean `npm ci` and `npm run build` with staging values.
+- Validate generated `out/`, sitemap, robots policy, canonical URLs, asset paths, and Hostinger staging deployment.
+- Run smoke tests on mobile and desktop and record defects in a feedback log.
+- Fix approved feedback on the development branch, rebuild, and repeat verification.
+- Create a release tag and obtain explicit production approval before merging or changing production services.
+
+## End-to-end verification matrix
+
+The implementation is not complete merely because it builds. Each row must have recorded evidence (automated result where practical, otherwise a screenshot/video and tester note).
+
+| Area | Required checks | Pass condition |
+|---|---|---|
+| Environment isolation | Inspect source, built HTML/JS, and browser network log; exercise contact/search/media flows | No production WordPress, production form, production webhook, or analytics/conversion request is sent from staging |
+| Home (`/`, `/kyaf/`, `/bk/`) | Both hero states, initial state, switch/fade, deep links, logo, removed content, footer, EN/TH | Matches approved reference; links resolve; no overlap, focus loss, or unexpected motion |
+| Activities (`/kyaf/activities/`, `/bk/activities/`) | All six terms plus `All`; mouse, touch, keyboard; direct `?tag=` load; Back/Forward; invalid tag; empty/error state | Correct cards and URL state without full reload; grouping/site isolation remains correct |
+| Detail routes | Representative activity and exhibition in both sites; long/short copy; missing video/gallery; new post added after build | Layout/media are resilient; static routes work; supported new slugs use the smart shell rather than a dead 404 |
+| Related content | Representative and empty fixtures for exhibition, activity, residency, archive/blog, and moving image | Correct type/site route, ordering and limit; no duplicates/self-links; section absent when empty |
+| Responsive/browser | 360px mobile, tablet, and desktop; current Chrome, Safari/WebKit, and Firefox | No clipped controls, unintended horizontal page scroll, unreadable Thai text, or inaccessible hover-only content |
+| Accessibility | Keyboard-only journey, visible focus, semantic headings/links/buttons, alt text, reduced motion, basic contrast scan | All core functions work without a pointer and no serious automated accessibility violation remains |
+| Static build/output | Clean install and build; inspect `out/`, asset paths, trailing slashes, sitemap, robots, canonical URLs, and representative generated routes | Build exits successfully; expected pages/assets exist; staging is noindex and has no production canonical/sitemap leak |
+| Cache/deployment | Verify HTML response policy, immutable hashed assets, deployment webhook/Hostinger pull, and a changed build identifier | HTML can update immediately; versioned assets cache safely; deployed staging matches the tested commit |
+| Performance | Run mobile Lighthouse on home, activities, and one media-rich detail page after a cold load | Results are recorded; target score ≥90 and LCP <1.5s, with CLS and accessibility regressions investigated |
+| Rollback | Restore previous frontend release/tag and document WordPress schema/data rollback rehearsal | Previous staging version can be restored without touching production |
+
+### Data fixtures required for verification
+
+- At least one activity assigned to each of the six taxonomy terms, plus one untagged activity.
+- One record with complete video/gallery/secondary-image data and one record with each optional field absent.
+- Related-content fixtures for every supported relation pair, including empty, duplicate, cross-site, and attempted self-relation cases.
+- English and Thai content with long titles, long paragraphs, missing translations, and media captions/credits.
+- One post created after a static build to verify the documented rebuild/smart-shell behavior.
+
+## Release evidence and decision record
+
+- Record the exact frontend commit, WordPress backup identifier, schema version/config export, build log, deployed build identifier, and test timestamp.
+- Attach the route/API baseline, responsive screenshots, browser/network isolation evidence, accessibility report, Lighthouse reports, and known-issues list.
+- Record any approved exceptions with owner and follow-up task. Targets that are missed are not silently treated as passed.
+- Production release remains a separate decision: client/AE sign-off, a production backup, environment-specific endpoint review, and an approved rollback window are required before merge/deployment.
+
+## Constraints and non-goals
+
+- No production WordPress, repository, DNS, analytics property, or live deployment changes are included.
+- GA4 installation and custom events are deferred until a separate approved task provides a Measurement ID and data-governance decision.
+- Do not require WPGraphQL for the first frontend milestone if REST can provide the verified contract; introduce GraphQL only after staging tests pass.
+- Do not remove existing CPT routes, smart 404 behavior, bilingual behavior, or site mapping while changing the visual layouts.
+- Avoid direct edits to third-party plugin files. Backend behavior belongs in plugin configuration, hooks, a custom plugin, or approved theme code.
+- All WordPress schema changes require a staging backup and a reversible migration record.
+- Static export means newly created slugs require a rebuild unless covered by the runtime smart shell.
+- Staging must stay noindex and must not reference production sitemap URLs.
+- Keep accessibility, reduced motion, keyboard focus, and Thai typography requirements in scope for every visual component.
+
+## Acceptance and success criteria
+
+- Home switcher, deep links, logo placement, removed sections, footer behavior, and responsive states match the approved design reference.
+- Activities display the seven UI states, filter without full reload, preserve `?tag=`, and handle empty/error/loading states.
+- Activity and exhibition details use the editorial two-column layout, responsive gallery, optional video, hierarchy, and accessible hover/focus behavior.
+- All five content families can show related content from staging relations, and the section hides cleanly when empty.
+- WordPress taxonomy, fields, relations, and API responses are documented, backed up, reviewed, and usable by the frontend.
+- A clean staging build completes with no errors, and Hostinger serves the resulting static output from `dev.khaoyaiart.org`.
+- Browser tests confirm content requests use `q42026.content.khaoyaiart.org`, never the production WordPress endpoint.
+- Browser and built-output checks confirm staging sends no forms, webhooks, tracking, or conversion events to production; unavailable staging integrations are safely disabled and documented.
+- Staging remains blocked from indexing and does not leak production sitemap URLs.
+- Lighthouse and LCP targets are measured and reported, with no regression in route accessibility or content correctness.
+- GA4 remains intentionally unconfigured and is tracked as a future task rather than an implicit requirement.
+- A tagged backup and rollback instructions exist before each release candidate.
+- Every end-to-end verification row has evidence tied to the tested commit and deployed staging build; unresolved failures are listed and approved before the phase gate can pass.
+
+## Deliverables
+
+- WordPress staging schema/configuration and content-mapping report.
+- Reusable frontend components and typed data adapters.
+- Updated page templates for home, activities, details, and related content.
+- Design-token/font/image-performance updates.
+- Automated build and staging deployment verification.
+- QA checklist, screenshots, API fixtures, Lighthouse results, feedback log, and release/rollback tag.

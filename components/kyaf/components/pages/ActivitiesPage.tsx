@@ -1,6 +1,6 @@
 // @ts-nocheck
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
@@ -10,6 +10,8 @@ import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafActivities, useSectionVisibility } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
+import { ActivityTagFilter, activityMatchesTag, type ActivityTagSlug } from '@/components/shared/ActivityTagFilter';
+import { PUBLIC_WP_ORIGIN } from '@/lib/wp-origin';
 
 interface ActivitiesPageProps {
   onNavigate?: (page: string, slug?: string) => void;
@@ -22,6 +24,7 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
   const { language } = useLanguage();
   const covers = useCovers();
   const [activeSection, setActiveSection] = useState('current-activities');
+  const [selectedTag, setSelectedTag] = useState<ActivityTagSlug>('all');
   const { data: rawActivities } = useKyafActivities();
   const wpSections = useSectionVisibility('kyaf');
   const vis = {
@@ -30,9 +33,11 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
     past:     wpSections?.activities?.past     ?? siteConfig.visibility.activities.past,
   };
 
-  const currentActivities  = rawActivities.filter(a => a.status === 'current');
-  const upcomingActivities = rawActivities.filter(a => a.status === 'upcoming');
-  const pastActivities     = rawActivities.filter(a => a.status === 'past');
+  const filteredActivities = rawActivities.filter((activity) => activityMatchesTag(activity.categories?.en, selectedTag));
+  const currentActivities  = filteredActivities.filter(a => a.status === 'current');
+  const upcomingActivities = filteredActivities.filter(a => a.status === 'upcoming');
+  const pastActivities     = filteredActivities.filter(a => a.status === 'past');
+  const handleTagChange = useCallback((tag: ActivityTagSlug) => setSelectedTag(tag), []);
 
   const sections = [
     ...(vis.upcoming ? [{ id: 'upcoming-activities', label: language === 'th' ? 'กิจกรรมที่กำลังจะมาถึง' : 'Upcoming Activities' }] : []),
@@ -90,11 +95,12 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <ParallaxHero image={covers.activities || 'https://content.khaoyaiart.org/wp-content/uploads/2026/03/Puma_Activity-People-Nawaphon-29.jpg'} height="h-[80vh]">
+      <ParallaxHero image={covers.activities || `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Puma_Activity-People-Nawaphon-29.jpg`} height="h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
       </ParallaxHero>
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
+        <ActivityTagFilter language={language} onChange={handleTagChange} />
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
 
           <aside className="w-full md:w-1/2 shrink-0">

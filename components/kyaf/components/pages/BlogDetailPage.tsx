@@ -9,6 +9,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { useScrollHide } from '@/utils/useScrollHide';
 import { useBlogPostBySlug } from '@/lib/useWPData';
 import { RichContent } from '@/utils/richContent';
+import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
 
 interface BlogDetailPageProps {
   onNavigate: (page: string) => void;
@@ -122,7 +123,7 @@ export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPagePro
           <div className="flex flex-col gap-8">
             <Reveal>
               <div className="flex flex-col gap-1">
-                <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   {wpPost.title[language] || wpPost.title.en}
                 </h1>
                 {wpPost.date && (
@@ -142,6 +143,7 @@ export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPagePro
             )}
           </div>
         </div>
+        <RelatedContentSection items={wpPost.relatedContent} currentId={wpPost.id} site="kyaf" language={language} />
       </div>
     </div>
   );

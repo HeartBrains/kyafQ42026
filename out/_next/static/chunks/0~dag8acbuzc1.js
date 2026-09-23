@@ -1,1 +1,0 @@
-(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["object"==typeof document?document.currentScript:void 0,87101,e=>{"use strict";var i=e.i(43476),t=e.i(27527),a=e.i(97306);e.s(["MovingImageDetailClientPage",0,function({slug:e,site:g}){let o=(0,t.useAppNavigate)();return(0,i.jsx)(a.MovingImageDetailPage,{onNavigate:o,slug:e})}])}]);

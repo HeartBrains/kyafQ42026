@@ -7,6 +7,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { useLanguage } from '@/utils/languageContext';
 import { useResidencyArtistBySlug } from '@/lib/useWPData';
 import { RichContent } from '@/utils/richContent';
+import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
 
 interface ArtistDetailPageProps {
   onNavigate: (page: string) => void;
@@ -96,7 +97,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-x-8">
           <div className="md:col-span-6 flex flex-col gap-8">
             <div className="flex flex-col gap-0 px-0 md:px-[28px]">
-              <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{name}</h1>
+              <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{name}</h1>
               <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                 {language === 'th' ? 'ศิลปินพำนัก' : 'Artist in Residence'}
               </p>
@@ -137,6 +138,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
             )}
           </div>
         </div>
+        <RelatedContentSection items={data.relatedContent} currentId={String(data.id)} site="kyaf" language={language} />
       </div>
     </div>
   );

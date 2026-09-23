@@ -43,6 +43,18 @@ function splitUrls(value: string): string[] {
   return value.split(sep).map(u => u.trim()).filter(Boolean);
 }
 
+function relatedContent(post: WPRawPost) {
+  const raw = m(post, 'related_content_json') || m(post, 'related_content');
+  if (!raw.trim().startsWith('[')) return [];
+  try {
+    const items = JSON.parse(raw);
+    if (!Array.isArray(items)) return [];
+    return items.filter((item) => item && typeof item === 'object' && item.id && item.slug && item.type && item.title?.en);
+  } catch {
+    return [];
+  }
+}
+
 // Featured image: native WP media (resolved at fetch time) → meta text URL fallback
 function featuredImageUrl(post: WPRawPost): string {
   if (post.resolvedFeaturedImage) return post.resolvedFeaturedImage;
@@ -105,6 +117,8 @@ export function mapBkkkExhibition(post: WPRawPost) {
     featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
+    videoEmbedUrl: m(post, 'video_embed_url') || m(post, 'video_url'),
+    secondaryImage: m(post, 'secondary_image_url'),
     tags: m(post, 'tags_en'),
     content: {
       en: m(post, 'content_en') || post.content?.rendered || '',
@@ -117,6 +131,7 @@ export function mapBkkkExhibition(post: WPRawPost) {
     ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     site: m(post, 'site') as WPSite,
+    relatedContent: relatedContent(post),
   };
 }
 
@@ -140,6 +155,8 @@ export function mapKyafExhibition(post: WPRawPost) {
     featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
+    videoEmbedUrl: m(post, 'video_embed_url') || m(post, 'video_url'),
+    secondaryImage: m(post, 'secondary_image_url'),
     additionalInfo: m(post, 'additional_info'),
     ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
@@ -153,6 +170,7 @@ export function mapKyafExhibition(post: WPRawPost) {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
+    relatedContent: relatedContent(post),
   };
 }
 
@@ -176,6 +194,7 @@ export function mapMovingImage(post: WPRawPost) {
     featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
+    videoEmbedUrl: m(post, 'video_embed_url') || m(post, 'video_url'),
     additionalInfo: m(post, 'additional_info'),
     ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
@@ -184,6 +203,7 @@ export function mapMovingImage(post: WPRawPost) {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
+    relatedContent: relatedContent(post),
   };
 }
 
@@ -211,6 +231,7 @@ export function mapResidencyArtist(post: WPRawPost) {
     cta2Label: m(post, 'cta2_label'),
     cta2Url: m(post, 'cta2_url'),
     site: m(post, 'site') as WPSite,
+    relatedContent: relatedContent(post),
   };
 }
 
@@ -249,7 +270,14 @@ export function mapKyafTeamMember(post: WPRawPost) {
 // ─── Activity (shared BKKK + KYAF) ───────────────────────────────────────────
 
 export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
-  const tags = m(post, 'tags_en').split(',').map(t => t.trim()).filter(Boolean);
+  const taxonomyTags = (post._embedded?.['wp:term'] ?? [])
+    .flat()
+    .filter((term) => term.taxonomy === 'activity_tag')
+    .map((term) => term.slug || term.name)
+    .filter(Boolean);
+  const tagSource = m(post, 'activity_tag') || m(post, 'activity_tags') || m(post, 'tags_en');
+  const legacyTags = tagSource.split(',').map(t => t.trim()).filter(Boolean);
+  const tags = [...new Set([...taxonomyTags, ...legacyTags])];
   return {
     id: String(post.id),
     slug: post.slug,
@@ -266,6 +294,8 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
     featuredImage: featuredImageUrl(post),
     gallery: galleryUrls(post),
     imageCredits: m(post, 'image_credits'),
+    videoEmbedUrl: m(post, 'video_embed_url') || m(post, 'video_url'),
+    secondaryImage: m(post, 'secondary_image_url'),
     additionalInfo: m(post, 'additional_info'),
     ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
@@ -278,6 +308,7 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
+    relatedContent: relatedContent(post),
   };
 }
 
@@ -326,6 +357,7 @@ export function mapBlogPost(post: WPRawPost) {
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     site: m(post, 'site') as WPSite,
+    relatedContent: relatedContent(post),
   };
 }
 

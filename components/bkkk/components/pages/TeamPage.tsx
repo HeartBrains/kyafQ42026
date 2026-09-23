@@ -8,7 +8,8 @@ import { useCovers } from '@/lib/coversContext';
 import type { TeamMemberItem } from '@/lib/wp-mappers';
 import { RichContent } from '@/utils/richContent';
 
-const TEAM_HERO = 'https://content.khaoyaiart.org/wp-content/uploads/2026/03/bk_Description-Without-Place-Krittawat-Atthsis-Prapasiri-Kasemkijkajorn-82.jpg';
+import { PUBLIC_WP_ORIGIN } from '@/lib/wp-origin';
+const TEAM_HERO = `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/bk_Description-Without-Place-Krittawat-Atthsis-Prapasiri-Kasemkijkajorn-82.jpg`;
 
 
 interface TeamPageProps {

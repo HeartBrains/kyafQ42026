@@ -1,7 +1,7 @@
 // @ts-nocheck
 'use client';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { HeroSlider } from '../ui/HeroSlider';
+import { HeroDualSwitcher } from '@/components/shared/HeroDualSwitcher';
 import { useLanguage } from '@/utils/languageContext';
 import { useKyafExhibitions, useKyafActivities } from '@/lib/useWPData';
 import { HOME_HERO_IMAGES } from '@/utils/imageConstants';
@@ -36,9 +36,11 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <HeroSlider images={HOME_HERO_IMAGES} height="h-[80vh]">
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
-      </HeroSlider>
+      <HeroDualSwitcher
+        initialSite="kyaf"
+        kyafImage={HOME_HERO_IMAGES[0]}
+        bkkkImage="https://irp.cdn-website.com/5516674f/dms3rep/multi/Puma_cover-for-about.jpg"
+      />
 
       <div className="w-full px-[6vw] pt-[96px] pb-[0px]">
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">

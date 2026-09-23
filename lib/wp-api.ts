@@ -36,6 +36,9 @@ export interface WPRawPost {
   // Resolved at fetch time — safe flat strings, no nested WP objects
   resolvedFeaturedImage?: string;
   resolvedGallery?: string[];
+  _embedded?: {
+    'wp:term'?: Array<Array<{ id: number; name: string; slug: string; taxonomy: string }>>;
+  };
 }
 
 // Batch-fetch media URLs for a set of IDs in one request
@@ -76,7 +79,7 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
     const allPosts: WPRawPost[] = [];
     let page = 1;
     while (true) {
-      const url = `${WP_BASE}/${restBase(cpt)}?per_page=100&page=${page}&_fields=id,slug,title,content,date,modified,meta,featured_media&_=${Date.now()}`;
+      const url = `${WP_BASE}/${restBase(cpt)}?per_page=100&page=${page}&_embed=wp:term&_fields=id,slug,title,content,date,modified,meta,featured_media,_embedded&_=${Date.now()}`;
       const res = await fetchWithRetry(url);
       if (!res) break;
       const data: WPRawPost[] = await res.json();
@@ -192,7 +195,7 @@ export async function fetchMenuConfig(): Promise<MenuConfig | null> {
 
 export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPost | null> {
   try {
-    const url = `${WP_BASE}/${restBase(cpt)}?slug=${slug}&_fields=id,slug,title,content,date,modified,meta,featured_media&_=${Date.now()}`;
+    const url = `${WP_BASE}/${restBase(cpt)}?slug=${slug}&_embed=wp:term&_fields=id,slug,title,content,date,modified,meta,featured_media,_embedded&_=${Date.now()}`;
     const res = await fetchWithRetry(url);
     if (!res) return null;
     const data: WPRawPost[] = await res.json();

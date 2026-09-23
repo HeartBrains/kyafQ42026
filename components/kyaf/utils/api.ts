@@ -1,7 +1,9 @@
 import { MOCK_POSTS } from './mockData';
 import { WPPost } from './types';
 
-const API_BASE_URL = 'https://your-wordpress-site.com/wp-json/wp/v2';
+import { PUBLIC_WP_ORIGIN } from '@/lib/wp-origin';
+
+const API_BASE_URL = `${PUBLIC_WP_ORIGIN}/wp-json/wp/v2`;
 // For JetEngine CPTs, the endpoint might be different, e.g., /wp/v2/activities or /jet-cct/slug
 // We'll assume standard WP REST API endpoints for Custom Post Types
 // See /utils/mock-api.json for the expected JSON structure

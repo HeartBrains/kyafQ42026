@@ -17,6 +17,8 @@ import {
 } from '../ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { useScrollHide } from '@/utils/useScrollHide';
+import { VideoPlayerEmbed } from '@/components/shared/VideoPlayerEmbed';
+import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
 
 interface ExhibitionDetailPageProps {
   onNavigate: (page: string) => void;
@@ -145,7 +147,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
             <div className="flex flex-col gap-4">
                 <Reveal>
                     <div className="flex flex-col gap-1">
-                        <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                        <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                             {language === 'th' ? exhibitionData.title.th : exhibitionData.title.en}
                         </h1>
                         
@@ -167,7 +169,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 {/* Additional Info (Specifications, Location, etc.) */}
                 {exhibitionData.additionalInfo && (
                     <Reveal delay={0.1}>
-                        <div className="text-xl md:text-2xl text-black font-normal leading-tight">
+                        <div className="text-base md:text-lg text-black font-normal leading-relaxed">
                             <RichContent content={exhibitionData.additionalInfo} />
                         </div>
                     </Reveal>
@@ -223,6 +225,8 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 )}
             </div>
         </div>
+        <VideoPlayerEmbed url={exhibitionData.videoEmbedUrl} title={`${language === 'th' ? exhibitionData.title.th : exhibitionData.title.en} video`} />
+        <RelatedContentSection items={exhibitionData.relatedContent} currentId={exhibitionData.id} site="kyaf" language={language} />
       </div>
     </div>
   );

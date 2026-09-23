@@ -6,6 +6,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Autoplay from 'embla-carousel-autoplay';
 import { ArrowLeft } from 'lucide-react';
 import { useExhibitionBySlug } from '@/lib/useWPData';
+import { VideoPlayerEmbed } from '@/components/shared/VideoPlayerEmbed';
+import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
 
 interface ExhibitionDetailPageProps {
   onNavigate: (page: string) => void;
@@ -91,14 +93,14 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
         <div className="grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-x-8">
           <div className="md:col-span-6 flex flex-col gap-8">
             <div className="flex flex-col gap-0 px-0 md:px-[28px] py-[0px]">
-              <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
+              <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
               {artist && <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{artist}</p>}
               {dateDisplay && dateDisplay.split(',').map((d, i) => (
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
               {curator && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}{curator}</p>}
               {(data.additionalInfo?.[language] || data.additionalInfo?.en) && (
-                <div className="text-xl md:text-2xl text-black font-normal leading-tight">
+                <div className="text-base md:text-lg text-black font-normal leading-relaxed">
                   <RichContent content={data.additionalInfo[language] || data.additionalInfo.en} />
                 </div>
               )}
@@ -132,6 +134,8 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
             )}
           </div>
         </div>
+        <VideoPlayerEmbed url={data.videoEmbedUrl} title={`${title || 'Exhibition'} video`} />
+        <RelatedContentSection items={data.relatedContent} currentId={data.id} site="bkkk" language={language} />
       </div>
     </div>
   );

@@ -58,6 +58,9 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
+  --forest-canopy: #1c3325;
+  --teak-earth: #8b5e3c;
+  --mist-canvas: #f9f9f6;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #030213;
@@ -66,6 +69,119 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dual-hero {
+  position: relative;
+  min-height: 80vh;
+  overflow: hidden;
+  background: #111;
+  color: white;
+}
+
+.dual-hero__image,
+.dual-hero__shade {
+  position: absolute;
+  inset: 0;
+}
+
+.dual-hero__image {
+  background-position: center;
+  background-size: cover;
+  opacity: 0;
+  transform: scale(1.015);
+  transition: opacity 700ms ease, transform 1200ms ease;
+}
+
+.dual-hero__image[data-active='true'] {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.dual-hero__shade {
+  background: linear-gradient(180deg, rgb(0 0 0 / 0.24), transparent 35%, rgb(0 0 0 / 0.3));
+}
+
+.dual-hero__controls {
+  position: absolute;
+  inset: 10rem 5% auto;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.dual-hero__tab,
+.dual-hero__link {
+  display: flex;
+  gap: 1rem;
+  color: white;
+  font: inherit;
+  line-height: 0.9;
+  text-align: left;
+  text-decoration: none;
+}
+
+.dual-hero__tab {
+  border: 0;
+  padding: 0.5rem;
+  background: transparent;
+  opacity: 0.62;
+  cursor: pointer;
+}
+
+.dual-hero__tab > span,
+.dual-hero__link > span:first-child > span {
+  display: block;
+}
+
+.dual-hero__tab[aria-selected='true'],
+.dual-hero__tab:hover,
+.dual-hero__tab:focus-visible {
+  opacity: 1;
+}
+
+.dual-hero__link {
+  position: absolute;
+  right: 5%;
+  bottom: 2rem;
+  z-index: 2;
+  align-items: flex-end;
+  font-size: clamp(1.75rem, 4vw, 4rem);
+  font-weight: 700;
+}
+
+.activity-tag-filter {
+  display: flex;
+  width: 100%;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 0 1rem;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+}
+
+.activity-tag-filter__button {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  background: white;
+  color: black;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.activity-tag-filter__button[aria-pressed='true'] {
+  background: black;
+  color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dual-hero__image {
+    transition: none;
+  }
 }
 
 .dark {

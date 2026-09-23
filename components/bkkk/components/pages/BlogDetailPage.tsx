@@ -7,6 +7,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { useLanguage } from '@/utils/languageContext';
 import { useBlogPostBySlug } from '@/lib/useWPData';
 import { RichContent } from '@/utils/richContent';
+import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
 
 interface BlogDetailPageProps {
   onNavigate: (page: string) => void;
@@ -107,7 +108,7 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
             {/* Left Column */}
             <div className="md:col-span-6 flex flex-col gap-8">
                 <div className="flex flex-col gap-0 px-0 md:px-[28px] py-[0px]">
-                    <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                    <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                         {wpPost.title[language] || wpPost.title.en}
                     </h1>
 
@@ -128,6 +129,7 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
                )}
             </div>
          </div>
+         <RelatedContentSection items={wpPost.relatedContent} currentId={wpPost.id} site="bkkk" language={language} />
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import { HeroSlider } from '../ui/HeroSlider';
 import { Reveal } from '../ui/Reveal';
 
 import { useLanguage } from '@/utils/languageContext';
+import { PUBLIC_WP_ORIGIN } from '@/lib/wp-origin';
 
 const PARTNERS = [
     { name: 'The Fine Arts Department', nameTh: 'กรมศิลปากร', short: 'FAD', bgPos: '0% 0%' },
@@ -24,9 +25,9 @@ export function SupportPage() {
             {/* Hero Section */}
             <HeroSlider
                 images={[
-                    'https://content.khaoyaiart.org/wp-content/uploads/2026/03/Puma__-202.jpg',
-                    'https://content.khaoyaiart.org/wp-content/uploads/2026/03/Puma__-130-1.jpg',
-                    'https://content.khaoyaiart.org/wp-content/uploads/2026/03/Puma_nostalgia-for-unity-From-Dust-to-Dust-Performance-by-Tos.jpg',
+                    `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Puma__-202.jpg`,
+                    `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Puma__-130-1.jpg`,
+                    `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Puma_nostalgia-for-unity-From-Dust-to-Dust-Performance-by-Tos.jpg`,
                 ]}
                 height="h-[80vh]"
             >
@@ -88,7 +89,7 @@ export function SupportPage() {
                     <div className="w-full md:w-1/2 flex flex-col gap-8">
                         <Reveal delay={0.1}>
                             <img
-                                src="https://content.khaoyaiart.org/wp-content/uploads/2026/03/Screenshot_20260322-195733.png"
+                                src={`${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Screenshot_20260322-195733.png`}
                                 alt="Donation QR Code"
                                 className="w-48 h-48 object-contain"
                             />

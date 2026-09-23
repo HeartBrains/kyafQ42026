@@ -2,7 +2,7 @@
 import { useLanguage } from '@/utils/languageContext';
 import { useBkkkExhibitions, useBkkkActivities, useMovingImages } from '@/lib/useWPData';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { HeroSlider } from '../ui/HeroSlider';
+import { HeroDualSwitcher } from '@/components/shared/HeroDualSwitcher';
 import { useState, useEffect, useMemo } from 'react';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
@@ -77,13 +77,11 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      {/* Hero Section */}
-      <HeroSlider 
-        images={heroImages} 
-        height="h-[80vh]"
-      >
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
-      </HeroSlider>
+      <HeroDualSwitcher
+        initialSite="bkkk"
+        kyafImage="https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-6.+About+Us--Madrid+Circle-+Krittawat+and+Puttisin+1-1920w.jpg"
+        bkkkImage={heroImages[0]}
+      />
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
