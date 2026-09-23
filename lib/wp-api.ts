@@ -33,12 +33,29 @@ export interface WPRawPost {
   modified: string;
   meta: Record<string, string | string[]>;
   featured_media?: number;
+  // Custom taxonomies are returned as term IDs even when `_embed=wp:term`
+  // is unavailable to the public REST context.
+  activity_tag?: number[];
   // Resolved at fetch time — safe flat strings, no nested WP objects
   resolvedFeaturedImage?: string;
   resolvedGallery?: string[];
   _embedded?: {
     'wp:term'?: Array<Array<{ id: number; name: string; slug: string; taxonomy: string }>>;
   };
+}
+
+async function resolveActivityTerms(ids: number[]) {
+  const unique = [...new Set(ids.filter((id) => id > 0))];
+  if (unique.length === 0) return new Map<number, { id: number; name: string; slug: string; taxonomy: string }>();
+  try {
+    const url = `${WP_BASE}/activity_tag?include=${unique.join(',')}&per_page=100&_fields=id,name,slug,taxonomy`;
+    const res = await fetchWithRetry(url);
+    if (!res) return new Map();
+    const terms: Array<{ id: number; name: string; slug: string; taxonomy: string }> = await res.json();
+    return new Map(terms.map((term) => [term.id, term]));
+  } catch {
+    return new Map();
+  }
 }
 
 // Batch-fetch media URLs for a set of IDs in one request
@@ -93,6 +110,9 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
     // Filter by site meta — posts with no site field are shared
     const filtered = allPosts.filter(p => !p.meta?.site || p.meta.site === site);
 
+    const activityTagIds = filtered.flatMap((post) => post.activity_tag ?? []);
+    const activityTerms = await resolveActivityTerms(activityTagIds);
+
     // Collect all media IDs that need resolving
     const mediaIds: number[] = [];
     for (const post of filtered) {
@@ -126,7 +146,17 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
         ? galleryIds.map(id => mediaMap.get(Number(id)) ?? '').filter(Boolean)
         : [];
 
-      return { ...post, resolvedFeaturedImage: featuredUrl, resolvedGallery: galleryUrls };
+      const taxonomyTerms = (post.activity_tag ?? [])
+        .map((id) => activityTerms.get(Number(id)))
+        .filter((term): term is { id: number; name: string; slug: string; taxonomy: string } => Boolean(term));
+      return {
+        ...post,
+        _embedded: taxonomyTerms.length
+          ? { ...post._embedded, 'wp:term': [taxonomyTerms] }
+          : post._embedded,
+        resolvedFeaturedImage: featuredUrl,
+        resolvedGallery: galleryUrls,
+      };
     });
   } catch {
     return [];
@@ -202,6 +232,8 @@ export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPo
     const post = data[0] ?? null;
     if (!post) return null;
 
+    const activityTerms = await resolveActivityTerms(post.activity_tag ?? []);
+
     // Resolve featured_media and gallery_media IDs to URLs
     const mediaIds: number[] = [];
     if (post.featured_media && post.featured_media > 0) mediaIds.push(post.featured_media);
@@ -215,7 +247,17 @@ export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPo
     const galleryUrls = Array.isArray(gm)
       ? gm.map(id => mediaMap.get(Number(id)) ?? '').filter(Boolean) : [];
 
-    return { ...post, resolvedFeaturedImage: featuredUrl, resolvedGallery: galleryUrls };
+    const taxonomyTerms = (post.activity_tag ?? [])
+      .map((id) => activityTerms.get(Number(id)))
+      .filter((term): term is { id: number; name: string; slug: string; taxonomy: string } => Boolean(term));
+    return {
+      ...post,
+      _embedded: taxonomyTerms.length
+        ? { ...post._embedded, 'wp:term': [taxonomyTerms] }
+        : post._embedded,
+      resolvedFeaturedImage: featuredUrl,
+      resolvedGallery: galleryUrls,
+    };
   } catch {
     return null;
   }

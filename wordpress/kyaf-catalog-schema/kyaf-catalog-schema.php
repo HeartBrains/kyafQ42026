@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KYAF Catalog Schema
  * Description: Versioned activity taxonomy, editorial media fields, and bidirectional related-content data for the KYAF/BKKK frontend.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: HeartBrains
@@ -284,3 +284,108 @@ function kyaf_catalog_admin_notice() {
 	);
 }
 add_action( 'admin_notices', 'kyaf_catalog_admin_notice' );
+
+function kyaf_catalog_add_settings_page() {
+	add_options_page(
+		'KYAF Catalog Schema',
+		'KYAF Catalog',
+		'manage_options',
+		'kyaf-catalog-schema',
+		'kyaf_catalog_render_settings_page'
+	);
+}
+add_action( 'admin_menu', 'kyaf_catalog_add_settings_page' );
+
+function kyaf_catalog_plugin_action_links( $links ) {
+	$settings_url = admin_url( 'options-general.php?page=kyaf-catalog-schema' );
+	array_unshift(
+		$links,
+		sprintf( '<a href="%s">%s</a>', esc_url( $settings_url ), esc_html__( 'Settings', 'kyaf-catalog-schema' ) )
+	);
+	return $links;
+}
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'kyaf_catalog_plugin_action_links' );
+
+function kyaf_catalog_count_activities() {
+	$counts = wp_count_posts( 'activity' );
+	$total  = 0;
+	foreach ( get_post_stati() as $status ) {
+		$total += isset( $counts->{$status} ) ? absint( $counts->{$status} ) : 0;
+	}
+	return $total;
+}
+
+function kyaf_catalog_count_untagged_activities() {
+	$query = new WP_Query(
+		array(
+			'post_type'              => 'activity',
+			'post_status'            => 'any',
+			'posts_per_page'         => 1,
+			'fields'                 => 'ids',
+			'no_found_rows'          => false,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'tax_query'              => array(
+				array(
+					'taxonomy' => 'activity_tag',
+					'operator' => 'NOT EXISTS',
+				),
+			),
+		)
+	);
+	return absint( $query->found_posts );
+}
+
+function kyaf_catalog_render_settings_page() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$terms        = get_terms( array( 'taxonomy' => 'activity_tag', 'hide_empty' => false ) );
+	$report       = get_option( 'kyaf_catalog_migration_report', array() );
+	$total        = kyaf_catalog_count_activities();
+	$untagged     = kyaf_catalog_count_untagged_activities();
+	$tagged       = max( 0, $total - $untagged );
+	$activities_url = admin_url( 'edit.php?post_type=activity' );
+	$tags_url       = admin_url( 'edit-tags.php?taxonomy=activity_tag&post_type=activity' );
+	$rest_url       = rest_url( 'wp/v2/activity_tag' );
+	?>
+	<div class="wrap">
+		<h1><?php echo esc_html__( 'KYAF Catalog Schema', 'kyaf-catalog-schema' ); ?></h1>
+		<p><?php echo esc_html__( 'Manage activity tags and confirm that the catalog fields are available to the staging frontend.', 'kyaf-catalog-schema' ); ?></p>
+
+		<h2><?php echo esc_html__( 'Schema status', 'kyaf-catalog-schema' ); ?></h2>
+		<table class="widefat striped" style="max-width: 760px">
+			<tbody>
+				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.2.0</td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'Activity tags', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d tagged / %d total', $tagged, $total ) ); ?></td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'Need tag review', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( (string) $untagged ); ?></td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'Last activation migration', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d automatically mapped', absint( $report['mapped'] ?? 0 ) ) ); ?></td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'REST endpoint', 'kyaf-catalog-schema' ); ?></th><td><a href="<?php echo esc_url( $rest_url ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $rest_url ); ?></a></td></tr>
+			</tbody>
+		</table>
+
+		<p>
+			<a class="button button-primary" href="<?php echo esc_url( $activities_url ); ?>"><?php echo esc_html__( 'Review activities', 'kyaf-catalog-schema' ); ?></a>
+			<a class="button" href="<?php echo esc_url( $tags_url ); ?>"><?php echo esc_html__( 'Manage activity tags', 'kyaf-catalog-schema' ); ?></a>
+		</p>
+
+		<h2><?php echo esc_html__( 'Activity tag usage', 'kyaf-catalog-schema' ); ?></h2>
+		<table class="widefat striped" style="max-width: 760px">
+			<thead><tr><th><?php echo esc_html__( 'Tag', 'kyaf-catalog-schema' ); ?></th><th><?php echo esc_html__( 'Slug', 'kyaf-catalog-schema' ); ?></th><th><?php echo esc_html__( 'Activities', 'kyaf-catalog-schema' ); ?></th></tr></thead>
+			<tbody>
+			<?php if ( is_wp_error( $terms ) || empty( $terms ) ) : ?>
+				<tr><td colspan="3"><?php echo esc_html__( 'No activity tags found.', 'kyaf-catalog-schema' ); ?></td></tr>
+			<?php else : ?>
+				<?php foreach ( $terms as $term ) : ?>
+					<tr><td><?php echo esc_html( $term->name ); ?></td><td><code><?php echo esc_html( $term->slug ); ?></code></td><td><?php echo esc_html( (string) $term->count ); ?></td></tr>
+				<?php endforeach; ?>
+			<?php endif; ?>
+			</tbody>
+		</table>
+
+		<h2><?php echo esc_html__( 'Where to edit catalog fields', 'kyaf-catalog-schema' ); ?></h2>
+		<p><?php echo esc_html__( 'Open an Exhibition, Activity, Residency Artist, Blog Post, or Moving Image entry. The “KYAF Catalog Fields” box contains video, gallery, hero image, secondary image, and related-content fields.', 'kyaf-catalog-schema' ); ?></p>
+	</div>
+	<?php
+}
