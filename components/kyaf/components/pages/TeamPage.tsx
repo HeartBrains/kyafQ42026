@@ -83,7 +83,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
             <div className="w-full md:w-1/2 flex flex-col gap-8">
               {FOUNDER.image && (
                 <div className="w-full mb-4">
-                  <img src={FOUNDER.image} alt={FOUNDER.name} className="w-full h-auto object-cover" />
+                  <img src={FOUNDER.image} alt={FOUNDER.name} className="w-full h-auto object-cover" loading="lazy" decoding="async" fetchPriority="low" />
                 </div>
               )}
               <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
@@ -111,7 +111,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
                 <div key={idx} className="flex flex-col gap-4">
                   {director.image && (
                     <div className="w-full mb-4">
-                      <img src={director.image} alt={director.name} className="w-full aspect-[3/4] object-cover object-center" />
+                      <img src={director.image} alt={director.name} className="w-full aspect-[3/4] object-cover object-center" loading="lazy" decoding="async" fetchPriority="low" />
                     </div>
                   )}
                   <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
@@ -142,7 +142,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
                 <div key={idx} className="flex flex-col gap-4">
                   {member.image && (
                     <div className="w-full mb-4">
-                      <img src={member.image} alt={member.name} className="w-full aspect-[3/4] object-cover object-center" />
+                      <img src={member.image} alt={member.name} className="w-full aspect-[3/4] object-cover object-center" loading="lazy" decoding="async" fetchPriority="low" />
                     </div>
                   )}
                   <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">

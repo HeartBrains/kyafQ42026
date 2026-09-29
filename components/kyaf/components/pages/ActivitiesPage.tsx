@@ -70,7 +70,7 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
     <div id={`record-${item.slug}`} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
       {item.featuredImage && (
         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-          <ImageWithFallback src={item.featuredImage} hoverSrc={item.gallery?.[0]} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" />
+          <ImageWithFallback src={item.featuredImage} hoverSrc={item.gallery?.[0]} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" decoding="async" fetchPriority="low" />
         </div>
       )}
       <div className="flex flex-col gap-1">

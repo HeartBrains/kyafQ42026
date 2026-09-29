@@ -133,7 +133,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                     >
                       {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" decoding="async" fetchPriority="low" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
@@ -164,7 +164,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                     >
                       {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" decoding="async" fetchPriority="low" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
@@ -195,7 +195,7 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                     >
                       {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" decoding="async" fetchPriority="low" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">

@@ -273,6 +273,9 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                                                 hoverSrc={item.gallery?.[0]}
                                                 alt={item.title}
                                                 className="w-full aspect-[3/4] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                                loading="lazy"
+                                                decoding="async"
+                                                fetchPriority="low"
                                             />
                                         ) : (
                                             <ImageWithFallback 
@@ -280,6 +283,9 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                                                 hoverSrc={item.gallery?.[0]}
                                                 alt={item.title}
                                                 className="w-full aspect-[3/4] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                                                loading="lazy"
+                                                decoding="async"
+                                                fetchPriority="low"
                                             />
                                         )}
                                     </div>

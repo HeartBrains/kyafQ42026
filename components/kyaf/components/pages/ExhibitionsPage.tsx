@@ -89,6 +89,9 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
           hoverSrc={item.gallery?.[0]}
           alt={language === 'th' ? item.title.th : item.title.en}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
         />
       </div>
       <div className="flex flex-col gap-1">

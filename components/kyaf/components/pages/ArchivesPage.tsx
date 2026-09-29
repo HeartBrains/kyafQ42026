@@ -223,6 +223,9 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
                       hoverSrc={item.gallery?.[0]}
                       alt={item.title}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
+                      fetchPriority="low"
                     />
                   </div>
                   <h3 className={`text-xl md:text-2xl font-bold text-black leading-tight mb-1 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>

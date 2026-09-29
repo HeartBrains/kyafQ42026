@@ -110,6 +110,8 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
               alt={language === 'th' ? artist.nameTH : artist.name}
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               loading="lazy"
+              decoding="async"
+              fetchPriority="low"
               onError={() => setImgError(true)}
             />
           </div>
