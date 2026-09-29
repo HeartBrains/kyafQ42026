@@ -127,6 +127,12 @@ export const translations = {
     // Footer
     'footer.newsletter': 'Subscribe to our newsletter',
     'footer.subscribe': 'Subscribe',
+    'footer.joinMailingList': 'Join Mailing List',
+    'footer.emailPlaceholder': 'Email address',
+    'footer.join': 'Join',
+    'footer.mailingListSubmitting': 'Joining…',
+    'footer.mailingListSuccess': 'Thank you for joining the mailing list.',
+    'footer.mailingListError': 'We could not complete your signup. Please try again.',
     'footer.allRightsReserved': 'All rights reserved',
     
     // Search
@@ -305,6 +311,12 @@ export const translations = {
     // Footer - Thai
     'footer.newsletter': 'สมัครรับจดหมายข่าว',
     'footer.subscribe': 'สมัครสมาชิก',
+    'footer.joinMailingList': 'สมัครรับข่าวสารทางอีเมล',
+    'footer.emailPlaceholder': 'อีเมล',
+    'footer.join': 'สมัคร',
+    'footer.mailingListSubmitting': 'กำลังสมัคร…',
+    'footer.mailingListSuccess': 'ขอบคุณที่สมัครรับข่าวสาร',
+    'footer.mailingListError': 'ไม่สามารถสมัครได้ กรุณาลองอีกครั้ง',
     'footer.allRightsReserved': 'สงวนลิขสิทธิ์',
     
     // Search - Thai

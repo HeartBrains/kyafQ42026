@@ -13,6 +13,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
   const [didError, setDidError] = useState(false)
   const [hoverDidError, setHoverDidError] = useState(false)
   const [hoverRequested, setHoverRequested] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     setDidError(true)
@@ -24,19 +25,28 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
 
   const { src, alt, style, className, hoverSrc, onMouseEnter, loading, decoding, fetchPriority, ...rest } = props
   const showHoverImage = Boolean(hoverSrc && hoverSrc !== src && !hoverDidError)
-  const featuredClassName = `${className ?? ''}${showHoverImage ? ' relative z-10 transition-opacity duration-500 group-hover:opacity-0' : ''}`
   const requestHoverImage = () => {
-    if (showHoverImage) setHoverRequested(true)
+    if (showHoverImage) {
+      setHoverRequested(true)
+      setIsHovered(true)
+    }
   }
   const handleMouseEnter = (event: React.MouseEvent<HTMLImageElement>) => {
     requestHoverImage()
     onMouseEnter?.(event)
   }
 
+  const featuredStyle = showHoverImage
+    ? { ...style, opacity: isHovered ? 0 : 1, transition: 'opacity 500ms ease' }
+    : style
+  const featuredClassName = showHoverImage
+    ? `${className ?? ''} absolute inset-0 z-10`
+    : className
+
   const featuredImage = didError ? (
     <div
       className={`inline-block bg-gray-100 text-center align-middle ${featuredClassName}`}
-      style={style}
+      style={featuredStyle}
       onMouseEnter={requestHoverImage}
     >
       <div className="flex items-center justify-center w-full h-full">
@@ -44,7 +54,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
       </div>
     </div>
   ) : (
-    <img src={src} alt={alt} className={featuredClassName} style={style} {...rest}
+    <img src={src} alt={alt} className={featuredClassName} style={featuredStyle} {...rest}
       loading={hoverSrc ? loading ?? 'lazy' : loading}
       decoding={hoverSrc ? decoding ?? 'async' : decoding}
       fetchPriority={hoverSrc ? fetchPriority ?? 'low' : fetchPriority}
@@ -53,23 +63,29 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
     />
   )
 
-  return showHoverImage ? (
-    <>
+  if (!showHoverImage) return featuredImage
+
+  return (
+    <span
+      className="relative block h-full w-full overflow-hidden"
+      onMouseEnter={requestHoverImage}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {featuredImage}
       {hoverRequested && (
         <img
           src={hoverSrc}
           alt=""
           aria-hidden="true"
-          className={`${className ?? ''} absolute inset-0 z-20 opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
-          style={style}
+          className={`${className ?? ''} absolute inset-0 z-20`}
+          style={{ ...style, opacity: isHovered ? 1 : 0, transition: 'opacity 500ms ease', pointerEvents: 'none' }}
           {...rest}
-          loading="lazy"
+          loading="eager"
           decoding="async"
           fetchPriority="low"
           onError={() => setHoverDidError(true)}
         />
       )}
-    </>
-  ) : featuredImage
+    </span>
+  )
 }

@@ -2,6 +2,7 @@
 import { Instagram, Facebook, AtSign } from 'lucide-react';
 import { useLanguage } from '@/utils/languageContext';
 import KyafWhite from '../../imports/KyafWhite';
+import { MailingListSignup } from '@/components/common/MailingListSignup';
 
 export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const { language } = useLanguage();
@@ -26,39 +27,44 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
           </svg>
         </div>
 
-        {/* Right: Navigation & Socials */}
-        <div className="w-full lg:w-1/2 md:w-2/3  flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-0">
-          
-          <div className="flex flex-col md:flex-row gap-6 md:gap-8 text-sm md:text-base font-normal tracking-wide">
-            <button 
-              onClick={() => onNavigate?.('support')} 
-              className={`hover:text-gray-300 transition-colors text-left cursor-pointer ${language === 'th' ? 'leading-[1.82em]' : ''}`}
-            >
-              {language === 'th' ? 'การสนับสนุน' : 'Support us'}
-            </button>
-            <button 
-              onClick={() => onNavigate?.('contact')} 
-              className={`hover:text-gray-300 transition-colors text-left cursor-pointer ${language === 'th' ? 'leading-[1.82em]' : ''}`}
-            >
-              {language === 'th' ? 'สมัครรับข่าวสาร' : 'Contact us'}
-            </button>
+        {/* Right: Mailing list, navigation, and socials */}
+        <div className="w-full lg:w-1/2 md:w-2/3 flex flex-col justify-between gap-6">
+          <div className="flex justify-start md:justify-end">
+            <MailingListSignup site="kyaf" />
           </div>
 
-          <div className="flex-1 flex justify-start md:justify-around items-center gap-6 w-[80%] sm:w-[40%] px-0 md:px-[29px] py-[0px]">
-            <a href="https://www.facebook.com/profile.php?id=61569868164323" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors cursor-pointer">
-              <Facebook className="w-5 h-5" />
-            </a>
-            <a href="https://www.instagram.com/khaoyai_art_forest/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors cursor-pointer">
-              <Instagram className="w-5 h-5" />
-            </a>
-            <a href="mailto:info@khaoyaiart.com" className="hover:text-gray-300 transition-colors cursor-pointer">
-              <AtSign className="w-5 h-5" />
-            </a>
-          </div>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-0">
+            <div className="flex flex-col md:flex-row gap-6 md:gap-8 text-sm md:text-base font-normal tracking-wide">
+              <button
+                onClick={() => onNavigate?.('support')}
+                className={`hover:text-gray-300 transition-colors text-left cursor-pointer ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+              >
+                {language === 'th' ? 'การสนับสนุน' : 'Support us'}
+              </button>
+              <button
+                onClick={() => onNavigate?.('contact')}
+                className={`hover:text-gray-300 transition-colors text-left cursor-pointer ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+              >
+                {language === 'th' ? 'สมัครรับข่าวสาร' : 'Contact us'}
+              </button>
+            </div>
 
-          <span className="text-[10px] text-gray-500 font-medium whitespace-nowrap">
-            ©2026 Khao Yai Art Forest
-          </span>
+            <div className="flex-1 flex justify-start md:justify-around items-center gap-6 w-[80%] sm:w-[40%] px-0 md:px-[29px] py-[0px]">
+              <a href="https://www.facebook.com/profile.php?id=61569868164323" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors cursor-pointer">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="https://www.instagram.com/khaoyai_art_forest/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors cursor-pointer">
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a href="mailto:info@khaoyaiart.com" className="hover:text-gray-300 transition-colors cursor-pointer">
+                <AtSign className="w-5 h-5" />
+              </a>
+            </div>
+
+            <span className="text-[10px] text-gray-500 font-medium whitespace-nowrap">
+              ©2026 Khao Yai Art Forest
+            </span>
+          </div>
         </div>
 
       </div>
