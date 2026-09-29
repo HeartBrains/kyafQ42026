@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-b0e7237e31dac146.js","229","static/chunks/229-15f25ea0532bed44.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-268545de74d0c3ca.js"],"ActivityDetailClientPage"]
+2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-52eec2e063be2625.js","229","static/chunks/229-15f25ea0532bed44.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-268545de74d0c3ca.js"],"ActivityDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"the-preservation-of-fire-artists-talk-with-busui-ajaw"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"a_3JkdsvP5bhDOwnI6CxU"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"the-preservation-of-fire-artists-talk-with-busui-ajaw"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"paePr4702saXJoKUnQaEF"}
 5:null

@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[2343,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","4286","static/chunks/4286-3114d8a161acc5f7.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-b0e7237e31dac146.js","2519","static/chunks/2519-034df0eb5a54fde5.js","339","static/chunks/app/kyaf/exhibitions/%5Bslug%5D/page-d7dc8dbed1daffcf.js"],"ExhibitionDetailClientPage"]
+2:I[2343,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","4286","static/chunks/4286-3114d8a161acc5f7.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-52eec2e063be2625.js","2519","static/chunks/2519-7ab9d40e6ea96b9a.js","339","static/chunks/app/kyaf/exhibitions/%5Bslug%5D/page-d7dc8dbed1daffcf.js"],"ExhibitionDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"kyaf","slug":"god"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"a_3JkdsvP5bhDOwnI6CxU"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"kyaf","slug":"god"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"paePr4702saXJoKUnQaEF"}
 5:null
