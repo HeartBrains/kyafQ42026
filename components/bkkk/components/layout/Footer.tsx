@@ -49,7 +49,7 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
               </a>
             </div>
 
-            <div className="ml-auto flex flex-col items-end gap-3 text-right sm:flex-row sm:items-center sm:gap-5">
+            <div className="ml-auto flex flex-col items-end gap-2 text-right">
               <MailingListSignup site="bkkk" />
               <span className="text-[10px] text-gray-500 font-medium whitespace-nowrap">
                 ©2026 Bangkok Kunsthalle

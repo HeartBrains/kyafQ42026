@@ -71,8 +71,11 @@ export function MailingListSignup({ site }: MailingListSignupProps) {
           type="button"
           aria-controls={panelId}
           aria-expanded={isOpen}
-          onClick={() => setIsOpen(true)}
-          className="text-right text-xs font-medium uppercase tracking-[0.16em] transition-colors hover:text-gray-300 md:text-sm"
+          onClick={() => {
+            if (state === 'success') setState('idle');
+            setIsOpen(true);
+          }}
+          className="text-right text-sm font-normal tracking-wide transition-colors hover:text-gray-300 md:text-base"
         >
           {t('footer.joinMailingList')}
         </button>
@@ -111,7 +114,7 @@ export function MailingListSignup({ site }: MailingListSignupProps) {
               first?.focus();
             }
           }}
-          className={`fixed bottom-0 right-0 z-[101] max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-black p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-white shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none md:top-0 md:h-full md:max-h-none md:w-[min(100vw,28rem)] md:rounded-none md:p-10 ${isOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}
+          className={`fixed bottom-0 right-0 z-[101] flex max-h-[90dvh] w-full flex-col overflow-y-auto rounded-t-2xl bg-black p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-white shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none md:top-0 md:h-full md:max-h-none md:w-[min(100vw,28rem)] md:rounded-none md:p-10 ${isOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}
         >
           <div className="mb-10 flex items-start justify-between gap-6">
             <h2 id={`${panelId}-title`} className="text-base font-medium uppercase tracking-[0.16em] md:text-lg">
@@ -128,42 +131,55 @@ export function MailingListSignup({ site }: MailingListSignupProps) {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="flex w-full flex-col items-stretch gap-3 sm:flex-row">
-            <label className="sr-only" htmlFor={`${site}-mailing-list-email`}>
-              {t('footer.emailPlaceholder')}
-            </label>
-            <input
-              ref={emailInputRef}
-              id={`${site}-mailing-list-email`}
-              name="email"
-              type="email"
-              autoComplete="email"
-              maxLength={254}
-              required
-              placeholder={t('footer.emailPlaceholder')}
-              disabled={!isOpen || state === 'submitting'}
-              className="min-w-0 flex-1 border border-white/50 bg-transparent px-3 py-3 text-sm text-white placeholder:text-white/60 focus:border-white focus:outline-none disabled:opacity-60"
-            />
-            <input
-              aria-hidden="true"
-              autoComplete="off"
-              className="absolute left-[-10000px] h-px w-px"
-              name="website"
-              tabIndex={-1}
-              type="text"
-            />
-            <button
-              className="shrink-0 bg-white px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-white/85 disabled:cursor-wait disabled:opacity-60"
-              disabled={!isOpen || state === 'submitting'}
-              type="submit"
+          {state === 'success' ? (
+            <div
+              aria-live="polite"
+              className="flex min-h-[35vh] flex-1 items-center justify-center px-4 py-8 text-center md:min-h-0"
+              role="status"
             >
-              {state === 'submitting' ? t('footer.mailingListSubmitting') : t('footer.join')}
-            </button>
-          </form>
-          <p aria-live="polite" className="mt-3 min-h-5 text-xs text-white/75" role="status">
-            {state === 'success' ? t('footer.mailingListSuccess') : null}
-            {state === 'error' ? t('footer.mailingListError') : null}
-          </p>
+              <p className="max-w-sm text-lg font-medium leading-relaxed md:text-2xl">
+                {t('footer.mailingListSuccess')}
+              </p>
+            </div>
+          ) : (
+            <>
+              <form onSubmit={handleSubmit} className="flex w-full flex-col items-stretch gap-3 sm:flex-row">
+                <label className="sr-only" htmlFor={`${site}-mailing-list-email`}>
+                  {t('footer.emailPlaceholder')}
+                </label>
+                <input
+                  ref={emailInputRef}
+                  id={`${site}-mailing-list-email`}
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  maxLength={254}
+                  required
+                  placeholder={t('footer.emailPlaceholder')}
+                  disabled={!isOpen || state === 'submitting'}
+                  className="min-w-0 flex-1 border border-white/50 bg-transparent px-3 py-3 text-sm text-white placeholder:text-white/60 focus:border-white focus:outline-none disabled:opacity-60"
+                />
+                <input
+                  aria-hidden="true"
+                  autoComplete="off"
+                  className="absolute left-[-10000px] h-px w-px"
+                  name="website"
+                  tabIndex={-1}
+                  type="text"
+                />
+                <button
+                  className="shrink-0 bg-white px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-white/85 disabled:cursor-wait disabled:opacity-60"
+                  disabled={!isOpen || state === 'submitting'}
+                  type="submit"
+                >
+                  {state === 'submitting' ? t('footer.mailingListSubmitting') : t('footer.join')}
+                </button>
+              </form>
+              <p aria-live="polite" className="mt-3 min-h-5 text-xs text-white/75" role="status">
+                {state === 'error' ? t('footer.mailingListError') : null}
+              </p>
+            </>
+          )}
         </section>
       </div>
     </>
