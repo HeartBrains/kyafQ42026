@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[2567,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-715808928ffef555.js","7681","static/chunks/app/bk/artists/%5Bslug%5D/page-d72d6a394436895d.js"],"ArtistDetailClientPage"]
+2:I[2567,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-caa8f52d1d15dc6c.js","7681","static/chunks/app/bk/artists/%5Bslug%5D/page-1b47834854baad72.js"],"ArtistDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"eduardo-williams"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"zJ7uv1bg75GGEe0gcC--P"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"eduardo-williams"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"EGAF5SP5q0h8wzoiVPj0c"}
 5:null

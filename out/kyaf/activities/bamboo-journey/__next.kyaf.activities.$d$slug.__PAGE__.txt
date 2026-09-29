@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[6599,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-715808928ffef555.js","6599","static/chunks/6599-86b1a81e1122a406.js","56","static/chunks/app/kyaf/activities/%5Bslug%5D/page-902f706baa44639b.js"],"ActivityDetailClientPage"]
+2:I[6599,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-caa8f52d1d15dc6c.js","6599","static/chunks/6599-ba47ed6c530a7109.js","56","static/chunks/app/kyaf/activities/%5Bslug%5D/page-902f706baa44639b.js"],"ActivityDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"kyaf","slug":"bamboo-journey"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"zJ7uv1bg75GGEe0gcC--P"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"kyaf","slug":"bamboo-journey"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"EGAF5SP5q0h8wzoiVPj0c"}
 5:null
