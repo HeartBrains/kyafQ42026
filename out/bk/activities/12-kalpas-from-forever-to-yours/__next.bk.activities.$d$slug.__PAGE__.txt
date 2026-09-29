@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-caa8f52d1d15dc6c.js","2579","static/chunks/2579-f61866ae83507962.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-b3564829b932fa77.js"],"ActivityDetailClientPage"]
+2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-2e465fb683ea028c.js","2579","static/chunks/2579-f61866ae83507962.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-049b40818f1ce5a5.js"],"ActivityDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"12-kalpas-from-forever-to-yours"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"EGAF5SP5q0h8wzoiVPj0c"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"12-kalpas-from-forever-to-yours"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"QK4XiVXSlzWI_jfhXoG24"}
 5:null
