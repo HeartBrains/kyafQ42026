@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-715808928ffef555.js","229","static/chunks/229-15f25ea0532bed44.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-268545de74d0c3ca.js"],"ActivityDetailClientPage"]
+2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-715808928ffef555.js","2579","static/chunks/2579-f61866ae83507962.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-549b97c1722d63f1.js"],"ActivityDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"the-space-between-artistic-process-and-curatorial-practice"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"QHTC9snq4oVx31SWa3Ci9"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"the-space-between-artistic-process-and-curatorial-practice"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"zJ7uv1bg75GGEe0gcC--P"}
 5:null
