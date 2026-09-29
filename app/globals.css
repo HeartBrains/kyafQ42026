@@ -86,6 +86,7 @@
 }
 
 .dual-hero__image {
+  z-index: 0;
   background-position: center;
   background-size: cover;
   opacity: 0;
@@ -99,13 +100,33 @@
 }
 
 .dual-hero__shade {
+  z-index: 1;
+  pointer-events: none;
   background: linear-gradient(180deg, rgb(0 0 0 / 0.24), transparent 35%, rgb(0 0 0 / 0.3));
+}
+
+.dual-hero__image-link {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.dual-hero__image-link:active {
+  cursor: grabbing;
+}
+
+.dual-hero__image-link:focus-visible {
+  outline: 2px solid white;
+  outline-offset: -8px;
 }
 
 .dual-hero__controls {
   position: absolute;
   inset: 10rem 5% auto;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   justify-content: space-between;
   gap: 2rem;
@@ -141,14 +162,92 @@
   opacity: 1;
 }
 
+.dual-hero__slide-label {
+  position: absolute;
+  left: 5%;
+  bottom: 5.25rem;
+  z-index: 3;
+  color: white;
+  font-size: clamp(1.5rem, 3vw, 3rem);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.dual-hero__slide-controls {
+  position: absolute;
+  left: 5%;
+  bottom: 1.75rem;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: white;
+  font-size: 0.875rem;
+}
+
+.dual-hero__slide-controls button {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 0.72);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.12);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.dual-hero__slide-controls button:hover,
+.dual-hero__slide-controls button:focus-visible {
+  background: white;
+  color: black;
+}
+
 .dual-hero__link {
   position: absolute;
   right: 5%;
   bottom: 2rem;
-  z-index: 2;
+  z-index: 4;
   align-items: flex-end;
   font-size: clamp(1.75rem, 4vw, 4rem);
   font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .dual-hero__controls {
+    inset: 8rem 4% auto;
+    gap: 0.5rem;
+  }
+
+  .dual-hero__tab {
+    padding: 0.4rem 0.2rem;
+    font-size: 0.875rem;
+  }
+
+  .dual-hero__slide-label,
+  .dual-hero__slide-controls {
+    left: 4%;
+  }
+
+  .dual-hero__slide-label {
+    bottom: 5rem;
+  }
+
+  .dual-hero__slide-controls {
+    bottom: 1rem;
+  }
+
+  .dual-hero__slide-controls button {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .dual-hero__link {
+    right: 4%;
+    bottom: 1rem;
+    font-size: clamp(1.25rem, 6vw, 1.75rem);
+  }
 }
 
 .activity-tag-filter {

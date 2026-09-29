@@ -2,17 +2,18 @@
 'use client';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { HeroDualSwitcher } from '@/components/shared/HeroDualSwitcher';
+import { getHomeHeroSlides } from '@/components/shared/homeHeroSlides';
 import { useLanguage } from '@/utils/languageContext';
 import { useKyafExhibitions, useKyafActivities } from '@/lib/useWPData';
-import { HOME_HERO_IMAGES } from '@/utils/imageConstants';
 import { isHomeSectionVisible } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
+  const homeHeroSlides = useMemo(() => getHomeHeroSlides(language), [language]);
 
   const { data: allExhibitions } = useKyafExhibitions();
   const { data: allActivities }  = useKyafActivities();
@@ -38,8 +39,11 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       <HeroDualSwitcher
         initialSite="kyaf"
-        kyafImage={HOME_HERO_IMAGES[0]}
-        bkkkImage="https://irp.cdn-website.com/5516674f/dms3rep/multi/Puma_cover-for-about.jpg"
+        slides={homeHeroSlides}
+        previousLabel={language === 'th' ? 'สไลด์ก่อนหน้า' : 'Previous slide'}
+        nextLabel={language === 'th' ? 'สไลด์ถัดไป' : 'Next slide'}
+        locationLabel={language === 'th' ? 'เลือกสถานที่' : 'Select location'}
+        navigationLabel={language === 'th' ? 'ควบคุมสไลด์' : 'Slide navigation'}
       />
 
       <div className="w-full px-[6vw] pt-[96px] pb-[0px]">

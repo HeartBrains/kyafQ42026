@@ -3,26 +3,17 @@ import { useLanguage } from '@/utils/languageContext';
 import { useBkkkExhibitions, useBkkkActivities, useMovingImages } from '@/lib/useWPData';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { HeroDualSwitcher } from '@/components/shared/HeroDualSwitcher';
+import { getHomeHeroSlides } from '@/components/shared/homeHeroSlides';
 import { useState, useEffect, useMemo } from 'react';
 import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 import { RichContent, stripWrapperDivs } from '@/utils/richContent';
 
-// Hero images from different pages
-const heroImages = [
-  "https://irp.cdn-website.com/5516674f/dms3rep/multi/Puma_cover-for-about.jpg", // Visit
-  "https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-for-Exhibitions-list-83b680a4.jpg", // Exhibitions
-  "https://irp.cdn-website.com/5516674f/dms3rep/multi/Puma_Images+for+Website-Bangkok+Kunsthalle+Images+for+Website-4.+Moving+Image+Program-4.1+Infringes--Infringes+-Andrea+Rossetti+1+COVER.jpg", // Moving Image Program
-  "https://irp.cdn-website.com/5516674f/dms3rep/multi/1000012646.jpg", // Residency
-  "https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-for-history-34e22018.jpg", // About
-  "https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-team-f51a7633.jpg", // Team
-  "https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-contact-1-89b6eddb.jpg" // Contact
-];
-
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
   const { language, t } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
+  const homeHeroSlides = useMemo(() => getHomeHeroSlides(language), [language]);
 
   const { data: allExhibitions } = useBkkkExhibitions();
   const { data: allActivities }  = useBkkkActivities();
@@ -79,8 +70,11 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       <HeroDualSwitcher
         initialSite="bkkk"
-        kyafImage="https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-6.+About+Us--Madrid+Circle-+Krittawat+and+Puttisin+1-1920w.jpg"
-        bkkkImage={heroImages[0]}
+        slides={homeHeroSlides}
+        previousLabel={language === 'th' ? 'สไลด์ก่อนหน้า' : 'Previous slide'}
+        nextLabel={language === 'th' ? 'สไลด์ถัดไป' : 'Next slide'}
+        locationLabel={language === 'th' ? 'เลือกสถานที่' : 'Select location'}
+        navigationLabel={language === 'th' ? 'ควบคุมสไลด์' : 'Slide navigation'}
       />
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
