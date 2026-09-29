@@ -1,6 +1,6 @@
 // @ts-nocheck
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
@@ -10,7 +10,7 @@ import { siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafActivities, useSectionVisibility } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
-import { ActivityTagFilter, activityMatchesTag, type ActivityTagSlug } from '@/components/shared/ActivityTagFilter';
+import { ActivityTagFilter, activityMatchesTag, rememberActivityListingUrl, type ActivityTagSlug } from '@/components/shared/ActivityTagFilter';
 import { PUBLIC_WP_ORIGIN } from '@/lib/wp-origin';
 
 interface ActivitiesPageProps {
@@ -25,6 +25,7 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
   const covers = useCovers();
   const [activeSection, setActiveSection] = useState('current-activities');
   const [selectedTag, setSelectedTag] = useState<ActivityTagSlug>('all');
+  const handledRouteSection = useRef<string | null>(null);
   const { data: rawActivities } = useKyafActivities();
   const wpSections = useSectionVisibility('kyaf');
   const vis = {
@@ -66,8 +67,24 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
     if (targetSectionId) setTimeout(() => scrollToSection(targetSectionId), 100);
   }, [targetSectionId]);
 
+  useEffect(() => {
+    const requestedSection = new URLSearchParams(window.location.search).get('section');
+    if (!requestedSection || handledRouteSection.current === requestedSection) return;
+    if (!sections.some((section) => section.id === requestedSection)) return;
+
+    const timer = window.setTimeout(() => {
+      handledRouteSection.current = requestedSection;
+      setActiveSection(requestedSection);
+      scrollToSection(requestedSection);
+    }, 100);
+    return () => window.clearTimeout(timer);
+  });
+
   const ActivityCard = ({ item }) => (
-    <div id={`record-${item.slug}`} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', item.slug)}>
+    <div id={`record-${item.slug}`} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => {
+      rememberActivityListingUrl('kyaf', activeSection);
+      onNavigate?.('activity-detail', item.slug);
+    }}>
       {item.featuredImage && (
         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
           <ImageWithFallback src={item.featuredImage} hoverSrc={item.gallery?.[0]} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" decoding="async" fetchPriority="low" />
@@ -96,10 +113,9 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
       </ParallaxHero>
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
-        <ActivityTagFilter language={language} site="kyaf" onChange={handleTagChange} />
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
 
-          <aside className="w-full md:w-1/2 shrink-0">
+          <aside className="w-full md:w-1/2 shrink-0 md:sticky md:top-32 md:self-start">
             <ListingAccordionNav
               sections={sections.map(s => ({
                 id: s.id,
@@ -117,6 +133,9 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
                 if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 120, behavior: 'smooth' });
               }}
             />
+            <div className="mt-8">
+              <ActivityTagFilter language={language} site="kyaf" variant="sidebar" onChange={handleTagChange} />
+            </div>
           </aside>
 
           <div className="w-full md:w-1/2 flex flex-col md:items-end">

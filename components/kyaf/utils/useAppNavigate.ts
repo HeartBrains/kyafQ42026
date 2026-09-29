@@ -40,7 +40,7 @@ export function useAppNavigate() {
   const router = useRouter();
   return useCallback(
     (page: string, slug?: string, sectionId?: string) => {
-      const path = pageToPath(page, slug);
+      const path = page.startsWith('/') ? page : pageToPath(page, slug);
       router.push(path);
       if (!sectionId) window.scrollTo(0, 0);
     },
