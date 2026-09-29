@@ -39,7 +39,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
     ...(vis.upcoming ? [{ id: 'upcoming-exhibitions', label: language === 'th' ? 'ผลงานศิลปะที่กำลังจะมาถึง' : 'Upcoming Artworks', items: upcoming }] : []),
     ...(vis.current  ? [{ id: 'current-exhibitions',  label: language === 'th' ? 'ผลงานศิลปะปัจจุบัน'         : 'Current Artworks',  items: current  }] : []),
     ...(vis.past     ? [{ id: 'past-exhibitions',     label: language === 'th' ? 'ผลงานศิลปะที่ผ่านมา'        : 'Past Artworks',     items: past     }] : []),
-  ];
+  ].filter(section => section.items.length > 0);
 
   const scrollToSection = (id: string) => {
     const el = document.getElementById(id);
@@ -148,17 +148,11 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
             {sections.map((s) => (
               <section key={s.id} id={s.id} className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16">
-                  {s.items.length > 0 ? (
-                    s.items.map((item, index) => (
-                      <Reveal key={item.id} delay={index * 0.05}>
-                        <ExhibitionCard item={item} />
-                      </Reveal>
-                    ))
-                  ) : (
-                    <div className="py-20 text-gray-400 text-xl md:text-2xl">
-                      {language === 'th' ? 'เร็วๆ นี้' : 'Coming soon'}
-                    </div>
-                  )}
+                  {s.items.map((item, index) => (
+                    <Reveal key={item.id} delay={index * 0.05}>
+                      <ExhibitionCard item={item} />
+                    </Reveal>
+                  ))}
                 </div>
               </section>
             ))}

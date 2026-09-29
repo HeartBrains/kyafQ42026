@@ -77,6 +77,7 @@
   overflow: hidden;
   background: #111;
   color: white;
+  touch-action: pan-y;
 }
 
 .dual-hero__image,
@@ -107,16 +108,17 @@
 
 .dual-hero__image-link {
   position: absolute;
-  inset: 0;
-  z-index: 2;
+  top: 50%;
+  left: 50%;
+  z-index: 4;
   display: flex;
   align-items: center;
   justify-content: center;
+  max-width: 100%;
+  transform: translate(-50%, -50%);
   color: inherit;
   text-align: center;
   text-decoration: none;
-  touch-action: pan-y;
-  cursor: grab;
 }
 
 .dual-hero__section-link-label {
@@ -130,6 +132,12 @@
   text-decoration-color: transparent;
   text-underline-offset: 0.12em;
   cursor: pointer;
+  animation: dual-hero-label-enter 450ms ease both;
+}
+
+@keyframes dual-hero-label-enter {
+  from { opacity: 0; transform: translateY(0.2em); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .dual-hero__image-link:hover .dual-hero__section-link-label,
@@ -138,13 +146,9 @@
   text-decoration-color: currentColor;
 }
 
-.dual-hero__image-link:active {
-  cursor: grabbing;
-}
-
 .dual-hero__image-link:focus-visible {
   outline: 2px solid white;
-  outline-offset: -8px;
+  outline-offset: 0.35rem;
 }
 
 .dual-hero__controls {
@@ -312,6 +316,15 @@
   .dual-hero__next-arrow {
     opacity: 1;
     pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dual-hero__image,
+  .dual-hero__section-link-label,
+  .dual-hero__next-arrow {
+    animation: none;
+    transition-duration: 0.01ms;
   }
 }
 

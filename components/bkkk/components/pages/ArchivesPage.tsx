@@ -150,7 +150,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                 <div className="md:sticky md:top-32 flex flex-col gap-8">
                     
                     {/* Past Exhibition */}
-                    <div className="flex flex-col gap-2">
+                    {availableFilters.exhibitions.length > 0 && <div className="flex flex-col gap-2">
                         <h3 
                             onClick={() => handleFilterClick('exhibition', 'all')}
                             className={`text-xl md:text-2xl font-sans font-bold cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
@@ -162,8 +162,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                             {t('archives.pastExhibition')}
                         </h3>
                         <div className="flex flex-col gap-2">
-                            {availableFilters.exhibitions.length > 0 ? (
-                                availableFilters.exhibitions.map(year => (
+                                {availableFilters.exhibitions.map(year => (
                                     <button 
                                         key={`exh-${year}`}
                                         onClick={() => handleFilterClick('exhibition', year)}
@@ -175,15 +174,12 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                                     >
                                         {year}
                                     </button>
-                                ))
-                            ) : (
-                                <span className={`text-gray-300 font-sans text-lg ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{t('archives.noPastExhibitions')}</span>
-                            )}
+                                ))}
                         </div>
-                    </div>
+                    </div>}
 
                     {/* Past Activities */}
-                    <div className="flex flex-col gap-2">
+                    {availableFilters.activities.length > 0 && <div className="flex flex-col gap-2">
                         <h3 
                             onClick={() => handleFilterClick('activity', 'all')}
                             className={`text-xl md:text-2xl font-sans font-bold cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
@@ -195,8 +191,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                             {t('archives.pastActivities')}
                         </h3>
                         <div className="flex flex-col gap-2">
-                            {availableFilters.activities.length > 0 ? (
-                                availableFilters.activities.map(year => (
+                                {availableFilters.activities.map(year => (
                                     <button 
                                         key={`act-${year}`}
                                         onClick={() => handleFilterClick('activity', year)}
@@ -208,15 +203,12 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                                     >
                                         {year}
                                     </button>
-                                ))
-                            ) : (
-                                <span className={`text-gray-300 font-sans text-lg ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{t('archives.noPastActivities')}</span>
-                            )}
+                                ))}
                         </div>
-                    </div>
+                    </div>}
 
                     {/* Past Moving Image Programs */}
-                    <div className="flex flex-col gap-2">
+                    {availableFilters.movingImages.length > 0 && <div className="flex flex-col gap-2">
                         <h3 
                             onClick={() => handleFilterClick('moving-image', 'all')}
                             className={`text-xl md:text-2xl font-sans font-bold cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
@@ -228,8 +220,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                             {language === 'th' ? 'โปรแกรมภาพเคลื่อนไหวที่ผ่านมา' : 'Past Moving Image Programs'}
                         </h3>
                         <div className="flex flex-col gap-2">
-                            {availableFilters.movingImages.length > 0 ? (
-                                availableFilters.movingImages.map(year => (
+                                {availableFilters.movingImages.map(year => (
                                     <button 
                                         key={`mi-${year}`}
                                         onClick={() => handleFilterClick('moving-image', year)}
@@ -241,14 +232,9 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                                     >
                                         {year}
                                     </button>
-                                ))
-                            ) : (
-                                <span className={`text-gray-300 font-sans text-lg ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                                    {language === 'th' ? 'ไม่มีโปรแกรมที่ผ่านมา' : 'No past programs'}
-                                </span>
-                            )}
+                                ))}
                         </div>
-                    </div>
+                    </div>}
 
                 </div>
             </aside>
@@ -258,7 +244,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                 <div className="flex flex-col gap-12 md:gap-16 w-full">
                     {loading ? (
                         <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl">Loading archives...</div>
-                    ) : displayedRecords.length > 0 ? (
+                    ) : (
                         displayedRecords.map((item, index) => (
                             <Reveal key={item.id} delay={index * 0.1}>
                                 <div 
@@ -301,10 +287,6 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                                 </div>
                             </Reveal>
                         ))
-                    ) : (
-                        <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl">
-                            No archives found for this selection.
-                        </div>
                     )}
                 </div>
             </div>

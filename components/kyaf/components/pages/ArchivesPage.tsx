@@ -210,8 +210,7 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
 
         {/* Results Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-16 mb-32">
-          {filteredData.length > 0 ? (
-            filteredData.map((item, index) => (
+          {filteredData.map((item, index) => (
               <Reveal key={item.slug} delay={index * 0.05}>
                 <div
                   className="group cursor-pointer"
@@ -245,14 +244,7 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
                   </p>
                 </div>
               </Reveal>
-            ))
-          ) : (
-            <div className="col-span-full flex items-center justify-center py-24">
-              <p className="text-lg text-gray-400">
-                {language === 'th' ? 'ไม่พบข้อมูล' : 'No records found'}
-              </p>
-            </div>
-          )}
+          ))}
         </div>
       </div>
     </div>

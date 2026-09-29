@@ -5,7 +5,7 @@ import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import type { ActivityItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { getEmptyStateMessage, siteConfig } from '@/components/bkkk/utils/siteConfig';
+import { siteConfig } from '@/components/bkkk/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useBkkkActivities, useSectionVisibility } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
@@ -39,9 +39,9 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
   const handleTagChange = useCallback((tag: ActivityTagSlug) => setSelectedTag(tag), []);
 
   const sections = [
-    ...(vis.upcoming ? [{ id: 'upcoming-activities', label: language === 'th' ? 'กิจกรรมที่กำลังจะมาถึง' : 'Upcoming Activities' }] : []),
-    ...(vis.current  ? [{ id: 'current-activities',  label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities' }] : []),
-    ...(vis.past     ? [{ id: 'past-activities',     label: language === 'th' ? 'กิจกรรมที่ผ่านมา' : 'Past Activities' }] : []),
+    ...(vis.upcoming && upcomingActivities.length > 0 ? [{ id: 'upcoming-activities', label: language === 'th' ? 'กิจกรรมที่กำลังจะมาถึง' : 'Upcoming Activities' }] : []),
+    ...(vis.current && currentActivities.length > 0 ? [{ id: 'current-activities', label: language === 'th' ? 'กิจกรรมปัจจุบัน' : 'Current Activities' }] : []),
+    ...(vis.past && pastActivities.length > 0 ? [{ id: 'past-activities', label: language === 'th' ? 'กิจกรรมที่ผ่านมา' : 'Past Activities' }] : []),
   ];
 
   const scrollToSection = (id: string) => {
@@ -88,10 +88,6 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
     </div>
   );
 
-  const EmptyState = ({ message }: { message: string }) => (
-    <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl w-full text-left">{message}</div>
-  );
-
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       <ParallaxHero image={covers.activities || `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/bk_Listening-Session-of-Rushup-Edge-10.jpg`} height="h-[80vh]">
@@ -123,25 +119,19 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
           </aside>
 
           <div className="w-full md:w-1/2 flex flex-col md:items-end">
-            {vis.upcoming && (
+            {vis.upcoming && upcomingActivities.length > 0 && (
               <section id="upcoming-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {upcomingActivities.length > 0 ? upcomingActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{upcomingActivities.map(item => <ActivityCard key={item.id} item={item} />)}</div>
               </section>
             )}
-            {vis.current && (
+            {vis.current && currentActivities.length > 0 && (
               <section id="current-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {currentActivities.length > 0 ? currentActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{currentActivities.map(item => <ActivityCard key={item.id} item={item} />)}</div>
               </section>
             )}
-            {vis.past && (
+            {vis.past && pastActivities.length > 0 && (
               <section id="past-activities" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {pastActivities.length > 0 ? pastActivities.map(item => <ActivityCard key={item.id} item={item} />) : <EmptyState message={getEmptyStateMessage('noCurrentActivities', language)} />}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{pastActivities.map(item => <ActivityCard key={item.id} item={item} />)}</div>
               </section>
             )}
           </div>

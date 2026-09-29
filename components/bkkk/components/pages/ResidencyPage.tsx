@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
-import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
+import { siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useResidencyArtists, useSectionVisibility } from '@/lib/useWPData';
 import { getTranslation } from '@/utils/translations';
@@ -47,15 +47,15 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
     .sort((a, b) => b.id - a.id);
 
   const sections = [
-    ...(vis.upcoming ? [{
+    ...(vis.upcoming && upcomingArtists.length > 0 ? [{
       id: 'upcoming-residency',
       label: getTranslation(language, 'residency.upcomingResidency'),
     }] : []),
-    ...(vis.current ? [{
+    ...(vis.current && currentArtists.length > 0 ? [{
       id: 'current-artists',
       label: getTranslation(language, 'residency.currentArtists'),
     }] : []),
-    ...(vis.past ? [{
+    ...(vis.past && pastArtists.length > 0 ? [{
       id: 'past-artists',
       label: getTranslation(language, 'residency.pastArtists'),
     }] : []),
@@ -128,12 +128,6 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
     );
   };
 
-  const EmptyState = ({ message, className = '' }: { message: string; className?: string }) => (
-    <div className={`py-20 text-gray-400 font-sans text-xl md:text-2xl ${className}`}>
-      {message}
-    </div>
-  );
-
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       <div className="w-full bg-black overflow-hidden">
@@ -171,45 +165,27 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
           {/* Content Sections */}
           <div className="w-full md:w-1/2 flex flex-col md:items-end">
-            {vis.upcoming && (
+            {vis.upcoming && upcomingArtists.length > 0 && (
               <section id="upcoming-residency" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {upcomingArtists.length > 0 ? (
-                    upcomingArtists.map((artist, index) => (
-                      <ArtistCard key={`upcoming-${artist.id}`} artist={artist} index={index} prefix="upcoming" />
-                    ))
-                  ) : (
-                    <EmptyState className="w-full text-left" message={getEmptyStateMessage('noCurrentResidency', language)} />
-                  )}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{upcomingArtists.map((artist, index) => (
+                  <ArtistCard key={`upcoming-${artist.id}`} artist={artist} index={index} prefix="upcoming" />
+                ))}</div>
               </section>
             )}
 
-            {vis.current && (
+            {vis.current && currentArtists.length > 0 && (
               <section id="current-artists" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {currentArtists.length > 0 ? (
-                    currentArtists.map((artist, index) => (
-                      <ArtistCard key={`current-${artist.id}`} artist={artist} index={index} prefix="current" />
-                    ))
-                  ) : (
-                    <EmptyState className="w-full text-left" message={getEmptyStateMessage('noCurrentResidency', language)} />
-                  )}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{currentArtists.map((artist, index) => (
+                  <ArtistCard key={`current-${artist.id}`} artist={artist} index={index} prefix="current" />
+                ))}</div>
               </section>
             )}
 
-            {vis.past && (
+            {vis.past && pastArtists.length > 0 && (
               <section id="past-artists" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {pastArtists.length > 0 ? (
-                    pastArtists.map((artist, index) => (
-                      <ArtistCard key={`past-${artist.id}`} artist={artist} index={index} prefix="past" />
-                    ))
-                  ) : (
-                    <EmptyState className="w-full text-left" message={getEmptyStateMessage('noCurrentResidency', language)} />
-                  )}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{pastArtists.map((artist, index) => (
+                  <ArtistCard key={`past-${artist.id}`} artist={artist} index={index} prefix="past" />
+                ))}</div>
               </section>
             )}
           </div>

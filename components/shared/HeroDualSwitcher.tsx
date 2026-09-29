@@ -63,14 +63,15 @@ export function HeroDualSwitcher({
     setActiveSlideIndex((index) => (index + direction + activeSlides.length) % activeSlides.length);
   };
 
-  const handlePointerDown = (event: PointerEvent<HTMLAnchorElement>) => {
+  const handlePointerDown = (event: PointerEvent<HTMLElement>) => {
+    if ((event.target as Element).closest('a, button')) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
     pointerStartX.current = event.clientX;
     dragged.current = false;
     event.currentTarget.setPointerCapture(event.pointerId);
   };
 
-  const handlePointerUp = (event: PointerEvent<HTMLAnchorElement>) => {
+  const handlePointerUp = (event: PointerEvent<HTMLElement>) => {
     if (pointerStartX.current === null) return;
     const distance = event.clientX - pointerStartX.current;
     pointerStartX.current = null;
@@ -85,6 +86,16 @@ export function HeroDualSwitcher({
       aria-label="Khao Yai Art Forest and Bangkok Kunsthalle"
       onPointerEnter={(event) => event.pointerType === 'mouse' && setIsHovered(true)}
       onPointerLeave={(event) => event.pointerType === 'mouse' && setIsHovered(false)}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={() => { pointerStartX.current = null; }}
+      onClickCapture={(event) => {
+        if (dragged.current) {
+          event.preventDefault();
+          event.stopPropagation();
+          dragged.current = false;
+        }
+      }}
     >
       {activeSlides.map((slide, index) => (
         <div
@@ -96,20 +107,8 @@ export function HeroDualSwitcher({
         />
       ))}
       <div className="dual-hero__shade" aria-hidden="true" />
-      <Link
-        className="dual-hero__image-link"
-        href={currentSlide.href}
-        onPointerDown={handlePointerDown}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={() => { pointerStartX.current = null; }}
-        onClickCapture={(event) => {
-          if (dragged.current) {
-            event.preventDefault();
-            dragged.current = false;
-          }
-        }}
-      >
-        <span className="dual-hero__section-link-label">{currentSlide.label}</span>
+      <Link className="dual-hero__image-link" href={currentSlide.href}>
+        <span key={currentSlide.href} className="dual-hero__section-link-label">{currentSlide.label}</span>
       </Link>
       <div className="dual-hero__controls" role="tablist" aria-label={locationLabel}>
         {states.map((state) => (

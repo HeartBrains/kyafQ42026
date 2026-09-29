@@ -5,7 +5,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { HeroDualSwitcher } from '@/components/shared/HeroDualSwitcher';
 import { getHomeHeroSlides } from '@/components/shared/homeHeroSlides';
 import { useState, useEffect, useMemo } from 'react';
-import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
+import { siteConfig } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 import { RichContent, stripWrapperDivs } from '@/utils/richContent';
@@ -107,10 +107,10 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
           {/* Content Sections */}
           <div className="w-full md:w-1/2 flex flex-col md:items-end">
             {/* Current Exhibitions */}
-            {anchors.currentExhibitions && (
+            {anchors.currentExhibitions && currentExhibitions.length > 0 && (
               <section id="current-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {currentExhibitions.length > 0 ? currentExhibitions.map((item) => (
+                  {currentExhibitions.map((item) => (
                     <div id={`record-${item.slug}`} key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
                       {item.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
@@ -129,18 +129,16 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
                       </div>
                     </div>
-                  )) : (
-                    <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentExhibitions', language)}</p>
-                  )}
+                  ))}
                 </div>
               </section>
             )}
 
             {/* Upcoming Exhibitions */}
-            {anchors.upcomingExhibitions && (
+            {anchors.upcomingExhibitions && upcomingExhibitions.length > 0 && (
               <section id="upcoming-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
-                  {upcomingExhibitions.length > 0 ? upcomingExhibitions.map((item) => (
+                  {upcomingExhibitions.map((item) => (
                     <div id={`record-${item.slug}`} key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
                       {item.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
@@ -159,19 +157,16 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
                       </div>
                     </div>
-                  )) : (
-                    <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noUpcomingExhibitions', language)}</p>
-                  )}
+                  ))}
                 </div>
               </section>
             )}
 
             {/* Moving Image Program */}
-            {anchors.currentMovingImage && (
+            {anchors.currentMovingImage && currentMovingImageProgram && (
               <section id="moving-image-program" className="mb-32 md:mb-40 scroll-mt-32 w-full">
                 <div className="flex flex-col gap-12 md:items-end">
-                  {currentMovingImageProgram ? (
-                    <div id={`record-${currentMovingImageProgram.slug}`} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('moving-image-detail', currentMovingImageProgram.slug)}>
+                  <div id={`record-${currentMovingImageProgram.slug}`} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('moving-image-detail', currentMovingImageProgram.slug)}>
                       {currentMovingImageProgram.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                           <ImageWithFallback src={currentMovingImageProgram.featuredImage} alt={currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
@@ -182,10 +177,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.artist?.[language] || currentMovingImageProgram.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.dateDisplay?.[language] || currentMovingImageProgram.dateDisplay?.en}</p>
                       </div>
-                    </div>
-                  ) : (
-                    <p className={`text-xl md:text-2xl font-normal text-gray-400 text-left w-full ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getEmptyStateMessage('noCurrentMovingImage', language)}</p>
-                  )}
+                  </div>
                 </div>
               </section>
             )}

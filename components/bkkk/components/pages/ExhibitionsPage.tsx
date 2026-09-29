@@ -5,7 +5,7 @@ import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import type { ExhibitionItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { getEmptyStateMessage, siteConfig } from '@/utils/siteConfig';
+import { siteConfig } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useBkkkExhibitions, useSectionVisibility } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
@@ -94,7 +94,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
       label: language === 'th' ? 'นิทรรศการที่ผ่านมา' : 'Past Exhibitions',
       count: pastExhibitions.length
     }] : [])
-  ];
+  ].filter(section => section.count > 0);
 
   // Scroll to section handler
   const scrollToSection = (id: string) => {
@@ -178,13 +178,6 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
     );
   };
 
-  // Empty state component
-  const EmptyState = ({ message, className = '' }: { message: string; className?: string }) => (
-    <div className={`py-20 text-gray-400 font-sans text-xl md:text-2xl ${className}`}>
-      {message}
-    </div>
-  );
-
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       {/* Hero Section */}
@@ -221,56 +214,29 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
           {/* Content Sections */}
           <div className="w-full md:w-1/2 flex flex-col md:items-end">
             {/* Upcoming Exhibitions Section */}
-            {vis.upcoming && (
+            {vis.upcoming && upcomingExhibitions.length > 0 && (
               <section id="upcoming-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {upcomingExhibitions.length > 0 ? (
-                    upcomingExhibitions.map((item, index) => (
-                      <ExhibitionCard key={`upcoming-${item.id}`} item={item} index={index} prefix="upcoming" />
-                    ))
-                  ) : (
-                    <EmptyState
-                      className="w-full text-left"
-                      message={getEmptyStateMessage('noUpcomingExhibitions', language)}
-                    />
-                  )}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{upcomingExhibitions.map((item, index) => (
+                  <ExhibitionCard key={`upcoming-${item.id}`} item={item} index={index} prefix="upcoming" />
+                ))}</div>
               </section>
             )}
 
             {/* Current Exhibitions Section */}
-            {vis.current && (
+            {vis.current && currentExhibitions.length > 0 && (
               <section id="current-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {currentExhibitions.length > 0 ? (
-                    currentExhibitions.map((item, index) => (
-                      <ExhibitionCard key={item.id} item={item} index={index} prefix="current" />
-                    ))
-                  ) : (
-                    <EmptyState
-                      className="w-full text-left"
-                      message={getEmptyStateMessage('noCurrentExhibitions', language)}
-                    />
-                  )}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{currentExhibitions.map((item, index) => (
+                  <ExhibitionCard key={item.id} item={item} index={index} prefix="current" />
+                ))}</div>
               </section>
             )}
 
             {/* Past Exhibitions Section */}
-            {vis.past && (
+            {vis.past && pastExhibitions.length > 0 && (
               <section id="past-exhibitions" className="mb-32 md:mb-40 scroll-mt-32 w-full">
-                <div className="flex flex-col gap-12 md:gap-16 md:items-end">
-                  {pastExhibitions.length > 0 ? (
-                    pastExhibitions.map((item, index) => (
-                      <ExhibitionCard key={`past-${item.id}`} item={item} index={index} prefix="past" />
-                    ))
-                  ) : (
-                    <EmptyState
-                      className="w-full text-left"
-                      message={getEmptyStateMessage('noPastExhibitions', language)}
-                    />
-                  )}
-                </div>
+                <div className="flex flex-col gap-12 md:gap-16 md:items-end">{pastExhibitions.map((item, index) => (
+                  <ExhibitionCard key={`past-${item.id}`} item={item} index={index} prefix="past" />
+                ))}</div>
               </section>
             )}
           </div>

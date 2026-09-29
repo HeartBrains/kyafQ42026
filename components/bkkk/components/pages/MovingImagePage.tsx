@@ -3,7 +3,6 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useLanguage } from '@/utils/languageContext';
 import { useState, useEffect, useMemo } from 'react';
 import type { MovingImageItem } from '@/lib/wp-mappers';
-import { getEmptyStateMessage } from '@/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useMovingImages, useSectionVisibility } from '@/lib/useWPData';
 import { siteConfig } from '@/utils/siteConfig';
@@ -121,10 +120,9 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
           {/* Right Column - Content */}
           <div className="w-full md:w-1/2 flex flex-col">
             {/* Upcoming Programs */}
-            <section id="upcoming-programs" className="mb-32 md:mb-40 scroll-mt-32">
+            {upcomingPrograms.length > 0 && <section id="upcoming-programs" className="mb-32 md:mb-40 scroll-mt-32">
               <div className="flex flex-col gap-12 md:gap-16">
-                {upcomingPrograms.length > 0 ? (
-                  upcomingPrograms.map((record) => (
+                  {upcomingPrograms.map((record) => (
                     <div
                       id={`record-${record.slug}`}
                       key={record.id}
@@ -142,20 +140,14 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl text-left w-full">
-                    {getEmptyStateMessage('noUpcomingMovingImage', language)}
-                  </div>
-                )}
+                  ))}
               </div>
-            </section>
+            </section>}
 
             {/* Current Programs */}
-            <section id="current-programs" className="mb-32 md:mb-40 scroll-mt-32">
+            {currentPrograms.length > 0 && <section id="current-programs" className="mb-32 md:mb-40 scroll-mt-32">
               <div className="flex flex-col gap-12 md:gap-16">
-                {currentPrograms.length > 0 ? (
-                  currentPrograms.map((record) => (
+                  {currentPrograms.map((record) => (
                     <div
                       id={`record-${record.slug}`}
                       key={record.id}
@@ -173,20 +165,14 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl text-left w-full">
-                    {getEmptyStateMessage('noCurrentMovingImage', language)}
-                  </div>
-                )}
+                  ))}
               </div>
-            </section>
+            </section>}
 
             {/* Past Programs */}
-            <section id="past-programs" className="mb-32 md:mb-40 scroll-mt-32">
+            {pastPrograms.length > 0 && <section id="past-programs" className="mb-32 md:mb-40 scroll-mt-32">
               <div className="flex flex-col gap-12 md:gap-16">
-                {pastPrograms.length > 0 ? (
-                  pastPrograms.map((record) => (
+                  {pastPrograms.map((record) => (
                     <div
                       id={`record-${record.slug}`}
                       key={record.id}
@@ -204,14 +190,9 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="py-20 text-gray-400 font-sans text-xl md:text-2xl text-left w-full">
-                    {getEmptyStateMessage('noPastMovingImage', language)}
-                  </div>
-                )}
+                  ))}
               </div>
-            </section>
+            </section>}
           </div>
         </div>
       </div>
