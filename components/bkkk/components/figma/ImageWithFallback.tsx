@@ -13,6 +13,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
   const [didError, setDidError] = useState(false)
   const [hoverDidError, setHoverDidError] = useState(false)
   const [hoverRequested, setHoverRequested] = useState(false)
+  const [hoverLoaded, setHoverLoaded] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -37,7 +38,7 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
   }
 
   const featuredStyle = showHoverImage
-    ? { ...style, opacity: isHovered ? 0 : 1, transition: 'opacity 500ms ease' }
+    ? { ...style, opacity: isHovered && hoverLoaded ? 0 : 1, transition: 'opacity 500ms ease' }
     : style
   const featuredClassName = showHoverImage
     // Keep the primary image in normal flow so images without a fixed-ratio
@@ -80,11 +81,12 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
           alt=""
           aria-hidden="true"
           className={`${className ?? ''} absolute inset-0 z-20`}
-          style={{ ...style, opacity: isHovered ? 1 : 0, transition: 'opacity 500ms ease', pointerEvents: 'none' }}
+          style={{ ...style, opacity: isHovered && hoverLoaded ? 1 : 0, transition: 'opacity 500ms ease', pointerEvents: 'none' }}
           {...rest}
           loading="eager"
           decoding="async"
           fetchPriority="low"
+          onLoad={() => setHoverLoaded(true)}
           onError={() => setHoverDidError(true)}
         />
       )}
