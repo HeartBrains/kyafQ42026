@@ -9,6 +9,7 @@ import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useSiteConfig } from '@/lib/useWPData';
 import { CoversContext } from '@/lib/coversContext';
 import type { CoverConfigMap } from '@/lib/wp-api';
+import { useScrollTriggeredFooter } from '@/components/shared/useScrollTriggeredFooter';
 
 interface KyafShellProps {
   children: React.ReactNode;
@@ -22,6 +23,7 @@ export function KyafShell({ children, initialCovers, initialCss }: KyafShellProp
   const navigate = useAppNavigate();
   const router = useRouter();
   const pathname = usePathname();
+  const { anchorRef, footerRef, footerHeight, isSticky } = useScrollTriggeredFooter();
 
   // Runtime fetch — overrides build-time values once WP responds
   const siteConfig = useSiteConfig('kyaf');
@@ -55,7 +57,11 @@ export function KyafShell({ children, initialCovers, initialCss }: KyafShellProp
           activePage={pathname}
         />
         <main>{children}</main>
-        <Footer onNavigate={navigate} />
+        <div ref={anchorRef} aria-hidden="true" />
+        <div aria-hidden="true" style={{ height: isSticky ? footerHeight : 0 }} />
+        <div ref={footerRef} className={isSticky ? 'fixed inset-x-0 bottom-0 z-40' : undefined}>
+          <Footer onNavigate={navigate} />
+        </div>
         <BackToTop />
       </CoversContext.Provider>
     </div>

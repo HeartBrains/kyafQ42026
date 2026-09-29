@@ -111,7 +111,7 @@
 .dual-hero__shade::after {
   position: absolute;
   inset: 0;
-  background: rgb(64 64 64 / 0.8);
+  background: #231F20;
   content: '';
   opacity: 0;
   transition: opacity 300ms ease;
@@ -130,6 +130,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   max-width: 100%;
   transform: translate(-50%, -50%);
   color: inherit;
@@ -252,9 +253,9 @@
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
-  border: 1px solid rgb(255 255 255 / 0.72);
+  border: 0;
   border-radius: 50%;
-  background: rgb(0 0 0 / 0.12);
+  background: #000;
   color: inherit;
   font: inherit;
   font-size: 1.25rem;
@@ -272,28 +273,31 @@
   transform: scale(1);
 }
 
-.dual-hero__arrow:hover,
-.dual-hero__arrow:focus-visible {
-  background: white;
-  color: black;
+.dual-hero__arrows .dual-hero__arrow {
+  background: #000;
+  color: white;
 }
 
-.dual-hero__arrows .dual-hero__arrow {
-  background: rgb(0 0 0 / 0.18);
+.dual-hero__arrows .dual-hero__arrow:hover,
+.dual-hero__arrows .dual-hero__arrow:focus-visible {
+  background: #231F20;
   color: white;
 }
 
 .dual-hero__link {
   position: absolute;
-  right: 5%;
+  left: 50%;
   bottom: 2rem;
   z-index: 4;
   align-items: flex-end;
+  justify-content: center;
+  max-width: 90%;
   font-size: clamp(1rem, 1.6vw, 1.6rem);
   font-weight: 700;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(0.4rem);
+  text-align: center;
+  transform: translate(-50%, 0.4rem);
   transition: opacity 220ms ease, transform 220ms ease;
 }
 
@@ -301,7 +305,7 @@
 .dual-hero:focus-within .dual-hero__link {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: translate(-50%, 0);
 }
 
 @media (max-width: 640px) {
@@ -326,7 +330,7 @@
   }
 
   .dual-hero__link {
-    right: 4%;
+    left: 50%;
     bottom: 1rem;
     font-size: clamp(1rem, 2.4vw, 1.1rem);
   }

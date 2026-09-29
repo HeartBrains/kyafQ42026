@@ -27,12 +27,8 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
           </svg>
         </div>
 
-        {/* Right: Mailing list, navigation, and socials */}
+        {/* Right: Navigation, socials, mailing list, and copyright */}
         <div className="w-full lg:w-1/2 md:w-2/3 flex flex-col justify-between gap-6">
-          <div className="flex justify-start md:justify-end">
-            <MailingListSignup site="kyaf" />
-          </div>
-
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-0">
             <div className="flex flex-col md:flex-row gap-6 md:gap-8 text-sm md:text-base font-normal tracking-wide">
               <button
@@ -61,9 +57,12 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
               </a>
             </div>
 
-            <span className="text-[10px] text-gray-500 font-medium whitespace-nowrap">
-              ©2026 Khao Yai Art Forest
-            </span>
+            <div className="ml-auto flex flex-col items-end gap-3 text-right sm:flex-row sm:items-center sm:gap-5">
+              <MailingListSignup site="kyaf" />
+              <span className="text-[10px] text-gray-500 font-medium whitespace-nowrap">
+                ©2026 Khao Yai Art Forest
+              </span>
+            </div>
           </div>
         </div>
 
