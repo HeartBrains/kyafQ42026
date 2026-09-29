@@ -127,20 +127,27 @@ export function HeroDualSwitcher({
           </button>
         ))}
       </div>
-      <div className="dual-hero__slide-controls" role="group" aria-label={navigationLabel}>
-        <button type="button" aria-label={previousLabel} onClick={() => showSlide(-1)}>
+      <div className="dual-hero__slide-count" aria-hidden="true">
+        {activeSlideIndex + 1} / {activeSlides.length}
+      </div>
+      <div className="dual-hero__arrows" role="group" aria-label={navigationLabel}>
+        <button
+          className="dual-hero__arrow"
+          type="button"
+          aria-label={previousLabel}
+          onClick={() => showSlide(-1)}
+        >
           <span aria-hidden="true">←</span>
         </button>
-        <span aria-hidden="true">{activeSlideIndex + 1} / {activeSlides.length}</span>
+        <button
+          className="dual-hero__arrow"
+          type="button"
+          aria-label={nextLabel}
+          onClick={() => showSlide(1)}
+        >
+          <span aria-hidden="true">→</span>
+        </button>
       </div>
-      <button
-        className="dual-hero__next-arrow"
-        type="button"
-        aria-label={nextLabel}
-        onClick={() => showSlide(1)}
-      >
-        <span aria-hidden="true">→</span>
-      </button>
       <Link className="dual-hero__link" href={active.href} aria-label={`Explore ${active.name.replace('\n', ' ')}`}>
         <span>{active.name.split('\n').map((line) => <span key={line}>{line}</span>)}</span>
         <span aria-hidden="true">↗</span>

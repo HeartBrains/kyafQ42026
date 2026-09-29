@@ -92,7 +92,9 @@
   background-size: cover;
   opacity: 0;
   transform: scale(1.015);
-  transition: opacity 700ms ease, transform 1200ms ease;
+  transition:
+    opacity 1100ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    transform 1600ms cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 .dual-hero__image[data-active='true'] {
@@ -106,6 +108,20 @@
   background: linear-gradient(180deg, rgb(0 0 0 / 0.24), transparent 35%, rgb(0 0 0 / 0.3));
 }
 
+.dual-hero__shade::after {
+  position: absolute;
+  inset: 0;
+  background: rgb(64 64 64 / 0.8);
+  content: '';
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.dual-hero:hover .dual-hero__shade::after,
+.dual-hero:focus-within .dual-hero__shade::after {
+  opacity: 1;
+}
+
 .dual-hero__image-link {
   position: absolute;
   top: 50%;
@@ -117,27 +133,36 @@
   max-width: 100%;
   transform: translate(-50%, -50%);
   color: inherit;
+  opacity: 0;
+  pointer-events: none;
   text-align: center;
   text-decoration: none;
+  transition: opacity 220ms ease;
+}
+
+.dual-hero:hover .dual-hero__image-link,
+.dual-hero:focus-within .dual-hero__image-link {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .dual-hero__section-link-label {
   max-width: calc(100% - 12rem);
   color: white;
-  font-size: clamp(1.75rem, 5.6vw, 5rem);
+  font-size: clamp(1rem, 2.24vw, 2rem);
   line-height: 1.05;
+  opacity: 0;
   text-shadow: 0 2px 16px rgb(0 0 0 / 0.5);
-  transition: transform 250ms ease, text-decoration-color 250ms ease;
+  transition: opacity 220ms ease, transform 250ms ease, text-decoration-color 250ms ease;
   text-decoration: underline;
   text-decoration-color: transparent;
   text-underline-offset: 0.12em;
   cursor: pointer;
-  animation: dual-hero-label-enter 450ms ease both;
 }
 
-@keyframes dual-hero-label-enter {
-  from { opacity: 0; transform: translateY(0.2em); }
-  to { opacity: 1; transform: translateY(0); }
+.dual-hero:hover .dual-hero__section-link-label,
+.dual-hero:focus-within .dual-hero__section-link-label {
+  opacity: 1;
 }
 
 .dual-hero__image-link:hover .dual-hero__section-link-label,
@@ -201,68 +226,61 @@
   pointer-events: none;
 }
 
-.dual-hero__slide-controls {
+.dual-hero__slide-count {
   position: absolute;
   left: 5%;
   bottom: 1.75rem;
   z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
   color: white;
   font-size: 0.875rem;
 }
 
-.dual-hero__slide-controls button {
-  display: grid;
-  width: 2.5rem;
-  height: 2.5rem;
-  place-items: center;
-  border: 1px solid rgb(255 255 255 / 0.72);
-  border-radius: 50%;
-  background: rgb(0 0 0 / 0.12);
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-
-.dual-hero__slide-controls button:hover,
-.dual-hero__slide-controls button:focus-visible {
-  background: white;
-  color: black;
-}
-
-.dual-hero__next-arrow {
+.dual-hero__arrows {
   position: absolute;
   top: 50%;
   right: 5%;
+  left: 5%;
   z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.dual-hero__arrow {
   display: grid;
   width: 2.75rem;
   height: 2.75rem;
   place-items: center;
   border: 1px solid rgb(255 255 255 / 0.72);
   border-radius: 50%;
-  background: rgb(0 0 0 / 0.18);
-  color: white;
+  background: rgb(0 0 0 / 0.12);
+  color: inherit;
+  font: inherit;
   font-size: 1.25rem;
   opacity: 0;
   pointer-events: none;
-  transform: translateY(-50%);
-  transition: opacity 180ms ease, background-color 180ms ease, color 180ms ease;
+  transform: scale(0.94);
+  transition: opacity 220ms ease, transform 220ms ease, background-color 180ms ease, color 180ms ease;
   cursor: pointer;
 }
 
-.dual-hero:hover .dual-hero__next-arrow,
-.dual-hero:focus-within .dual-hero__next-arrow {
+.dual-hero:hover .dual-hero__arrow,
+.dual-hero:focus-within .dual-hero__arrow {
   opacity: 1;
   pointer-events: auto;
+  transform: scale(1);
 }
 
-.dual-hero__next-arrow:hover,
-.dual-hero__next-arrow:focus-visible {
+.dual-hero__arrow:hover,
+.dual-hero__arrow:focus-visible {
   background: white;
   color: black;
+}
+
+.dual-hero__arrows .dual-hero__arrow {
+  background: rgb(0 0 0 / 0.18);
+  color: white;
 }
 
 .dual-hero__link {
@@ -271,8 +289,19 @@
   bottom: 2rem;
   z-index: 4;
   align-items: flex-end;
-  font-size: clamp(1.75rem, 4vw, 4rem);
+  font-size: clamp(1rem, 1.6vw, 1.6rem);
   font-weight: 700;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(0.4rem);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.dual-hero:hover .dual-hero__link,
+.dual-hero:focus-within .dual-hero__link {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 @media (max-width: 640px) {
@@ -286,43 +315,47 @@
     font-size: 0.875rem;
   }
 
-  .dual-hero__slide-controls {
+  .dual-hero__slide-count {
     left: 4%;
+    bottom: 1rem;
   }
 
   .dual-hero__section-link-label {
     max-width: calc(100% - 6rem);
-    font-size: clamp(1.75rem, 8vw, 3rem);
-  }
-
-  .dual-hero__slide-controls {
-    bottom: 1rem;
+    font-size: clamp(1rem, 3.2vw, 1.2rem);
   }
 
   .dual-hero__link {
     right: 4%;
     bottom: 1rem;
-    font-size: clamp(1.25rem, 6vw, 1.75rem);
+    font-size: clamp(1rem, 2.4vw, 1.1rem);
   }
 
-  .dual-hero__next-arrow {
+  .dual-hero__arrows {
     right: 4%;
+    left: 4%;
+  }
+
+  .dual-hero__arrow {
     width: 2.25rem;
     height: 2.25rem;
   }
 }
 
 @media (hover: none) {
-  .dual-hero__next-arrow {
+  .dual-hero__arrow {
     opacity: 1;
     pointer-events: auto;
+    transform: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .dual-hero__image,
   .dual-hero__section-link-label,
-  .dual-hero__next-arrow {
+  .dual-hero__shade::after,
+  .dual-hero__arrow,
+  .dual-hero__link {
     animation: none;
     transition-duration: 0.01ms;
   }

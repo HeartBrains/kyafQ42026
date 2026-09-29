@@ -84,7 +84,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                     <div id={`record-${exhibition.slug}`} key={exhibition.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', exhibition.slug)}>
                       {exhibition.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback src={exhibition.featuredImage} alt={exhibition.title[language] || exhibition.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={exhibition.featuredImage} hoverSrc={exhibition.gallery?.[0]} alt={exhibition.title[language] || exhibition.title.en} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
@@ -110,7 +110,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                     <div id={`record-${activity.slug}`} key={activity.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', activity.slug)}>
                       {activity.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback src={activity.featuredImage} alt={activity.title[language] || activity.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={activity.featuredImage} hoverSrc={activity.gallery?.[0]} alt={activity.title[language] || activity.title.en} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">

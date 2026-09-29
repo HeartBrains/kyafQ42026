@@ -114,7 +114,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                     <div id={`record-${item.slug}`} key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
                       {item.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={item.featuredImage} hoverSrc={item.gallery?.[0]} alt={item.title[language] || item.title.en} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
@@ -142,7 +142,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                     <div id={`record-${item.slug}`} key={item.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', item.slug)}>
                       {item.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback src={item.featuredImage} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={item.featuredImage} hoverSrc={item.gallery?.[0]} alt={item.title[language] || item.title.en} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
@@ -169,7 +169,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                   <div id={`record-${currentMovingImageProgram.slug}`} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('moving-image-detail', currentMovingImageProgram.slug)}>
                       {currentMovingImageProgram.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback src={currentMovingImageProgram.featuredImage} alt={currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={currentMovingImageProgram.featuredImage} hoverSrc={currentMovingImageProgram.gallery?.[0]} alt={currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
