@@ -92,7 +92,7 @@ function relatedContent(post: WPRawPost) {
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
-    }).slice(0, 3);
+    });
   } catch {
     return [];
   }

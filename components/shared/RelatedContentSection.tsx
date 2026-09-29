@@ -36,8 +36,7 @@ export function RelatedContentSection({ items, currentId, site, language }: Rela
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
-    })
-    .slice(0, 3);
+    });
 
   if (visible.length === 0) return null;
 

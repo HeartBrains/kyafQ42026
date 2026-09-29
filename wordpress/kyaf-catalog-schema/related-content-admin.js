@@ -21,7 +21,6 @@
 		const selectedList = root.querySelector('[data-related-selected]');
 		const hiddenIds = root.querySelector('[data-related-ids]');
 		const status = root.querySelector('[data-related-status]');
-		const max = Number(config.max) || 3;
 		let selected = [];
 		let debounce = 0;
 		let requestSequence = 0;
@@ -81,16 +80,12 @@
 				const title = item.title && (item.title.en || item.title.th);
 				const label = (title || item.slug) + (item.category ? ' — ' + item.category : '');
 				const option = createButton(label, 'button', function () {
-					if (selected.length >= max) {
-						status.textContent = messages.limit || 'You can select up to 3 related records.';
-						return;
-					}
 					if (!selected.some((entry) => String(entry.id) === String(item.id))) {
 						selected = selected.concat(item);
 						renderSelected();
 						renderResults(items);
 					}
-				}, alreadySelected || selected.length >= max);
+				}, alreadySelected);
 				option.style.display = 'block';
 				option.style.width = '100%';
 				option.style.marginTop = '4px';
