@@ -66,7 +66,7 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
             {/* Sidebar - Shows only years that are currently loaded/visible */}
             <aside className="w-full md:w-1/2 shrink-0 md:sticky md:top-32 h-fit mb-12 md:mb-0">
                 <nav className="flex flex-col space-y-2">
-                    <h2 className="text-xl md:text-2xl font-normal text-black mb-4">Blog</h2>
+                    <h2 className="text-xl md:text-2xl font-bold text-black mb-4">Blog</h2>
                     {years.map((year) => (
                         <button
                             key={year}
@@ -97,6 +97,7 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
                                     <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
                                         <ImageWithFallback 
                                             src={post.featuredImage} 
+                                            hoverSrc={post.gallery?.[0]}
                                             alt={post.title[language] || post.title.en}
                                             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                         />
@@ -104,7 +105,7 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
 
                                     {/* Text Content */}
                                     <div className="flex flex-col gap-1">
-                                        <h3 className={`text-lg md:text-xl font-normal text-black leading-tight ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
+                                        <h3 className={`text-lg md:text-xl font-bold text-black leading-tight ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
                                             {post.title[language] || post.title.en}
                                         </h3>
                                         <p className={`text-lg md:text-xl font-normal text-black leading-tight ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>

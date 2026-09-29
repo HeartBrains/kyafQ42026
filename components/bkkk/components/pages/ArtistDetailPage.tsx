@@ -117,7 +117,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
 
               {/* Additional Info */}
               {data.additionalInfo && (
-                <div className={`text-sm font-normal text-gray-500 mt-6 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                <div className={`detail-additional-info detail-additional-info--small font-normal text-gray-500 mt-6 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   {data.additionalInfo}
                 </div>
               )}

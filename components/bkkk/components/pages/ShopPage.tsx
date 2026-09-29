@@ -72,7 +72,7 @@ export function ShopPage({ onNavigate, targetSectionId }: ShopPageProps) {
             <aside className="w-full md:w-1/2 shrink-0 relative mb-12 md:mb-0">
                 <div className="flex flex-col gap-8">
                     <div className="flex flex-col gap-2">
-                        <h2 className={`text-xl md:text-2xl font-normal text-black mb-4 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getTranslation(language, 'shop.title')}</h2>
+                        <h2 className={`text-xl md:text-2xl font-bold text-black mb-4 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{getTranslation(language, 'shop.title')}</h2>
                         <button 
                             onClick={() => setActiveTab('bookings')}
                             className={`text-xl md:text-2xl font-sans transition-colors text-left ${
@@ -123,7 +123,7 @@ export function ShopPage({ onNavigate, targetSectionId }: ShopPageProps) {
                                     <div className="aspect-[3/4] w-full bg-gray-300" />
                                     
                                     {/* Info */}
-                                    <h3 className={`text-xl md:text-2xl font-normal font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? product.nameTH : product.name}</h3>
+                                    <h3 className={`text-xl md:text-2xl font-bold font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? product.nameTH : product.name}</h3>
                                 </div>
                             </Reveal>
                         ))
@@ -137,7 +137,7 @@ export function ShopPage({ onNavigate, targetSectionId }: ShopPageProps) {
                                     {/* Info */}
                                     <div className="flex flex-col gap-1">
                                         <div className="flex justify-between items-start">
-                                            <h3 className={`text-xl md:text-2xl font-normal font-sans text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? booking.nameTH : booking.name}</h3>
+                                            <h3 className={`text-xl md:text-2xl font-bold font-sans text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? booking.nameTH : booking.name}</h3>
                                             <span className="text-xl md:text-2xl font-normal font-sans text-black leading-tight">{booking.price}</span>
                                         </div>
                                         

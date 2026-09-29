@@ -20,7 +20,7 @@ export function EventPage() {
             
             {/* Left Column - Header Info */}
             <div className="md:w-1/3">
-                <h1 className="text-3xl md:text-4xl font-sans font-medium mb-2 text-black">
+                <h1 className="text-3xl md:text-4xl font-sans font-bold mb-2 text-black">
                     Neon Reveries
                 </h1>
                 <div className="text-2xl md:text-3xl font-sans text-gray-300 leading-tight mb-4">

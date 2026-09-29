@@ -118,7 +118,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
+                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
                         {(item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
                           <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                             <RichContent content={stripWrapperDivs(item.additionalInfo[language] || item.additionalInfo.en)} />
@@ -148,7 +148,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
+                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
                         {(item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
                           <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                             <RichContent content={stripWrapperDivs(item.additionalInfo[language] || item.additionalInfo.en)} />
@@ -178,7 +178,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en}</h3>
+                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en}</h3>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.artist?.[language] || currentMovingImageProgram.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.dateDisplay?.[language] || currentMovingImageProgram.dateDisplay?.en}</p>
                       </div>

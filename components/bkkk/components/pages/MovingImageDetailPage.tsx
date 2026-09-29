@@ -100,7 +100,7 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
             <div className="flex flex-col gap-0 px-0 md:px-[28px]">
               <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
               {curator && (
-                <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                <p className={`detail-curated-text font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   {language === 'th' ? `ภัณฑารักษ์: ${curator}` : `Curated by ${curator}`}
                 </p>
               )}
@@ -108,7 +108,7 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
                 <p key={i} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
               {data.additionalInfo && (
-                <div className="mt-6 text-xl md:text-2xl text-black font-normal leading-tight">
+                <div className="detail-additional-info mt-6 text-black font-normal leading-tight">
                   <RichContent content={data.additionalInfo} />
                 </div>
               )}

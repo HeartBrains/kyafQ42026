@@ -104,7 +104,7 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
               {data.curator?.en && (
-                <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                <p className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   Curated by {language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}
                 </p>
               )}
@@ -114,7 +114,7 @@ export function ActivityDetailPage({ onNavigate, slug, backPage }: ActivityDetai
                 </p>
               )}
               {data.additionalInfo && (
-                <div className="mt-6 text-base md:text-lg text-black font-normal leading-relaxed">
+                <div className="detail-additional-info mt-6 text-black font-normal leading-relaxed">
                   <RichContent content={data.additionalInfo} />
                 </div>
               )}

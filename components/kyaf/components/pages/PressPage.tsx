@@ -37,7 +37,7 @@ export function PressPage() {
         <div className="flex flex-col md:flex-row mb-32 md:mb-40">
           {/* Left Column - Sticky Heading */}
           <div className="w-full md:w-1/2 mb-12 md:mb-0">
-            <h1 className="text-xl md:text-2xl font-normal sticky top-32">{getTranslation(language, 'press.title')}</h1>
+            <h1 className="text-xl md:text-2xl font-bold sticky top-32">{getTranslation(language, 'press.title')}</h1>
           </div>
 
           {/* Right Column - Content */}
@@ -50,7 +50,7 @@ export function PressPage() {
                   <p className={`text-lg md:text-xl font-normal text-gray-500 mb-2 ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
                     {language === 'th' ? item.dateTH : item.date}
                   </p>
-                  <h2 className={`text-lg md:text-xl font-normal text-black mb-4 ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
+                  <h2 className={`text-lg md:text-xl font-bold text-black mb-4 ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
                     {language === 'th' ? item.titleTH : item.title}
                   </h2>
                   {item.link && item.link !== '#' ? (

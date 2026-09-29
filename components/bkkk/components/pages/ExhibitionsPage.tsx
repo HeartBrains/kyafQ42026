@@ -147,6 +147,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
           <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
             <ImageWithFallback 
               src={imageUrl} 
+              hoverSrc={item.gallery?.[0]}
               alt={item.title[language]}
               className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
               loading="lazy"
@@ -155,7 +156,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
           </div>
         )}
         <div className="flex flex-col gap-1">
-          <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+          <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
             {item.title[language]}
           </h3>
           {(item.additionalInfo?.[language] || item.additionalInfo?.en) ? (

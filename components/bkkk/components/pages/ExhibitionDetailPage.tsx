@@ -98,9 +98,9 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
               {dateDisplay && dateDisplay.split(',').map((d, i) => (
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
-              {curator && <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}{curator}</p>}
+              {curator && <p className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}{curator}</p>}
               {(data.additionalInfo?.[language] || data.additionalInfo?.en) && (
-                <div className="text-base md:text-lg text-black font-normal leading-relaxed">
+                <div className="detail-additional-info text-black font-normal leading-relaxed">
                   <RichContent content={data.additionalInfo[language] || data.additionalInfo.en} />
                 </div>
               )}

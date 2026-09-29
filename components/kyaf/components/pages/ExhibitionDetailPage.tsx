@@ -169,7 +169,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 {/* Additional Info (Specifications, Location, etc.) */}
                 {exhibitionData.additionalInfo && (
                     <Reveal delay={0.1}>
-                        <div className="text-base md:text-lg text-black font-normal leading-relaxed">
+                        <div className="detail-additional-info text-black font-normal leading-relaxed">
                             <RichContent content={exhibitionData.additionalInfo} />
                         </div>
                     </Reveal>
@@ -178,7 +178,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 {/* Curated by */}
                 {exhibitionData.curator?.en && (
                     <Reveal delay={0.12}>
-                        <p className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                        <p className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                             Curated by {language === 'th' ? (exhibitionData.curator.th || exhibitionData.curator.en) : exhibitionData.curator.en}
                         </p>
                     </Reveal>

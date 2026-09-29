@@ -43,6 +43,7 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
       title: language === 'th' ? ex.title.th : ex.title.en,
       date: language === 'th' ? ex.dateDisplay.th : ex.dateDisplay.en,
       featuredImage: ex.featuredImage,
+      gallery: ex.gallery,
       acf: { artist: language === 'th' ? ex.artist?.th : ex.artist?.en, status: ex.status },
     })), [wpExhibitions, language]);
 
@@ -54,6 +55,7 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
       title: language === 'th' ? act.title.th : act.title.en,
       date: language === 'th' ? act.dateDisplay.th : act.dateDisplay.en,
       featuredImage: act.featuredImage,
+      gallery: act.gallery,
       acf: { artist: language === 'th' ? act.artist?.th : act.artist?.en, status: act.status },
     })), [wpActivities, language]);
 
@@ -129,7 +131,7 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
           {/* Left: Sticky Title */}
           <div className="md:sticky md:top-32 md:self-start">
             <Reveal>
-              <h1 className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+              <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                 {language === 'th' ? 'คลังข้อมูล' : 'Archives'}
               </h1>
             </Reveal>
@@ -218,11 +220,12 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
                   <div className="w-full aspect-[3/4] bg-gray-100 overflow-hidden relative mb-4">
                     <ImageWithFallback
                       src={item.featuredImage || ''}
+                      hoverSrc={item.gallery?.[0]}
                       alt={item.title}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                   </div>
-                  <h3 className={`text-xl md:text-2xl font-normal text-black leading-tight mb-1 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                  <h3 className={`text-xl md:text-2xl font-bold text-black leading-tight mb-1 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                     {item.title}
                   </h3>
                   {item.acf?.artist && (

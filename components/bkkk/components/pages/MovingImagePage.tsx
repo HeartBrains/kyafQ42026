@@ -133,11 +133,11 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                     >
                       {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback src={record.featuredImage} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
+                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.artist?.[language] || record.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
@@ -164,11 +164,11 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                     >
                       {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback src={record.featuredImage} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
+                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.artist?.[language] || record.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>
@@ -195,11 +195,11 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
                     >
                       {record.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-200 overflow-hidden relative transition-colors duration-300 group-hover:bg-gray-300">
-                          <ImageWithFallback src={record.featuredImage} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={record.featuredImage} hoverSrc={record.gallery?.[0]} alt={record.title[language] || record.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
+                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.title[language] || record.title.en}</h3>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.artist?.[language] || record.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{record.dateDisplay?.[language] || record.dateDisplay?.en}</p>
                       </div>

@@ -39,7 +39,7 @@ export function PostPage({ onNavigate }: PostPageProps) {
                      {/* Left Column - Meta */}
                      <div className="md:col-span-5 flex flex-col gap-8">
                         <div className="flex flex-col gap-1">
-                            <h1 className="text-xl md:text-2xl font-normal text-black leading-tight">
+                            <h1 className="text-xl md:text-2xl font-bold text-black leading-tight">
                                 Which mirrors quality of artworks chosen to be exhibited there.
                             </h1>
                             <p className="text-xl md:text-2xl text-black font-normal leading-tight mt-2">Posted: 01 Oct 2025</p>

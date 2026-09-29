@@ -14,6 +14,7 @@ export interface RecordItem {
   startDate?: string; // ISO date for sorting if needed
   endDate?: string;
   image: string;
+  gallery?: string[];
   description?: string; // Short description/artist name
   location?: string;
   slug?: string;
@@ -76,6 +77,7 @@ const exhibitionRecords: RecordItem[] = exhibitions.map(exhibition => {
     startDate: exhibition.fromDate,
     endDate: exhibition.toDate,
     image: exhibition.featuredImage || (exhibition.gallery && exhibition.gallery.length > 0 ? exhibition.gallery[0] : ''),
+    gallery: exhibition.gallery ?? [],
     description: exhibition.artist?.en ?? '',
     slug: exhibition.slug
   };
@@ -108,6 +110,7 @@ export async function fetchRecords(params?: {
       startDate: exhibition.fromDate,
       endDate: exhibition.toDate,
       image: exhibition.featuredImage || (exhibition.gallery && exhibition.gallery.length > 0 ? exhibition.gallery[0] : ''),
+      gallery: exhibition.gallery ?? [],
       description: exhibition.artist[language],
       slug: exhibition.slug
     };
@@ -132,6 +135,7 @@ export async function fetchRecords(params?: {
       startDate: program.fromDate,
       endDate: program.toDate,
       image: featuredImage,
+      gallery: gallery ?? [],
       description: `${language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}${program.curator[language]}`,
       slug: program.slug
     };

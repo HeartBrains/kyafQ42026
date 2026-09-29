@@ -153,7 +153,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                     <div className="flex flex-col gap-2">
                         <h3 
                             onClick={() => handleFilterClick('exhibition', 'all')}
-                            className={`text-xl md:text-2xl font-sans font-normal cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
+                            className={`text-xl md:text-2xl font-sans font-bold cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
                                 activeFilter.category === 'exhibition' && activeFilter.year === 'all'
                                 ? 'text-black'
                                 : 'text-gray-400 hover:text-black'
@@ -186,7 +186,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                     <div className="flex flex-col gap-2">
                         <h3 
                             onClick={() => handleFilterClick('activity', 'all')}
-                            className={`text-xl md:text-2xl font-sans font-normal cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
+                            className={`text-xl md:text-2xl font-sans font-bold cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
                                 activeFilter.category === 'activity' && activeFilter.year === 'all'
                                 ? 'text-black'
                                 : 'text-gray-400 hover:text-black'
@@ -219,7 +219,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                     <div className="flex flex-col gap-2">
                         <h3 
                             onClick={() => handleFilterClick('moving-image', 'all')}
-                            className={`text-xl md:text-2xl font-sans font-normal cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
+                            className={`text-xl md:text-2xl font-sans font-bold cursor-pointer transition-colors ${language === 'th' ? 'leading-[1.82em]' : ''} ${
                                 activeFilter.category === 'moving-image' && activeFilter.year === 'all'
                                 ? 'text-black'
                                 : 'text-gray-400 hover:text-black'
@@ -270,12 +270,14 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
                                         {item.category === 'moving-image' ? (
                                             <ImageWithFallback 
                                                 src={item.image} 
+                                                hoverSrc={item.gallery?.[0]}
                                                 alt={item.title}
                                                 className="w-full aspect-[3/4] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                             />
                                         ) : (
                                             <ImageWithFallback 
                                                 src={item.image} 
+                                                hoverSrc={item.gallery?.[0]}
                                                 alt={item.title}
                                                 className="w-full aspect-[3/4] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                             />
@@ -284,7 +286,7 @@ export function ArchivesPage({ onNavigate, targetSectionId }: ArchivesPageProps)
 
                                     {/* Info */}
                                     <div className="flex flex-col gap-1">
-                                        <h3 className={`text-xl md:text-2xl font-normal leading-tight font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title}</h3>
+                                        <h3 className={`text-xl md:text-2xl font-bold leading-tight font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title}</h3>
                                         {item.description && (
                                             <p className={`text-xl md:text-2xl font-normal text-black leading-tight font-sans ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.description}</p>
                                         )}

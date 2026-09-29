@@ -59,7 +59,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
         {FOUNDER && (
           <section id="founder" className="flex flex-col md:flex-row mb-24 md:mb-32">
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
-              <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+              <h2 className="text-xl md:text-2xl font-bold sticky top-32">
                 {language === 'th' ? 'ผู้ก่อตั้ง' : 'Founder'}
               </h2>
             </div>
@@ -70,7 +70,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
                 </div>
               )}
               <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
-                <div className="mb-2">{FOUNDER.name}</div>
+                <div className="mb-2 font-bold">{FOUNDER.name}</div>
                 {FOUNDER.bio && (
                   <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4">
                     <RichContent content={language === 'th' ? (FOUNDER.bioTH || FOUNDER.bio) : FOUNDER.bio} />
@@ -85,7 +85,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
         {DIRECTORS.length > 0 && (
           <section id="directors" className="flex flex-col md:flex-row mb-24 md:mb-32">
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
-              <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+              <h2 className="text-xl md:text-2xl font-bold sticky top-32">
                 {language === 'th' ? 'ผู้อำนวยการ' : 'Directors'}
               </h2>
             </div>
@@ -99,7 +99,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
                       </div>
                     )}
                     <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
-                      <div className="mb-2">{director.name}</div>
+                      <div className="mb-2 font-bold">{director.name}</div>
                       <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (director.roleTH || director.role) : director.role}</div>
                       {director.bio && (
                         <div className="text-base md:text-lg text-gray-700 mt-2 [&>p]:mb-4">
@@ -118,14 +118,14 @@ export function TeamPage({ activePage }: TeamPageProps) {
         {ADVISORY.length > 0 && (
           <section id="advisory-board" className="flex flex-col md:flex-row mb-24 md:mb-32">
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
-              <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+              <h2 className="text-xl md:text-2xl font-bold sticky top-32">
                 {language === 'th' ? 'คณะกรรมการที่ปรึกษา' : 'Advisory Board'}
               </h2>
             </div>
             <div className="w-full md:w-1/2 flex flex-col gap-4">
               {ADVISORY.map((member, idx) => (
                 <div key={idx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
-                  <div>{member.name}</div>
+                  <div className="font-bold">{member.name}</div>
                 </div>
               ))}
             </div>
@@ -135,7 +135,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
         {/* Founder's Circle & Collector's Roundtable Donors */}
         <section id="donors" className="flex flex-col md:flex-row mb-24 md:mb-32">
           <div className="w-full md:w-1/2 mb-12 md:mb-0">
-            <h2 className="text-xl md:text-2xl font-normal sticky top-32">
+            <h2 className="text-xl md:text-2xl font-bold sticky top-32">
               {language === 'th' ? "ผู้บริจาค Founder's Circle & Collector's Roundtable" : "Founder's Circle & Collector's Roundtable Donors"}
             </h2>
           </div>
@@ -148,7 +148,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
               'Elisa Yu',
               'Lisa Zhang',
             ].map((name) => (
-              <div key={name} className="text-xl md:text-2xl font-sans text-black font-normal">{name}</div>
+              <div key={name} className="text-xl md:text-2xl font-sans text-black font-bold">{name}</div>
             ))}
           </div>
         </section>
@@ -157,12 +157,12 @@ export function TeamPage({ activePage }: TeamPageProps) {
         {teamGroups.map(([groupName, groupMembers], gIdx) => (
           <section key={gIdx} id={groupName.toLowerCase().replace(/\s+/g, '-')} className="flex flex-col md:flex-row mb-24 md:mb-32">
             <div className="w-full md:w-1/2 mb-12 md:mb-0">
-              <h2 className="text-xl md:text-2xl font-normal sticky top-32">{groupName.charAt(0).toUpperCase() + groupName.slice(1)}</h2>
+              <h2 className="text-xl md:text-2xl font-bold sticky top-32">{groupName.charAt(0).toUpperCase() + groupName.slice(1)}</h2>
             </div>
             <div className="w-full md:w-1/2 flex flex-col gap-4">
               {groupMembers.map((member, mIdx) => (
                 <div key={mIdx} className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
-                  <div>{member.name}</div>
+                  <div className="font-bold">{member.name}</div>
                   {member.role && <div className="text-base md:text-lg text-gray-500">{language === 'th' ? (member.roleTH || member.role) : member.role}</div>}
                 </div>
               ))}

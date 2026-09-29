@@ -66,7 +66,7 @@ export function ShopPage({ onNavigate }: ShopPageProps) {
             <div className="md:col-span-3">
                 <div className="sticky top-32 flex flex-col gap-8">
                     {/* Shop Title */}
-                    <h2 className="text-xl md:text-2xl font-normal font-sans text-black">
+                    <h2 className="text-xl md:text-2xl font-bold font-sans text-black">
                         {getTranslation(language, 'shop.title')}
                     </h2>
                     
@@ -93,7 +93,7 @@ export function ShopPage({ onNavigate }: ShopPageProps) {
                     {/* Sort By Section - Only show for Products */}
                     {activeTab === 'products' && (
                         <div className="flex flex-col gap-1">
-                            <h3 className="text-xl md:text-2xl font-normal text-black mb-1">
+                            <h3 className="text-xl md:text-2xl font-bold text-black mb-1">
                                 {getTranslation(language, 'shop.sortBy')}
                             </h3>
                             {sortOptions.map((option) => (
@@ -131,7 +131,7 @@ export function ShopPage({ onNavigate }: ShopPageProps) {
                             </div>
                             
                             {/* Info */}
-                            <h3 className={`text-xl md:text-2xl font-normal font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            <h3 className={`text-xl md:text-2xl font-bold font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                                 {language === 'th' ? product.nameTH : product.name}
                             </h3>
                         </div>
@@ -150,7 +150,7 @@ export function ShopPage({ onNavigate }: ShopPageProps) {
                             
                             {/* Info */}
                             <div className="flex justify-between items-start mb-4">
-                                <h3 className={`text-xl md:text-2xl font-normal font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? booking.nameTH : booking.name}</h3>
+                                <h3 className={`text-xl md:text-2xl font-bold font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? booking.nameTH : booking.name}</h3>
                                 <span className="text-xl md:text-2xl font-normal font-sans text-black">{booking.price}</span>
                             </div>
                             

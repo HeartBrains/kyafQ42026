@@ -846,3 +846,17 @@ html {
 .rich-content a:hover {
   opacity: 0.6;
 }
+
+/* Detail metadata scales to 75% of the existing typography tokens. */
+.detail-curated-text {
+  font-size: calc(1.75rem * 0.75);
+}
+
+.detail-additional-info,
+.detail-additional-info .rich-content p {
+  font-size: calc(1rem * 0.75);
+}
+
+.detail-additional-info--small {
+  font-size: calc(0.875rem * 0.75);
+}

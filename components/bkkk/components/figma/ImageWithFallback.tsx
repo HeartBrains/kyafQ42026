@@ -5,8 +5,13 @@ import React, { useState } from 'react'
 const ERROR_IMG_SRC =
   image_33593f765d2a675d88ce409217db74d077b37979
 
-export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElement>) {
+type ImageWithFallbackProps = React.ImgHTMLAttributes<HTMLImageElement> & {
+  hoverSrc?: string;
+}
+
+export function ImageWithFallback(props: ImageWithFallbackProps) {
   const [didError, setDidError] = useState(false)
+  const [hoverDidError, setHoverDidError] = useState(false)
 
   const handleError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     setDidError(true)
@@ -16,11 +21,13 @@ export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElemen
     }
   }
 
-  const { src, alt, style, className, ...rest } = props
+  const { src, alt, style, className, hoverSrc, ...rest } = props
+  const showHoverImage = Boolean(hoverSrc && hoverSrc !== src && !hoverDidError)
+  const featuredClassName = `${className ?? ''}${showHoverImage ? ' relative z-10 transition-opacity duration-500 group-hover:opacity-0' : ''}`
 
-  return didError ? (
+  const featuredImage = didError ? (
     <div
-      className={`inline-block bg-gray-100 text-center align-middle ${className ?? ''}`}
+      className={`inline-block bg-gray-100 text-center align-middle ${featuredClassName}`}
       style={style}
     >
       <div className="flex items-center justify-center w-full h-full">
@@ -28,6 +35,21 @@ export function ImageWithFallback(props: React.ImgHTMLAttributes<HTMLImageElemen
       </div>
     </div>
   ) : (
-    <img src={src} alt={alt} className={className} style={style} {...rest} onError={handleError} />
+    <img src={src} alt={alt} className={featuredClassName} style={style} {...rest} onError={handleError} />
   )
+
+  return showHoverImage ? (
+    <>
+      {featuredImage}
+      <img
+        src={hoverSrc}
+        alt=""
+        aria-hidden="true"
+        className={`${className ?? ''} absolute inset-0 z-20 opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
+        style={style}
+        {...rest}
+        onError={() => setHoverDidError(true)}
+      />
+    </>
+  ) : featuredImage
 }
