@@ -2,5 +2,5 @@
 2:I[1289,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-715808928ffef555.js","1993","static/chunks/app/kyaf/artists/%5Bslug%5D/page-d8f009a66efd2c2e.js"],"ArtistDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"kyaf","slug":"renato-leotta"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"xO13U9bS09b5rz0s4Nm3U"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"kyaf","slug":"renato-leotta"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"QHTC9snq4oVx31SWa3Ci9"}
 5:null
