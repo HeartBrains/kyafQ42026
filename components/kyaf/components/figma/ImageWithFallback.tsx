@@ -32,7 +32,9 @@ export function ImageWithFallback(props: ImageWithFallbackProps) {
     ? { ...style, opacity: isHovered ? 0 : 1, transition: 'opacity 500ms ease' }
     : style
   const featuredClassName = showHoverImage
-    ? `${className ?? ''} absolute inset-0 z-10`
+    // Keep the primary image in normal flow so images without a fixed-ratio
+    // parent (for example, team profile records) still define the wrapper size.
+    ? `${className ?? ''} relative z-10`
     : className
 
   const featuredImage = didError ? (

@@ -7,6 +7,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { useCovers } from '@/lib/coversContext';
 import type { TeamMemberItem } from '@/lib/wp-mappers';
 import { RichContent } from '@/utils/richContent';
+import { ImageWithFallback } from '../figma/ImageWithFallback';
 
 import { PUBLIC_WP_ORIGIN } from '@/lib/wp-origin';
 const TEAM_HERO = `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/bk_Description-Without-Place-Krittawat-Atthsis-Prapasiri-Kasemkijkajorn-82.jpg`;
@@ -66,7 +67,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
             <div className="w-full md:w-1/2 flex flex-col gap-8">
               {FOUNDER.image && (
                 <div className="w-full mb-4">
-                  <img src={FOUNDER.image} alt={FOUNDER.name} className="w-full h-auto object-cover" loading="lazy" decoding="async" fetchPriority="low" />
+                  <ImageWithFallback src={FOUNDER.image} hoverSrc={FOUNDER.gallery?.[0]} alt={FOUNDER.name} className="w-full h-auto object-cover" loading="lazy" decoding="async" fetchPriority="low" />
                 </div>
               )}
               <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
@@ -95,7 +96,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
                   <div className="flex flex-col gap-4">
                     {director.image && (
                       <div className="w-full mb-4">
-                        <img src={director.image} alt={director.name} className="w-full aspect-[3/4] object-cover object-center" loading="lazy" decoding="async" fetchPriority="low" />
+                        <ImageWithFallback src={director.image} hoverSrc={director.gallery?.[0]} alt={director.name} className="w-full aspect-[3/4] object-cover object-center" loading="lazy" decoding="async" fetchPriority="low" />
                       </div>
                     )}
                     <div className="flex flex-col text-xl md:text-2xl font-sans text-black font-normal">
