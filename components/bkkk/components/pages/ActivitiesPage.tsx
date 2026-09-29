@@ -95,7 +95,7 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
       </ParallaxHero>
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
-        <ActivityTagFilter language={language} onChange={handleTagChange} />
+        <ActivityTagFilter language={language} site="bkkk" onChange={handleTagChange} />
         <div className="flex flex-col md:flex-row gap-12 md:gap-0">
 
           <aside className="w-full md:w-1/2 shrink-0">

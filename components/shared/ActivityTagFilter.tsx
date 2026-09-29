@@ -5,14 +5,20 @@ import { useCallback, useEffect, useState } from 'react';
 export const ACTIVITY_TAGS = [
   { slug: 'all', en: 'All', th: 'ดูทั้งหมด' },
   { slug: 'talks-lectures', en: 'Talks & Lectures', th: 'เสวนา' },
-  { slug: 'performances', en: 'Performances', th: 'การแสดงสด' },
+  { slug: 'performances', en: 'Performance', th: 'การแสดงสด' },
   { slug: 'screening', en: 'Screening', th: 'การฉายภาพยนตร์' },
-  { slug: 'workshops', en: 'Workshops', th: 'เวิร์กชอป' },
+  { slug: 'workshops', en: 'Workshop', th: 'เวิร์กชอป' },
   { slug: 'gastronomy', en: 'Gastronomy', th: 'อาหาร' },
   { slug: 'sound', en: 'Sound', th: 'งานเสียง' },
 ] as const;
 
 export type ActivityTagSlug = (typeof ACTIVITY_TAGS)[number]['slug'];
+type ActivitySite = 'bkkk' | 'kyaf';
+
+const SITE_ACTIVITY_TAGS: Record<ActivitySite, readonly ActivityTagSlug[]> = {
+  kyaf: ['gastronomy', 'performances', 'screening', 'workshops'],
+  bkkk: ['performances', 'screening', 'talks-lectures', 'workshops', 'sound'],
+};
 
 const validTags = new Set<string>(ACTIVITY_TAGS.map((tag) => tag.slug));
 
@@ -56,23 +62,34 @@ export function activityMatchesTag(
 
 interface ActivityTagFilterProps {
   language: 'en' | 'th';
+  site: ActivitySite;
   onChange: (tag: ActivityTagSlug) => void;
 }
 
-function tagFromLocation(): ActivityTagSlug {
+function tagFromLocation(visibleTags: readonly ActivityTagSlug[]): ActivityTagSlug {
   if (typeof window === 'undefined') return 'all';
   const requested = new URLSearchParams(window.location.search).get('tag') ?? 'all';
-  return validTags.has(requested) ? requested as ActivityTagSlug : 'all';
+  return validTags.has(requested) && (requested === 'all' || visibleTags.includes(requested as ActivityTagSlug))
+    ? requested as ActivityTagSlug
+    : 'all';
 }
 
-export function ActivityTagFilter({ language, onChange }: ActivityTagFilterProps) {
+export function ActivityTagFilter({ language, site, onChange }: ActivityTagFilterProps) {
   const [selected, setSelected] = useState<ActivityTagSlug>('all');
+  const visibleTags = SITE_ACTIVITY_TAGS[site];
+  const displayedTags = ACTIVITY_TAGS
+    .filter((tag) => tag.slug === 'all' || visibleTags.includes(tag.slug))
+    .sort((a, b) => {
+      if (a.slug === 'all') return -1;
+      if (b.slug === 'all') return 1;
+      return visibleTags.indexOf(a.slug) - visibleTags.indexOf(b.slug);
+    });
 
   const applyLocation = useCallback(() => {
-    const next = tagFromLocation();
+    const next = tagFromLocation(visibleTags);
     setSelected(next);
     onChange(next);
-  }, [onChange]);
+  }, [onChange, visibleTags]);
 
   useEffect(() => {
     applyLocation();
@@ -91,7 +108,7 @@ export function ActivityTagFilter({ language, onChange }: ActivityTagFilterProps
 
   return (
     <div className="activity-tag-filter" role="group" aria-label={language === 'th' ? 'กรองกิจกรรมตามหมวดหมู่' : 'Filter activities by category'}>
-      {ACTIVITY_TAGS.map((tag) => {
+      {displayedTags.map((tag) => {
         const active = selected === tag.slug;
         return (
           <button
