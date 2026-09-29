@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: KYAF Catalog Schema
- * Description: Versioned activity taxonomy, editorial media fields, and bidirectional related-content data for the KYAF/BKKK frontend.
- * Version: 0.2.0
+ * Description: Versioned activity taxonomy, editorial media fields, and curated related-content data for the KYAF/BKKK frontend.
+ * Version: 0.3.0
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: HeartBrains
@@ -13,6 +13,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 const KYAF_CATALOG_POST_TYPES = array( 'exhibition', 'activity', 'residency_artist', 'blog_post', 'moving_image' );
+const KYAF_CATALOG_RELATION_TYPES = array(
+	'exhibition'       => 'Exhibition',
+	'activity'         => 'Activity',
+	'moving_image'     => 'Moving image',
+	'residency_artist' => 'Artist / residency',
+	'blog_post'        => 'Blog',
+);
 
 function kyaf_catalog_register_schema() {
 	register_taxonomy(
@@ -83,7 +90,11 @@ function kyaf_catalog_register_schema() {
 add_action( 'init', 'kyaf_catalog_register_schema', 20 );
 
 function kyaf_catalog_sanitize_ids( $value ) {
-	$values = is_array( $value ) ? $value : preg_split( '/[\s,]+/', (string) $value );
+	if ( is_string( $value ) ) {
+		$decoded = json_decode( $value, true );
+		$value   = is_array( $decoded ) ? $decoded : preg_split( '/[\s,]+/', $value );
+	}
+	$values = is_array( $value ) ? $value : array();
 	return array_values( array_unique( array_filter( array_map( 'absint', $values ) ) ) );
 }
 
@@ -170,6 +181,111 @@ function kyaf_catalog_add_meta_boxes() {
 }
 add_action( 'add_meta_boxes', 'kyaf_catalog_add_meta_boxes' );
 
+function kyaf_catalog_enqueue_related_admin_script( $hook ) {
+	if ( ! in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) {
+		return;
+	}
+	$screen = get_current_screen();
+	if ( ! $screen || ! in_array( $screen->post_type, KYAF_CATALOG_POST_TYPES, true ) ) {
+		return;
+	}
+	wp_enqueue_script(
+		'kyaf-catalog-related-content',
+		plugin_dir_url( __FILE__ ) . 'related-content-admin.js',
+		array(),
+		'0.3.0',
+		true
+	);
+	wp_localize_script(
+		'kyaf-catalog-related-content',
+		'kyafCatalogRelatedContent',
+		array(
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'nonce'   => wp_create_nonce( 'kyaf_catalog_related_search' ),
+			'max'     => 3,
+			'messages' => array(
+				'limit'    => 'You can select up to 3 related records.',
+				'loading'  => 'Searching…',
+				'empty'    => 'No matching records found on this site.',
+				'failed'   => 'Search failed. Please try again.',
+				'moveUp'   => 'Move up',
+				'moveDown' => 'Move down',
+				'remove'   => 'Remove',
+			)
+		)
+	);
+}
+add_action( 'admin_enqueue_scripts', 'kyaf_catalog_enqueue_related_admin_script' );
+
+function kyaf_catalog_related_item( $source_id, $related_id ) {
+	$source_id  = absint( $source_id );
+	$related_id = absint( $related_id );
+	$source     = get_post( $source_id );
+	$related    = get_post( $related_id );
+	if ( ! $source || ! $related || $source_id === $related_id || 'publish' !== $related->post_status ) {
+		return false;
+	}
+	if ( ! isset( KYAF_CATALOG_RELATION_TYPES[ $related->post_type ] ) ) {
+		return false;
+	}
+	$site = (string) get_post_meta( $source_id, 'site', true );
+	if ( ! in_array( $site, array( 'bkkk', 'kyaf' ), true ) || $site !== (string) get_post_meta( $related_id, 'site', true ) ) {
+		return false;
+	}
+
+	$type_map = array(
+		'exhibition'       => 'exhibitions',
+		'activity'         => 'activities',
+		'moving_image'     => 'moving-image',
+		'residency_artist' => 'residency',
+		'blog_post'        => 'blog',
+	);
+	$image = get_the_post_thumbnail_url( $related_id, 'large' );
+	if ( ! $image ) {
+		$image = get_post_meta( $related_id, 'featured_image_url', true );
+		if ( is_array( $image ) ) {
+			$image = reset( $image );
+		}
+		if ( is_numeric( $image ) ) {
+			$image = wp_get_attachment_image_url( absint( $image ), 'large' );
+		}
+	}
+	$image = is_string( $image ) ? esc_url_raw( $image ) : '';
+	$title = get_the_title( $related_id );
+	$date  = (string) get_post_meta( $related_id, 'date_display_en', true );
+	if ( '' === $date ) {
+		$date = get_the_date( 'j F Y', $related_id );
+	}
+	$post_type_object = get_post_type_object( $related->post_type );
+
+	return array(
+		'id'       => (string) $related_id,
+		'slug'     => $related->post_name,
+		'type'     => $type_map[ $related->post_type ],
+		'title'    => array(
+			'en' => $title,
+			'th' => (string) ( get_post_meta( $related_id, 'title_th', true ) ?: $title ),
+		),
+		'date'     => $date,
+		'image'    => $image,
+		'category' => $post_type_object ? $post_type_object->labels->singular_name : '',
+		'site'     => $site,
+	);
+}
+
+function kyaf_catalog_valid_related_ids( $source_id, $related_ids ) {
+	$valid = array();
+	foreach ( kyaf_catalog_sanitize_ids( $related_ids ) as $related_id ) {
+		if ( kyaf_catalog_related_item( $source_id, $related_id ) ) {
+			$valid[] = $related_id;
+		}
+		if ( count( $valid ) >= 3 ) {
+			break;
+		}
+	}
+	return $valid;
+}
+
 function kyaf_catalog_render_meta_box( $post ) {
 	wp_nonce_field( 'kyaf_catalog_save_fields', 'kyaf_catalog_nonce' );
 	$fields = array(
@@ -178,7 +294,6 @@ function kyaf_catalog_render_meta_box( $post ) {
 		'hero_landscape_image' => 'Hero landscape image URL',
 		'hero_portrait_image'  => 'Hero portrait image URL',
 		'gallery_media'        => 'Gallery media IDs (comma-separated)',
-		'related_content_ids'  => 'Related post IDs (comma-separated)',
 	);
 	foreach ( $fields as $key => $label ) {
 		$value = get_post_meta( $post->ID, $key, true );
@@ -192,7 +307,64 @@ function kyaf_catalog_render_meta_box( $post ) {
 			esc_attr( $value )
 		);
 	}
+
+	$related_ids = kyaf_catalog_valid_related_ids( $post->ID, get_post_meta( $post->ID, 'related_content_ids', true ) );
+	$related_items = array_values( array_filter( array_map( function ( $related_id ) use ( $post ) {
+		return kyaf_catalog_related_item( $post->ID, $related_id );
+	}, $related_ids ) ) );
+	$related_ids = array_map( 'absint', array_column( $related_items, 'id' ) );
+	?>
+	<hr>
+	<div class="kyaf-catalog-related" data-kyaf-related-control data-post-id="<?php echo esc_attr( $post->ID ); ?>" data-initial-items="<?php echo esc_attr( wp_json_encode( $related_items ) ); ?>">
+		<p><strong>Related records</strong></p>
+		<p class="description">Search published records on this site. Choose up to three; the order below is the display order.</p>
+		<label class="screen-reader-text" for="kyaf-catalog-related-search">Search related records</label>
+		<input class="widefat" id="kyaf-catalog-related-search" type="search" autocomplete="off" placeholder="Search exhibitions, activities, moving image, artists, or blog…">
+		<div data-related-status role="status" aria-live="polite"></div>
+		<div class="kyaf-catalog-related-results" data-related-results aria-label="Related record search results" style="max-height:240px;overflow-y:auto;margin-top:8px"></div>
+		<ol class="kyaf-catalog-related-selected" data-related-selected aria-label="Selected related records"></ol>
+		<input type="hidden" name="related_content_ids" value="<?php echo esc_attr( wp_json_encode( $related_ids ) ); ?>" data-related-ids>
+	</div>
+	<?php
 }
+
+function kyaf_catalog_search_related_posts() {
+	check_ajax_referer( 'kyaf_catalog_related_search', 'nonce' );
+	$source_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+	$source    = get_post( $source_id );
+	if ( ! $source || ! in_array( $source->post_type, KYAF_CATALOG_POST_TYPES, true ) || ! current_user_can( 'edit_post', $source_id ) ) {
+		wp_send_json_error( array( 'message' => 'You cannot edit this record.' ), 403 );
+	}
+	$site  = (string) get_post_meta( $source_id, 'site', true );
+	$query = isset( $_POST['query'] ) ? sanitize_text_field( wp_unslash( $_POST['query'] ) ) : '';
+	if ( ! in_array( $site, array( 'bkkk', 'kyaf' ), true ) || strlen( $query ) < 2 ) {
+		wp_send_json_success( array() );
+	}
+
+	$results = get_posts( array(
+		'post_type'              => array_keys( KYAF_CATALOG_RELATION_TYPES ),
+		'post_status'            => 'publish',
+		'posts_per_page'         => 20,
+		's'                      => $query,
+		'post__not_in'           => array( $source_id ),
+		'orderby'                => 'title',
+		'order'                  => 'ASC',
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => true,
+		'meta_query'             => array(
+			array(
+				'key'     => 'site',
+				'value'   => $site,
+				'compare' => '=',
+			),
+		),
+	) );
+	$items = array_values( array_filter( array_map( function ( $result ) use ( $source_id ) {
+		return kyaf_catalog_related_item( $source_id, $result->ID );
+	}, $results ) ) );
+	wp_send_json_success( $items );
+}
+add_action( 'wp_ajax_kyaf_catalog_search_related_posts', 'kyaf_catalog_search_related_posts' );
 
 function kyaf_catalog_save_fields( $post_id ) {
 	if ( ! isset( $_POST['kyaf_catalog_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['kyaf_catalog_nonce'] ) ), 'kyaf_catalog_save_fields' ) ) {
@@ -213,61 +385,50 @@ function kyaf_catalog_save_fields( $post_id ) {
 
 	$gallery = isset( $_POST['gallery_media'] ) ? kyaf_catalog_sanitize_ids( wp_unslash( $_POST['gallery_media'] ) ) : array();
 	$related = isset( $_POST['related_content_ids'] ) ? kyaf_catalog_sanitize_ids( wp_unslash( $_POST['related_content_ids'] ) ) : array();
-	$related = array_values( array_filter( $related, function ( $id ) use ( $post_id ) {
-		return $id !== $post_id && in_array( get_post_type( $id ), KYAF_CATALOG_POST_TYPES, true );
-	} ) );
+	$related = kyaf_catalog_valid_related_ids( $post_id, $related );
 	update_post_meta( $post_id, 'gallery_media', $gallery );
-	kyaf_catalog_sync_relations( $post_id, $related );
+	update_post_meta( $post_id, 'related_content_ids', $related );
+	kyaf_catalog_refresh_related_json( $post_id );
 }
 add_action( 'save_post', 'kyaf_catalog_save_fields', 20 );
 
-function kyaf_catalog_sync_relations( $post_id, $new_ids ) {
-	$old_ids = kyaf_catalog_sanitize_ids( get_post_meta( $post_id, 'related_content_ids', true ) );
-	update_post_meta( $post_id, 'related_content_ids', $new_ids );
-	foreach ( array_diff( $old_ids, $new_ids ) as $removed_id ) {
-		$reverse = array_values( array_diff( kyaf_catalog_sanitize_ids( get_post_meta( $removed_id, 'related_content_ids', true ) ), array( $post_id ) ) );
-		update_post_meta( $removed_id, 'related_content_ids', $reverse );
-		kyaf_catalog_refresh_related_json( $removed_id );
-	}
-	foreach ( $new_ids as $related_id ) {
-		$reverse = kyaf_catalog_sanitize_ids( get_post_meta( $related_id, 'related_content_ids', true ) );
-		if ( ! in_array( $post_id, $reverse, true ) ) {
-			$reverse[] = $post_id;
-			update_post_meta( $related_id, 'related_content_ids', $reverse );
-		}
-		kyaf_catalog_refresh_related_json( $related_id );
-	}
-	kyaf_catalog_refresh_related_json( $post_id );
-}
-
 function kyaf_catalog_refresh_related_json( $post_id ) {
-	$type_map = array(
-		'exhibition'       => 'exhibitions',
-		'activity'         => 'activities',
-		'residency_artist' => 'residency',
-		'blog_post'        => 'blog',
-		'moving_image'     => 'moving-image',
-	);
 	$items = array();
-	foreach ( array_slice( kyaf_catalog_sanitize_ids( get_post_meta( $post_id, 'related_content_ids', true ) ), 0, 50 ) as $related_id ) {
-		$post = get_post( $related_id );
-		if ( ! $post || ! isset( $type_map[ $post->post_type ] ) ) {
-			continue;
+	$related_ids = kyaf_catalog_valid_related_ids( $post_id, get_post_meta( $post_id, 'related_content_ids', true ) );
+	foreach ( $related_ids as $related_id ) {
+		$item = kyaf_catalog_related_item( $post_id, $related_id );
+		if ( $item ) {
+			$items[] = $item;
 		}
-		$image = get_the_post_thumbnail_url( $related_id, 'large' );
-		$items[] = array(
-			'id'       => (string) $related_id,
-			'slug'     => $post->post_name,
-			'type'     => $type_map[ $post->post_type ],
-			'title'    => array( 'en' => get_the_title( $related_id ), 'th' => (string) get_post_meta( $related_id, 'title_th', true ) ),
-			'date'     => (string) get_post_meta( $related_id, 'date_display_en', true ),
-			'image'    => $image ?: (string) get_post_meta( $related_id, 'featured_image_url', true ),
-			'category' => $post->post_type,
-			'site'     => (string) get_post_meta( $related_id, 'site', true ),
-		);
 	}
 	update_post_meta( $post_id, 'related_content_json', wp_json_encode( $items, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 }
+
+function kyaf_catalog_refresh_related_parents( $post_id, $post ) {
+	if ( ! $post || ! in_array( $post->post_type, KYAF_CATALOG_POST_TYPES, true ) || wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+		return;
+	}
+	$needle  = 'i:' . absint( $post_id ) . ';';
+	$parents = get_posts( array(
+		'post_type'      => KYAF_CATALOG_POST_TYPES,
+		'post_status'    => array( 'publish', 'private', 'draft' ),
+		'posts_per_page' => -1,
+		'fields'         => 'ids',
+		'meta_query'     => array(
+			array(
+				'key'     => 'related_content_ids',
+				'value'   => $needle,
+				'compare' => 'LIKE',
+			),
+		),
+	) );
+	foreach ( $parents as $parent_id ) {
+		if ( absint( $parent_id ) !== absint( $post_id ) ) {
+			kyaf_catalog_refresh_related_json( $parent_id );
+		}
+	}
+}
+add_action( 'save_post', 'kyaf_catalog_refresh_related_parents', 30, 2 );
 
 function kyaf_catalog_admin_notice() {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -357,7 +518,7 @@ function kyaf_catalog_render_settings_page() {
 		<h2><?php echo esc_html__( 'Schema status', 'kyaf-catalog-schema' ); ?></h2>
 		<table class="widefat striped" style="max-width: 760px">
 			<tbody>
-				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.2.0</td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.3.0</td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Activity tags', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d tagged / %d total', $tagged, $total ) ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Need tag review', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( (string) $untagged ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Last activation migration', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d automatically mapped', absint( $report['mapped'] ?? 0 ) ) ); ?></td></tr>

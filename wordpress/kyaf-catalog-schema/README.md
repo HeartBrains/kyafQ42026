@@ -7,8 +7,9 @@ It provides:
 - the REST-enabled `activity_tag` taxonomy and six approved terms;
 - migration of recognized legacy `tags_en` values, with an admin review count;
 - REST-visible video, gallery, hero, secondary-image, and relation fields;
-- a simple editor meta box for the new fields;
-- bidirectional related-post IDs and normalized `related_content_json` consumed by the frontend.
+- an editor meta box with searchable, ordered related-record selection;
+- up to three one-way related records per item, limited to published exhibitions, activities, moving image, artists/residency, and blog records from the same site;
+- normalized `related_content_json` consumed by the frontend.
 
 ## Safe installation
 
@@ -17,8 +18,10 @@ It provides:
 3. Activate **KYAF Catalog Schema** in WordPress.
 4. Open **Settings → KYAF Catalog** (or click **Settings** beside the plugin) to review schema status.
 5. Use **Review activities** to assign tags to any unmapped activities.
-6. Edit representative posts in each content family and set related post IDs.
+6. Edit representative posts in each content family. Search for related records from the same site, select up to three, and use the arrow controls to set display order.
 7. Confirm `activity_tag` and the new `meta` fields appear in the REST response.
 8. Rebuild the staging frontend.
+
+Related links are directional: choosing a record does not automatically create a reverse link. The plugin validates the site, record type, publication status, maximum count, duplicates, and self-links when saving.
 
 Deactivating the plugin unregisters the schema but deliberately preserves its terms and post meta. Restore the database backup to fully roll back migrated assignments.

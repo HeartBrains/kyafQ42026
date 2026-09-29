@@ -49,7 +49,50 @@ function relatedContent(post: WPRawPost) {
   try {
     const items = JSON.parse(raw);
     if (!Array.isArray(items)) return [];
-    return items.filter((item) => item && typeof item === 'object' && item.id && item.slug && item.type && item.title?.en);
+    const typeAliases: Record<string, 'exhibitions' | 'activities' | 'moving-image' | 'residency' | 'blog'> = {
+      exhibition: 'exhibitions',
+      exhibitions: 'exhibitions',
+      activity: 'activities',
+      activities: 'activities',
+      moving_image: 'moving-image',
+      'moving-image': 'moving-image',
+      residency_artist: 'residency',
+      residency: 'residency',
+      blog_post: 'blog',
+      blog: 'blog',
+    };
+    const sourceSite = m(post, 'site') as WPSite;
+    const seen = new Set<string>();
+
+    return items.flatMap((item) => {
+      if (!item || typeof item !== 'object') return [];
+      const type = typeAliases[String(item.type ?? '')];
+      const id = item.id == null ? '' : String(item.id);
+      const slug = typeof item.slug === 'string' ? item.slug.trim() : '';
+      const site = item.site === 'bkkk' || item.site === 'kyaf' ? item.site : undefined;
+      const titleEn = typeof item.title?.en === 'string' ? item.title.en.trim() : '';
+      if (!type || !id || !slug || !site || !titleEn) return [];
+
+      return [{
+        id,
+        slug,
+        type,
+        site,
+        title: {
+          en: titleEn,
+          th: typeof item.title?.th === 'string' && item.title.th.trim() ? item.title.th : titleEn,
+        },
+        date: typeof item.date === 'string' ? item.date : undefined,
+        image: typeof item.image === 'string' ? item.image : undefined,
+        category: typeof item.category === 'string' ? item.category : undefined,
+      }];
+    }).filter((item) => {
+      if (item.id === String(post.id) || item.site !== sourceSite) return false;
+      const key = `${item.type}:${item.id}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    }).slice(0, 3);
   } catch {
     return [];
   }
