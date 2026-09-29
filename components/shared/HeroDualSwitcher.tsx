@@ -99,7 +99,6 @@ export function HeroDualSwitcher({
       <Link
         className="dual-hero__image-link"
         href={currentSlide.href}
-        aria-label={currentSlide.label}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerCancel={() => { pointerStartX.current = null; }}
@@ -109,7 +108,9 @@ export function HeroDualSwitcher({
             dragged.current = false;
           }
         }}
-      />
+      >
+        <span className="dual-hero__section-link-label">{currentSlide.label}</span>
+      </Link>
       <div className="dual-hero__controls" role="tablist" aria-label={locationLabel}>
         {states.map((state) => (
           <button
@@ -127,16 +128,20 @@ export function HeroDualSwitcher({
           </button>
         ))}
       </div>
-      <div className="dual-hero__slide-label" aria-hidden="true">{currentSlide.label}</div>
       <div className="dual-hero__slide-controls" role="group" aria-label={navigationLabel}>
         <button type="button" aria-label={previousLabel} onClick={() => showSlide(-1)}>
           <span aria-hidden="true">←</span>
         </button>
         <span aria-hidden="true">{activeSlideIndex + 1} / {activeSlides.length}</span>
-        <button type="button" aria-label={nextLabel} onClick={() => showSlide(1)}>
-          <span aria-hidden="true">→</span>
-        </button>
       </div>
+      <button
+        className="dual-hero__next-arrow"
+        type="button"
+        aria-label={nextLabel}
+        onClick={() => showSlide(1)}
+      >
+        <span aria-hidden="true">→</span>
+      </button>
       <Link className="dual-hero__link" href={active.href} aria-label={`Explore ${active.name.replace('\n', ' ')}`}>
         <span>{active.name.split('\n').map((line) => <span key={line}>{line}</span>)}</span>
         <span aria-hidden="true">↗</span>

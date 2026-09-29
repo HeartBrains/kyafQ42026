@@ -109,9 +109,33 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
   touch-action: pan-y;
   cursor: grab;
+}
+
+.dual-hero__section-link-label {
+  max-width: calc(100% - 12rem);
+  color: white;
+  font-size: clamp(1.75rem, 5.6vw, 5rem);
+  line-height: 1.05;
+  text-shadow: 0 2px 16px rgb(0 0 0 / 0.5);
+  transition: transform 250ms ease, text-decoration-color 250ms ease;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.12em;
+  cursor: pointer;
+}
+
+.dual-hero__image-link:hover .dual-hero__section-link-label,
+.dual-hero__image-link:focus-visible .dual-hero__section-link-label {
+  transform: translateY(-0.08em);
+  text-decoration-color: currentColor;
 }
 
 .dual-hero__image-link:active {
@@ -204,6 +228,39 @@
   color: black;
 }
 
+.dual-hero__next-arrow {
+  position: absolute;
+  top: 50%;
+  right: 5%;
+  z-index: 4;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 0.72);
+  border-radius: 50%;
+  background: rgb(0 0 0 / 0.18);
+  color: white;
+  font-size: 1.25rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: opacity 180ms ease, background-color 180ms ease, color 180ms ease;
+  cursor: pointer;
+}
+
+.dual-hero:hover .dual-hero__next-arrow,
+.dual-hero:focus-within .dual-hero__next-arrow {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dual-hero__next-arrow:hover,
+.dual-hero__next-arrow:focus-visible {
+  background: white;
+  color: black;
+}
+
 .dual-hero__link {
   position: absolute;
   right: 5%;
@@ -225,28 +282,36 @@
     font-size: 0.875rem;
   }
 
-  .dual-hero__slide-label,
   .dual-hero__slide-controls {
     left: 4%;
   }
 
-  .dual-hero__slide-label {
-    bottom: 5rem;
+  .dual-hero__section-link-label {
+    max-width: calc(100% - 6rem);
+    font-size: clamp(1.75rem, 8vw, 3rem);
   }
 
   .dual-hero__slide-controls {
     bottom: 1rem;
-  }
-
-  .dual-hero__slide-controls button {
-    width: 2.25rem;
-    height: 2.25rem;
   }
 
   .dual-hero__link {
     right: 4%;
     bottom: 1rem;
     font-size: clamp(1.25rem, 6vw, 1.75rem);
+  }
+
+  .dual-hero__next-arrow {
+    right: 4%;
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
+
+@media (hover: none) {
+  .dual-hero__next-arrow {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 
