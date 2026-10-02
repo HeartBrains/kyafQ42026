@@ -120,7 +120,7 @@ function RelatedContentCarousel({
               )}
             </div>
             {groupKey === 'blog' && item.category && <p className="mb-1 text-xs uppercase tracking-wide text-gray-500">{item.category}</p>}
-            <h4 className="text-lg font-bold leading-tight">{language === 'th' ? (item.title.th || item.title.en) : item.title.en}</h4>
+            <h3 className="text-lg font-bold leading-tight">{language === 'th' ? (item.title.th || item.title.en) : item.title.en}</h3>
             {item.date && <p className="mt-1 text-sm text-gray-600">{item.date}</p>}
           </Link>
         ))}
@@ -172,11 +172,11 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
   // Exhibition details. The same order is shared by BK and KYAF.
   const groupOrder: RelatedGroupKey[] = ['activities', 'exhibitions', 'moving-image', 'residency', 'blog'];
   const groupLabels: Record<RelatedGroupKey, { en: string; th: string }> = {
-    exhibitions: { en: 'Exhibitions', th: 'นิทรรศการ' },
-    activities: { en: 'Activities', th: 'กิจกรรม' },
-    'moving-image': { en: 'Moving Image', th: 'ภาพเคลื่อนไหว' },
-    residency: { en: 'Artists / Residency', th: 'ศิลปิน / พำนัก' },
-    blog: { en: 'Blogs', th: 'บล็อก' },
+    exhibitions: { en: 'Related Exhibitions', th: 'นิทรรศการที่เกี่ยวข้อง' },
+    activities: { en: 'Related Activities', th: 'กิจกรรมที่เกี่ยวข้อง' },
+    'moving-image': { en: 'Related Moving Image', th: 'ภาพเคลื่อนไหวที่เกี่ยวข้อง' },
+    residency: { en: 'Related Artists / Residency', th: 'ศิลปิน / พำนักที่เกี่ยวข้อง' },
+    blog: { en: 'Related Blogs', th: 'บล็อกที่เกี่ยวข้อง' },
   };
   const groups = groupOrder
     .map((key) => ({ key, items: visible.filter((item) => groupFor(item) === key) }))
@@ -184,16 +184,16 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
 
   const prefix = site === 'bkkk' ? '/bk' : '/kyaf';
   return (
-    <section className="mt-20 border-t border-black/20 pt-6" aria-labelledby={`related-${currentId}`}>
-      <h2 id={`related-${currentId}`} className="mb-8 text-lg font-bold">
-        {language === 'th' ? 'เนื้อหาที่เกี่ยวข้อง' : 'Related Content'}
-      </h2>
+    <section
+      className="mt-20 border-t border-black/20 pt-6"
+      aria-label={language === 'th' ? 'เนื้อหาที่เกี่ยวข้อง' : 'Related Content'}
+    >
       <div className="flex flex-col gap-12">
         {groups.map((group) => (
           <section key={group.key} aria-labelledby={`related-${currentId}-${group.key}`}>
-            <h3 id={`related-${currentId}-${group.key}`} className="mb-5 text-base font-bold">
+            <h2 id={`related-${currentId}-${group.key}`} className="mb-5 text-base font-bold">
               {groupLabels[group.key][language]}
-            </h3>
+            </h2>
             <RelatedContentCarousel
               items={group.items}
               prefix={prefix}
