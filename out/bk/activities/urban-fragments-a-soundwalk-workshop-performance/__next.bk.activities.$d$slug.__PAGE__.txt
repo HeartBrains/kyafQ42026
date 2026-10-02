@@ -2,5 +2,5 @@
 2:I[229,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-e9d3448cbf7da940.js","2579","static/chunks/2579-fa7ea9e010261b56.js","8016","static/chunks/app/bk/activities/%5Bslug%5D/page-3ffbe60636f0e950.js"],"ActivityDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"urban-fragments-a-soundwalk-workshop-performance"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"FnUIMZs-6IBZH0zwVcW-s"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"bkkk","slug":"urban-fragments-a-soundwalk-workshop-performance"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"rU0Fcm7EVktUzNXImnunP"}
 5:null
