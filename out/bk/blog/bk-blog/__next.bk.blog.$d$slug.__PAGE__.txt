@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[1398,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-e9d3448cbf7da940.js","8259","static/chunks/app/bk/blog/%5Bslug%5D/page-266d552f1f5b955a.js"],"BlogDetailClientPage"]
+2:I[1398,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-e9d3448cbf7da940.js","8259","static/chunks/app/bk/blog/%5Bslug%5D/page-fe98cd7431e40b73.js"],"BlogDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"bk-blog"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"_7r6WKyi3R9cDwYsP1Wg9"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"bk-blog"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"DMgrF8yKkojTolimkk88v"}
 5:null
