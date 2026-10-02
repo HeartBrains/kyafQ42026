@@ -47,24 +47,35 @@ function RelatedContentCarousel({
   label: string;
   groupKey: RelatedGroupKey;
 }) {
+  const carouselRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
-  const [scrollState, setScrollState] = useState({ hasOverflow: false, atStart: true, atEnd: true });
+  const [scrollState, setScrollState] = useState({ hasOverflow: false, atStart: true, atEnd: true, imageCenterTop: 0 });
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
 
     const updateScrollState = () => {
+      const carousel = carouselRef.current;
+      const firstCardImage = track.firstElementChild?.querySelector<HTMLElement>('[data-related-carousel-image]');
+      const carouselRect = carousel?.getBoundingClientRect();
+      const imageRect = firstCardImage?.getBoundingClientRect();
+
       setScrollState({
         hasOverflow: track.scrollWidth > track.clientWidth + 1,
         atStart: track.scrollLeft <= 1,
         atEnd: track.scrollLeft + track.clientWidth >= track.scrollWidth - 1,
+        imageCenterTop: carouselRect && imageRect
+          ? imageRect.top + imageRect.height / 2 - carouselRect.top
+          : 0,
       });
     };
 
     updateScrollState();
     const resizeObserver = new ResizeObserver(updateScrollState);
     resizeObserver.observe(track);
+    const firstCardImage = track.firstElementChild?.querySelector('[data-related-carousel-image]');
+    if (firstCardImage) resizeObserver.observe(firstCardImage);
     track.addEventListener('scroll', updateScrollState, { passive: true });
     window.addEventListener('resize', updateScrollState);
 
@@ -90,10 +101,10 @@ function RelatedContentCarousel({
   };
 
   return (
-    <div className="relative">
+    <div ref={carouselRef} className="relative overflow-visible">
       <div
         ref={trackRef}
-        className="flex snap-x snap-mandatory flex-nowrap gap-8 overflow-x-auto overscroll-x-contain pb-3 focus-visible:outline-2 focus-visible:outline-offset-4 [-webkit-overflow-scrolling:touch]"
+        className="scrollbar-hide flex snap-x snap-mandatory flex-nowrap gap-8 overflow-x-auto overscroll-x-contain pb-3 focus-visible:outline-2 focus-visible:outline-offset-4 [-webkit-overflow-scrolling:touch]"
         role="region"
         aria-label={label}
         aria-roledescription="carousel"
@@ -101,7 +112,7 @@ function RelatedContentCarousel({
       >
         {items.map((item) => (
           <Link key={`${item.type}:${item.id}`} href={`${prefix}/${routeSegments[item.type]}/${item.slug}/`} className="group block w-[82%] shrink-0 snap-start focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-[calc(50%_-_1rem)] lg:w-[calc(33.333%_-_1.333rem)]">
-            <div className="mb-4 aspect-[3/4] overflow-hidden bg-gray-100">
+            <div data-related-carousel-image className="mb-4 aspect-[3/4] overflow-hidden bg-gray-100">
               {item.image ? (
                 <img src={item.image} alt={language === 'th' ? (item.title.th || item.title.en) : item.title.en} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03]" />
               ) : (
@@ -114,27 +125,27 @@ function RelatedContentCarousel({
           </Link>
         ))}
       </div>
-      {scrollState.hasOverflow && (
-        <>
-          <button
-            type="button"
-            onClick={() => scroll('previous')}
-            disabled={scrollState.atStart}
-            aria-label={language === 'th' ? `เนื้อหาก่อนหน้า: ${label}` : `Previous ${label}`}
-            className="absolute left-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white shadow-lg transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-default disabled:opacity-40"
-          >
-            <ChevronLeft className="h-6 w-6" aria-hidden="true" />
-          </button>
-          <button
-            type="button"
-            onClick={() => scroll('next')}
-            disabled={scrollState.atEnd}
-            aria-label={language === 'th' ? `เนื้อหาถัดไป: ${label}` : `Next ${label}`}
-            className="absolute right-2 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white shadow-lg transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black disabled:cursor-default disabled:opacity-40"
-          >
-            <ChevronRight className="h-6 w-6" aria-hidden="true" />
-          </button>
-        </>
+      {scrollState.hasOverflow && !scrollState.atStart && (
+        <button
+          type="button"
+          onClick={() => scroll('previous')}
+          aria-label={language === 'th' ? `เนื้อหาก่อนหน้า: ${label}` : `Previous ${label}`}
+          style={{ top: scrollState.imageCenterTop }}
+          className="absolute left-0 z-10 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white shadow-lg transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+        >
+          <ChevronLeft className="h-6 w-6" aria-hidden="true" />
+        </button>
+      )}
+      {scrollState.hasOverflow && !scrollState.atEnd && (
+        <button
+          type="button"
+          onClick={() => scroll('next')}
+          aria-label={language === 'th' ? `เนื้อหาถัดไป: ${label}` : `Next ${label}`}
+          style={{ top: scrollState.imageCenterTop }}
+          className="absolute right-0 z-10 flex h-11 w-11 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black text-white shadow-lg transition hover:bg-black/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+        >
+          <ChevronRight className="h-6 w-6" aria-hidden="true" />
+        </button>
       )}
     </div>
   );

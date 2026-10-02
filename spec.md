@@ -25,9 +25,10 @@ Update the existing related-content presentation on current `/bk/` (`bkkk`) and 
 #### Carousel controls
 
 1. Keep each type group as a single horizontal row that supports touch swipe, horizontal trackpad/keyboard scrolling, and scroll snapping; cards must not wrap onto a second line.
-2. When a group overflows horizontally, show visible previous and next arrow buttons at the left and right sides of the row. Each arrow advances or retreats by one card.
-3. Keep both arrow positions visible while the group overflows; disable the previous arrow at the beginning and the next arrow at the end. Do not show arrows when the group fits without scrolling.
-4. Give arrow buttons accessible names and keyboard focus styling. Preserve the existing carousel on both `/bk/` and `/kyaf/` through the shared renderer.
+2. When a group overflows horizontally, show previous/next arrow buttons straddling the left/right edges of the image row, vertically centered on the images. Each arrow advances or retreats by one card.
+3. Show the previous arrow only when earlier records exist and the next arrow only when later records exist. Do not show arrows when the group fits without scrolling.
+4. Hide the horizontal scrollbar while preserving touch swipe, scroll snapping, trackpad/keyboard scrolling, and arrow navigation.
+5. Give arrow buttons accessible names and keyboard focus styling. Preserve the existing carousel on both `/bk/` and `/kyaf/` through the shared renderer.
 
 ### Constraints
 
@@ -70,8 +71,8 @@ The current KYAF site has no Moving Image detail component or published KYAF Mov
 - No `Blogs & Archives` or `Archives` related-content group is rendered.
 - Past records are displayed in their own type group alongside other selected records of that type; Blog records have a `Blogs` group.
 - All six selected Activities on the Mooring example are presented together under Activities in their WordPress-selected order.
-- Every overflowing group has clear previous/next arrows at both sides, each moves one card, and the correct arrow is disabled at each end; non-overflowing groups have no arrows.
-- Swipe, snap, horizontal scrolling, keyboard access, portrait cards, localization, and same-site linking continue to work on applicable BK and KYAF detail pages.
+- Every overflowing group shows a previous arrow only when it can move backward and a next arrow only when it can move forward. Each arrow moves one card and straddles the corresponding image-row edge.
+- Scrollbars stay hidden while swipe, snap, horizontal scrolling, keyboard access, portrait cards, localization, and same-site linking continue to work on applicable BK and KYAF detail pages.
 - WordPress relationship data and controls are not changed, and no automatic recommendations are introduced.
 - The staging build/deploy workflow succeeds before reporting the update deployed.
 
