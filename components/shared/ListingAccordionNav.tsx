@@ -1,6 +1,6 @@
 'use client';
-import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 
 export interface AccordionRecord {
@@ -13,6 +13,85 @@ export interface AccordionSection {
   id: string;
   label: string;
   records: AccordionRecord[];
+}
+
+function AccordionRecordsList({ records, isPast, onRecordClick }: {
+  records: AccordionRecord[];
+  isPast: boolean;
+  onRecordClick: (slug: string) => void;
+}) {
+  const listRef = useRef<HTMLDivElement>(null);
+  const [overflow, setOverflow] = useState({ hasOverflow: false, canScrollUp: false, canScrollDown: false });
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list || !isPast) return;
+
+    const updateOverflow = () => {
+      const hasOverflow = list.scrollHeight > list.clientHeight + 1;
+      setOverflow({
+        hasOverflow,
+        canScrollUp: list.scrollTop > 1,
+        canScrollDown: list.scrollTop + list.clientHeight < list.scrollHeight - 1,
+      });
+    };
+
+    updateOverflow();
+    const resizeObserver = new ResizeObserver(updateOverflow);
+    resizeObserver.observe(list);
+    list.addEventListener('scroll', updateOverflow, { passive: true });
+    window.addEventListener('resize', updateOverflow);
+
+    return () => {
+      resizeObserver.disconnect();
+      list.removeEventListener('scroll', updateOverflow);
+      window.removeEventListener('resize', updateOverflow);
+    };
+  }, [isPast, records.length]);
+
+  const scroll = (direction: 'up' | 'down') => {
+    const list = listRef.current;
+    if (!list) return;
+    list.scrollBy({ top: direction === 'up' ? -list.clientHeight * 0.7 : list.clientHeight * 0.7, behavior: 'smooth' });
+  };
+
+  return (
+    <>
+      {isPast && overflow.hasOverflow && (
+        <div className="flex justify-end gap-1 pb-1">
+          <button
+            type="button"
+            onClick={() => scroll('up')}
+            disabled={!overflow.canScrollUp}
+            aria-label="Scroll past records up"
+            className="rounded p-1 text-gray-500 transition-colors hover:text-black disabled:cursor-default disabled:opacity-30"
+          >
+            <ChevronUp className="h-5 w-5" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            onClick={() => scroll('down')}
+            disabled={!overflow.canScrollDown}
+            aria-label="Scroll past records down"
+            className="rounded p-1 text-gray-500 transition-colors hover:text-black disabled:cursor-default disabled:opacity-30"
+          >
+            <ChevronDown className="h-5 w-5" aria-hidden="true" />
+          </button>
+        </div>
+      )}
+      <div ref={listRef} className={`flex flex-col gap-1 pb-2 ${isPast ? 'max-h-[55vh] overflow-y-auto overscroll-contain' : ''}`}>
+        {records.map((record) => (
+          <button
+            key={record.slug}
+            onClick={() => onRecordClick(record.slug)}
+            className="pl-4 md:pl-6 text-left text-xl md:text-2xl font-normal text-gray-400 hover:text-black transition-colors duration-200 leading-snug py-0.5"
+          >
+            {record.title}
+          </button>
+        ))}
+      </div>
+    </>
+  );
 }
 
 interface ListingAccordionNavProps {
@@ -76,17 +155,11 @@ export function ListingAccordionNav({
                   transition={{ duration: 0.25 }}
                   className="overflow-hidden"
                 >
-                  <div className="flex flex-col gap-1 pb-2">
-                    {section.records.map((record) => (
-                      <button
-                        key={record.slug}
-                        onClick={() => onRecordClick(record.slug)}
-                        className="pl-4 md:pl-6 text-left text-xl md:text-2xl font-normal text-gray-400 hover:text-black transition-colors duration-200 leading-snug py-0.5"
-                      >
-                        {record.title}
-                      </button>
-                    ))}
-                  </div>
+                  <AccordionRecordsList
+                    records={section.records}
+                    isPast={section.id.startsWith('past-')}
+                    onRecordClick={onRecordClick}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>

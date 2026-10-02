@@ -76,9 +76,15 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
             <h3 id={`related-${currentId}-${group.key}`} className="mb-5 text-base font-bold">
               {groupLabels[group.key][language]}
             </h3>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div
+              className="flex snap-x snap-mandatory flex-nowrap gap-8 overflow-x-auto overscroll-x-contain pb-3 [-webkit-overflow-scrolling:touch]"
+              role="region"
+              aria-label={groupLabels[group.key][language]}
+              aria-roledescription="carousel"
+              tabIndex={0}
+            >
               {group.items.map((item) => (
-                <Link key={`${item.type}:${item.id}`} href={`${prefix}/${routeSegments[item.type]}/${item.slug}/`} className="group block focus-visible:outline-2 focus-visible:outline-offset-4">
+                <Link key={`${item.type}:${item.id}`} href={`${prefix}/${routeSegments[item.type]}/${item.slug}/`} className="group block w-[82%] shrink-0 snap-start focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-[calc(50%_-_1rem)] lg:w-[calc(33.333%_-_1.333rem)]">
                   <div className="mb-4 aspect-[3/4] overflow-hidden bg-gray-100">
                     {item.image ? (
                       <img src={item.image} alt={language === 'th' ? (item.title.th || item.title.en) : item.title.en} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03]" />
