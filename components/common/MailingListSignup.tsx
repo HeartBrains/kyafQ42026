@@ -114,10 +114,10 @@ export function MailingListSignup({ site }: MailingListSignupProps) {
               first?.focus();
             }
           }}
-          className={`fixed bottom-0 right-0 z-[101] flex max-h-[90dvh] w-full flex-col overflow-y-auto rounded-t-2xl bg-black p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-white shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none md:top-0 md:h-full md:max-h-none md:w-[min(100vw,28rem)] md:rounded-none md:p-10 ${isOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}
+          className={`fixed bottom-0 right-0 z-[101] flex max-h-[90dvh] w-full flex-col overflow-y-auto rounded-t-2xl bg-black p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-white shadow-2xl transition-transform duration-300 ease-out motion-reduce:transition-none md:bottom-6 md:right-6 md:top-auto md:h-auto md:max-h-[calc(100dvh-3rem)] md:w-96 md:rounded-2xl md:p-6 ${isOpen ? 'translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}`}
         >
-          <div className="mb-10 flex items-start justify-between gap-6">
-            <h2 id={`${panelId}-title`} className="text-base font-medium uppercase tracking-[0.16em] md:text-lg">
+          <div className="mb-6 flex items-start justify-between gap-6">
+            <h2 id={`${panelId}-title`} className="text-base font-medium uppercase tracking-[0.16em]">
               {t('footer.joinMailingList')}
             </h2>
             <button
@@ -143,7 +143,7 @@ export function MailingListSignup({ site }: MailingListSignupProps) {
             </div>
           ) : (
             <>
-              <form onSubmit={handleSubmit} className="flex w-full flex-col items-stretch gap-3 sm:flex-row">
+              <form onSubmit={handleSubmit} className="flex w-full flex-col items-stretch gap-2 sm:flex-row">
                 <label className="sr-only" htmlFor={`${site}-mailing-list-email`}>
                   {t('footer.emailPlaceholder')}
                 </label>
@@ -157,7 +157,7 @@ export function MailingListSignup({ site }: MailingListSignupProps) {
                   required
                   placeholder={t('footer.emailPlaceholder')}
                   disabled={!isOpen || state === 'submitting'}
-                  className="min-w-0 flex-1 border border-white/50 bg-transparent px-3 py-3 text-sm text-white placeholder:text-white/60 focus:border-white focus:outline-none disabled:opacity-60"
+                  className="h-11 min-w-0 flex-1 border border-white/50 bg-transparent px-3 text-sm text-white placeholder:text-white/60 focus:border-white focus:outline-none disabled:opacity-60"
                 />
                 <input
                   aria-hidden="true"
@@ -168,7 +168,7 @@ export function MailingListSignup({ site }: MailingListSignupProps) {
                   type="text"
                 />
                 <button
-                  className="shrink-0 bg-white px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-white/85 disabled:cursor-wait disabled:opacity-60"
+                  className="h-11 shrink-0 bg-white px-4 text-sm font-medium text-black transition-colors hover:bg-white/85 disabled:cursor-wait disabled:opacity-60"
                   disabled={!isOpen || state === 'submitting'}
                   type="submit"
                 >
