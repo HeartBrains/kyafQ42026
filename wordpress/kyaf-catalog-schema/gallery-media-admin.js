@@ -19,27 +19,33 @@
 		const preview = root.querySelector('[data-gallery-preview]');
 		const emptyMessage = root.querySelector('[data-gallery-empty]');
 		const addButton = root.querySelector('[data-gallery-add]');
-		const idsFromField = (idsField.value || '').split(/[\s,]+/).filter(Boolean).map(Number);
-		let attachmentIds = Array.from(new Set(idsFromField.filter((id) => Number.isInteger(id) && id > 0)));
+		const valuesFromField = (idsField.value || '').split(/\s*,\s*/).filter(Boolean);
+		let galleryItems = Array.from(new Set(valuesFromField.filter((value) => {
+			return (/^\d+$/.test(value) && Number(value) > 0) || /^https?:\/\//i.test(value);
+		})));
 		let mediaFrame;
 		emptyMessage.textContent = labels.noImages || 'No gallery images selected.';
 
+		function isAttachmentId(value) {
+			return /^\d+$/.test(value) && Number(value) > 0;
+		}
+
 		function persist() {
-			idsField.value = attachmentIds.join(',');
+			idsField.value = galleryItems.join(',');
 		}
 
 		function moveAttachment(index, direction) {
 			const targetIndex = index + direction;
-			if (targetIndex < 0 || targetIndex >= attachmentIds.length) return;
-			[attachmentIds[index], attachmentIds[targetIndex]] = [attachmentIds[targetIndex], attachmentIds[index]];
+			if (targetIndex < 0 || targetIndex >= galleryItems.length) return;
+			[galleryItems[index], galleryItems[targetIndex]] = [galleryItems[targetIndex], galleryItems[index]];
 			renderPreview();
 		}
 
 		function renderPreview() {
 			preview.replaceChildren();
-			emptyMessage.hidden = attachmentIds.length > 0;
+			emptyMessage.hidden = galleryItems.length > 0;
 
-			attachmentIds.forEach((id, index) => {
+			galleryItems.forEach((galleryItem, index) => {
 				const item = document.createElement('li');
 				item.className = 'kyaf-catalog-gallery-item';
 
@@ -63,17 +69,20 @@
 				}, index === 0));
 				actions.appendChild(makeButton('↓', (labels.moveDown || 'Move down') + ' ' + caption.textContent, function () {
 					moveAttachment(index, 1);
-				}, index === attachmentIds.length - 1));
+				}, index === galleryItems.length - 1));
 				actions.appendChild(makeButton('×', (labels.remove || 'Remove image') + ' ' + caption.textContent, function () {
-					attachmentIds = attachmentIds.filter((attachmentId) => attachmentId !== id);
+					galleryItems = galleryItems.filter((value, valueIndex) => valueIndex !== index);
 					renderPreview();
 				}));
 				details.appendChild(actions);
 				item.appendChild(details);
 				preview.appendChild(item);
 
-				if (window.wp && window.wp.media) {
-					const attachment = window.wp.media.attachment(id);
+				if (!isAttachmentId(galleryItem)) {
+					thumbnail.src = galleryItem;
+					thumbnail.hidden = false;
+				} else if (window.wp && window.wp.media) {
+					const attachment = window.wp.media.attachment(Number(galleryItem));
 					attachment.fetch().done(function () {
 						const data = attachment.toJSON();
 						const imageUrl = data.sizes && data.sizes.thumbnail ? data.sizes.thumbnail.url : data.url;
@@ -103,19 +112,20 @@
 				mediaFrame.on('open', function () {
 					const selection = mediaFrame.state().get('selection');
 					selection.reset();
-					attachmentIds.forEach((id) => selection.add(window.wp.media.attachment(id)));
+					galleryItems.filter(isAttachmentId).forEach((id) => selection.add(window.wp.media.attachment(Number(id))));
 				});
 
 				mediaFrame.on('select', function () {
 					const selection = mediaFrame.state().get('selection');
 					const selectedIds = selection.map((attachment) => Number(attachment.get('id')))
 						.filter((id) => Number.isInteger(id) && id > 0);
-					const selectedSet = new Set(selectedIds);
-					const orderedIds = attachmentIds.filter((id) => selectedSet.has(id));
+					const selectedSet = new Set(selectedIds.map(String));
+					const orderedIds = galleryItems.filter((value) => !isAttachmentId(value) || selectedSet.has(value));
 					selectedIds.forEach((id) => {
-						if (!orderedIds.includes(id)) orderedIds.push(id);
+						const value = String(id);
+						if (!orderedIds.includes(value)) orderedIds.push(value);
 					});
-					attachmentIds = orderedIds;
+					galleryItems = orderedIds;
 					renderPreview();
 				});
 			}

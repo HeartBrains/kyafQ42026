@@ -73,6 +73,66 @@ async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
   }
 }
 
+export type GalleryMediaEntry = { type: 'id'; id: number } | { type: 'url'; url: string };
+
+export function galleryMediaEntries(value: unknown): GalleryMediaEntry[] {
+  let values: unknown[];
+  if (typeof value === 'string') {
+    const raw = value.trim();
+    if (!raw) return [];
+    try {
+      const decoded: unknown = JSON.parse(raw);
+      values = Array.isArray(decoded) ? decoded : raw.split(',');
+    } catch {
+      values = raw.split(',');
+    }
+  } else if (Array.isArray(value)) {
+    values = value;
+  } else if (value && typeof value === 'object') {
+    values = [value];
+  } else {
+    return [];
+  }
+
+  const entries: GalleryMediaEntry[] = [];
+  const add = (item: unknown) => {
+    if (typeof item === 'number' && Number.isInteger(item) && item > 0) {
+      entries.push({ type: 'id', id: item });
+    } else if (typeof item === 'string') {
+      const token = item.trim();
+      if (/^\d+$/.test(token) && Number(token) > 0) {
+        entries.push({ type: 'id', id: Number(token) });
+      } else if (/^https?:\/\//i.test(token)) {
+        entries.push({ type: 'url', url: token });
+      }
+    } else if (item && typeof item === 'object') {
+      const media = item as { id?: unknown; url?: unknown; source_url?: unknown };
+      const url = typeof media.url === 'string' ? media.url : media.source_url;
+      if (typeof url === 'string' && /^https?:\/\//i.test(url)) {
+        entries.push({ type: 'url', url });
+      } else if (typeof media.id === 'number' || (typeof media.id === 'string' && /^\d+$/.test(media.id))) {
+        const id = Number(media.id);
+        if (Number.isInteger(id) && id > 0) entries.push({ type: 'id', id });
+      }
+    }
+  };
+
+  values.forEach(add);
+  const seen = new Set<string>();
+  return entries.filter((entry) => {
+    const key = entry.type === 'id' ? `id:${entry.id}` : `url:${entry.url}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+export function resolveGalleryMedia(value: unknown, mediaMap: Map<number, string>): string[] {
+  return galleryMediaEntries(value)
+    .map((entry) => entry.type === 'id' ? mediaMap.get(entry.id) ?? '' : entry.url)
+    .filter(Boolean);
+}
+
 // Fetch a single URL with up to `retries` attempts, waiting `delayMs` between each
 const WP_AUTH_USER = process.env.WP_AUTH_USER ?? '';
 const WP_AUTH_PASS = process.env.WP_AUTH_PASS ?? '';
@@ -123,10 +183,9 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
       const fiu = post.meta?.featured_image_url;
       if (typeof fiu === 'number' && fiu > 0) mediaIds.push(fiu);
       if (typeof fiu === 'string' && /^\d+$/.test(fiu)) mediaIds.push(Number(fiu));
-      const galleryIds = post.meta?.gallery_media;
-      if (Array.isArray(galleryIds)) {
-        galleryIds.forEach(id => { const n = Number(id); if (n > 0) mediaIds.push(n); });
-      }
+      galleryMediaEntries(post.meta?.gallery_media).forEach((entry) => {
+        if (entry.type === 'id') mediaIds.push(entry.id);
+      });
     }
 
     // Batch-resolve all IDs in one request
@@ -141,10 +200,7 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
         ? (mediaMap.get(post.featured_media) ?? '')
         : fiuId > 0 ? (mediaMap.get(fiuId) ?? '') : '';
 
-      const galleryIds = post.meta?.gallery_media;
-      const galleryUrls = Array.isArray(galleryIds)
-        ? galleryIds.map(id => mediaMap.get(Number(id)) ?? '').filter(Boolean)
-        : [];
+      const galleryUrls = resolveGalleryMedia(post.meta?.gallery_media, mediaMap);
 
       const taxonomyTerms = (post.activity_tag ?? [])
         .map((id) => activityTerms.get(Number(id)))
@@ -238,14 +294,15 @@ export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPo
     const mediaIds: number[] = [];
     if (post.featured_media && post.featured_media > 0) mediaIds.push(post.featured_media);
     const gm = post.meta?.gallery_media;
-    if (Array.isArray(gm)) gm.forEach(id => { const n = Number(id); if (n > 0) mediaIds.push(n); });
+    galleryMediaEntries(gm).forEach((entry) => {
+      if (entry.type === 'id') mediaIds.push(entry.id);
+    });
 
     const mediaMap = await batchResolveMedia(mediaIds);
 
     const featuredUrl = post.featured_media && post.featured_media > 0
       ? (mediaMap.get(post.featured_media) ?? '') : '';
-    const galleryUrls = Array.isArray(gm)
-      ? gm.map(id => mediaMap.get(Number(id)) ?? '').filter(Boolean) : [];
+    const galleryUrls = resolveGalleryMedia(gm, mediaMap);
 
     const taxonomyTerms = (post.activity_tag ?? [])
       .map((id) => activityTerms.get(Number(id)))

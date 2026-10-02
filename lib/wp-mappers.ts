@@ -122,15 +122,38 @@ function featuredImageUrl(post: WPRawPost): string {
   return '';
 }
 
-// Gallery: uploaded WordPress media is authoritative; legacy URL text is fallback-only.
+// gallery_media URLs/IDs remain primary; the older gallery text field is fallback-only.
+function galleryMediaUrls(value: unknown): string[] {
+  let values: unknown[];
+  if (typeof value === 'string') {
+    const raw = value.trim();
+    if (!raw) return [];
+    try {
+      const decoded: unknown = JSON.parse(raw);
+      values = Array.isArray(decoded) ? decoded : raw.split(',');
+    } catch {
+      values = raw.split(',');
+    }
+  } else if (Array.isArray(value)) {
+    values = value;
+  } else {
+    return [];
+  }
+
+  return values.flatMap((item) => {
+    if (typeof item === 'string' && /^https?:\/\//i.test(item.trim())) return [item.trim()];
+    if (item && typeof item === 'object') {
+      const media = item as { url?: unknown; source_url?: unknown };
+      const url = typeof media.url === 'string' ? media.url : media.source_url;
+      if (typeof url === 'string' && /^https?:\/\//i.test(url)) return [url];
+    }
+    return [];
+  });
+}
+
 function galleryUrls(post: WPRawPost): string[] {
   const resolved = post.resolvedGallery ?? [];
-
-  // gallery_media may be an array of URLs (from JetEngine media field)
-  const galleryMedia = post.meta?.['gallery_media'];
-  const mediaUrls: string[] = Array.isArray(galleryMedia)
-    ? (galleryMedia as string[]).filter(u => typeof u === 'string' && u.startsWith('http'))
-    : [];
+  const mediaUrls = galleryMediaUrls(post.meta?.['gallery_media']);
 
   const uploadedMedia = [...new Set([...resolved, ...mediaUrls])];
   if (uploadedMedia.length > 0) return uploadedMedia;

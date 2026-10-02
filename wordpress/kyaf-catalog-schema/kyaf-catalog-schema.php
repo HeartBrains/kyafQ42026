@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KYAF Catalog Schema
  * Description: Versioned activity taxonomy, editorial media fields, and curated related-content data for the KYAF/BKKK frontend.
- * Version: 0.6.0
+ * Version: 0.7.0
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: HeartBrains
@@ -45,6 +45,7 @@ function kyaf_catalog_register_schema() {
 		'secondary_image_url' => 'esc_url_raw',
 		'hero_landscape_image'=> 'esc_url_raw',
 		'hero_portrait_image' => 'esc_url_raw',
+		'gallery_media'       => 'kyaf_catalog_sanitize_gallery_meta',
 		'related_content_json'=> 'sanitize_textarea_field',
 	);
 
@@ -65,7 +66,7 @@ function kyaf_catalog_register_schema() {
 			);
 		}
 
-		foreach ( array( 'gallery_media', 'related_content_ids' ) as $array_key ) {
+		foreach ( array( 'related_content_ids' ) as $array_key ) {
 			register_post_meta(
 				$post_type,
 				$array_key,
@@ -78,7 +79,7 @@ function kyaf_catalog_register_schema() {
 							'items' => array( 'type' => 'integer' ),
 						),
 					),
-					'sanitize_callback' => 'gallery_media' === $array_key ? 'kyaf_catalog_sanitize_gallery_ids' : 'kyaf_catalog_sanitize_ids',
+					'sanitize_callback' => 'kyaf_catalog_sanitize_ids',
 					'auth_callback'     => function ( $allowed, $meta_key, $post_id ) {
 						return current_user_can( 'edit_post', $post_id );
 					},
@@ -98,9 +99,38 @@ function kyaf_catalog_sanitize_ids( $value ) {
 	return array_values( array_unique( array_filter( array_map( 'absint', $values ) ) ) );
 }
 
-function kyaf_catalog_sanitize_gallery_ids( $value ) {
-	$ids = kyaf_catalog_sanitize_ids( $value );
-	return array_values( array_filter( $ids, 'wp_attachment_is_image' ) );
+/**
+ * Keep the legacy gallery_media contract: a comma-separated list of image URLs
+ * or attachment IDs. Existing JetEngine galleries store URLs in this field.
+ */
+function kyaf_catalog_sanitize_gallery_meta( $value ) {
+	if ( is_string( $value ) ) {
+		$decoded = json_decode( $value, true );
+		$value   = is_array( $decoded ) ? $decoded : preg_split( '/\s*,\s*/', trim( $value ) );
+	}
+
+	$items = is_array( $value ) ? $value : array();
+	$clean = array();
+	foreach ( $items as $item ) {
+		if ( is_numeric( $item ) ) {
+			$attachment_id = absint( $item );
+			if ( $attachment_id && wp_attachment_is_image( $attachment_id ) ) {
+				$clean[] = (string) $attachment_id;
+			}
+			continue;
+		}
+
+		if ( ! is_string( $item ) ) {
+			continue;
+		}
+		$url    = esc_url_raw( trim( $item ) );
+		$scheme = strtolower( (string) wp_parse_url( $url, PHP_URL_SCHEME ) );
+		if ( $url && in_array( $scheme, array( 'http', 'https' ), true ) ) {
+			$clean[] = $url;
+		}
+	}
+
+	return implode( ',', array_values( array_unique( $clean ) ) );
 }
 
 function kyaf_catalog_activate() {
@@ -200,21 +230,21 @@ function kyaf_catalog_enqueue_related_admin_script( $hook ) {
 		'kyaf-catalog-related-content',
 		plugin_dir_url( __FILE__ ) . 'related-content-admin.js',
 		array(),
-		'0.6.0',
+		'0.7.0',
 		true
 	);
 	wp_enqueue_script(
 		'kyaf-catalog-gallery-media',
 		plugin_dir_url( __FILE__ ) . 'gallery-media-admin.js',
 		array( 'media-editor' ),
-		'0.6.0',
+		'0.7.0',
 		true
 	);
 	wp_enqueue_style(
 		'kyaf-catalog-gallery-media',
 		plugin_dir_url( __FILE__ ) . 'gallery-media-admin.css',
 		array(),
-		'0.6.0'
+		'0.7.0'
 	);
 	wp_localize_script(
 		'kyaf-catalog-gallery-media',
@@ -359,15 +389,15 @@ function kyaf_catalog_render_meta_box( $post ) {
 
 function kyaf_catalog_render_gallery_media_meta_box( $post ) {
 	wp_nonce_field( 'kyaf_catalog_save_gallery_media', 'kyaf_catalog_gallery_nonce' );
-	$gallery_ids = kyaf_catalog_sanitize_gallery_ids( get_post_meta( $post->ID, 'gallery_media', true ) );
+	$gallery_items = kyaf_catalog_sanitize_gallery_meta( get_post_meta( $post->ID, 'gallery_media', true ) );
 	?>
 	<div class="kyaf-catalog-gallery" data-kyaf-gallery-control>
-		<p class="description">Upload or select images for the detail-page gallery. The order shown here is the slide order; legacy gallery URLs are used only when no uploaded images are selected.</p>
+		<p class="description">Upload or select images for the detail-page gallery. Existing gallery images are retained; order the images below to set the slide order.</p>
 		<input
 			type="hidden"
 			id="gallery_media"
 			name="gallery_media"
-			value="<?php echo esc_attr( implode( ',', $gallery_ids ) ); ?>"
+			value="<?php echo esc_attr( $gallery_items ); ?>"
 			data-gallery-ids
 		>
 		<ol class="kyaf-catalog-gallery-preview" data-gallery-preview aria-label="Selected gallery images"></ol>
@@ -446,7 +476,7 @@ function kyaf_catalog_save_fields( $post_id ) {
 	}
 
 	if ( $valid_gallery_nonce ) {
-		$gallery = isset( $_POST['gallery_media'] ) ? kyaf_catalog_sanitize_gallery_ids( wp_unslash( $_POST['gallery_media'] ) ) : array();
+		$gallery = isset( $_POST['gallery_media'] ) ? kyaf_catalog_sanitize_gallery_meta( wp_unslash( $_POST['gallery_media'] ) ) : '';
 		update_post_meta( $post_id, 'gallery_media', $gallery );
 	}
 }
@@ -578,7 +608,7 @@ function kyaf_catalog_render_settings_page() {
 		<h2><?php echo esc_html__( 'Schema status', 'kyaf-catalog-schema' ); ?></h2>
 		<table class="widefat striped" style="max-width: 760px">
 			<tbody>
-				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.6.0</td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.7.0</td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Activity tags', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d tagged / %d total', $tagged, $total ) ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Need tag review', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( (string) $untagged ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Last activation migration', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d automatically mapped', absint( $report['mapped'] ?? 0 ) ) ); ?></td></tr>

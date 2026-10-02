@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { fetchCPTBySlug, fetchMenuConfig, type WPRawPost, type MenuConfig, type MenuConfigMap, type CoverConfigMap } from './wp-api';
+import { fetchCPTBySlug, fetchMenuConfig, galleryMediaEntries, resolveGalleryMedia, type WPRawPost, type MenuConfig, type MenuConfigMap, type CoverConfigMap } from './wp-api';
 import { mapAboutUs } from './wp-mappers';
 import {
   mapBkkkExhibition, mapKyafExhibition, mapMovingImage,
@@ -64,8 +64,9 @@ async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRaw
       const fiu = post.meta?.featured_image_url;
       if (typeof fiu === 'number' && fiu > 0) mediaIds.push(fiu);
       if (typeof fiu === 'string' && /^\d+$/.test(fiu)) mediaIds.push(Number(fiu));
-      const gm = post.meta?.gallery_media;
-      if (Array.isArray(gm)) gm.forEach(id => { const n = Number(id); if (n > 0) mediaIds.push(n); });
+      galleryMediaEntries(post.meta?.gallery_media).forEach((entry) => {
+        if (entry.type === 'id') mediaIds.push(entry.id);
+      });
     }
     const mediaMap = await batchResolveMedia(mediaIds);
 
@@ -76,14 +77,7 @@ async function clientFetchCPT(cpt: string, site: 'bkkk' | 'kyaf'): Promise<WPRaw
       const featuredUrl = post.featured_media && post.featured_media > 0
         ? (mediaMap.get(post.featured_media) ?? '')
         : fiuId > 0 ? (mediaMap.get(fiuId) ?? '') : '';
-      const gm = post.meta?.gallery_media;
-      const galleryUrls = Array.isArray(gm)
-        ? gm.map(entry => {
-            if (typeof entry === 'string' && entry.startsWith('http')) return entry;
-            const resolved = mediaMap.get(Number(entry));
-            return resolved ?? '';
-          }).filter(Boolean)
-        : [];
+      const galleryUrls = resolveGalleryMedia(post.meta?.gallery_media, mediaMap);
       // Priority: WP featured_media → featured_image_url direct URL string (no gallery fallback)
       const fiuStr = typeof fiu === 'string' && fiu.startsWith('http') ? fiu : '';
       const resolvedFeaturedImage = featuredUrl || fiuStr || '';
