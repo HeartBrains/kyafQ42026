@@ -118,15 +118,6 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
               {dateDisplay && dateDisplay.split(',').map((d, i) => (
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
-              <div className="mt-6">
-                <ActivityTagFilter
-                  language={language}
-                  site="bkkk"
-                  variant="sidebar"
-                  initialSelectedTag={selectedTag}
-                  onNavigateToListing={(tag) => onNavigate(activityListingUrl('bkkk', tag))}
-                />
-              </div>
               {data.curator?.en && (
                 <p className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   Curated by {language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}
@@ -145,6 +136,15 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
                   </a>
                 </div>
               )}
+              <div className="activity-detail-tag-filter mt-8 text-xl md:text-2xl">
+                <ActivityTagFilter
+                  language={language}
+                  site="bkkk"
+                  variant="sidebar"
+                  initialSelectedTag={selectedTag}
+                  onNavigateToListing={(tag) => onNavigate(activityListingUrl('bkkk', tag))}
+                />
+              </div>
             </div>
           </div>
           <div className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>

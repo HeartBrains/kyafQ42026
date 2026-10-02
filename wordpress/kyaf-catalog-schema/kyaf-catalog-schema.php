@@ -212,7 +212,6 @@ function kyaf_catalog_map_legacy_activity_tags() {
 function kyaf_catalog_add_meta_boxes() {
 	foreach ( KYAF_CATALOG_POST_TYPES as $post_type ) {
 		add_meta_box( 'kyaf-catalog-fields', 'KYAF Catalog Fields', 'kyaf_catalog_render_meta_box', $post_type, 'normal', 'default' );
-		add_meta_box( 'kyaf-catalog-gallery-media', 'Primary Gallery Images', 'kyaf_catalog_render_gallery_media_meta_box', $post_type, 'side', 'high' );
 	}
 }
 add_action( 'add_meta_boxes', 'kyaf_catalog_add_meta_boxes' );
@@ -225,39 +224,12 @@ function kyaf_catalog_enqueue_related_admin_script( $hook ) {
 	if ( ! $screen || ! in_array( $screen->post_type, KYAF_CATALOG_POST_TYPES, true ) ) {
 		return;
 	}
-	wp_enqueue_media();
 	wp_enqueue_script(
 		'kyaf-catalog-related-content',
 		plugin_dir_url( __FILE__ ) . 'related-content-admin.js',
 		array(),
 		'0.7.0',
 		true
-	);
-	wp_enqueue_script(
-		'kyaf-catalog-gallery-media',
-		plugin_dir_url( __FILE__ ) . 'gallery-media-admin.js',
-		array( 'media-editor' ),
-		'0.7.0',
-		true
-	);
-	wp_enqueue_style(
-		'kyaf-catalog-gallery-media',
-		plugin_dir_url( __FILE__ ) . 'gallery-media-admin.css',
-		array(),
-		'0.7.0'
-	);
-	wp_localize_script(
-		'kyaf-catalog-gallery-media',
-		'kyafCatalogGalleryMedia',
-		array(
-			'title'      => 'Select gallery images',
-			'buttonText' => 'Use selected images',
-			'moveUp'     => 'Move up',
-			'moveDown'   => 'Move down',
-			'remove'     => 'Remove image',
-			'noImages'   => 'No gallery images selected.',
-			'imageLabel' => 'Image',
-		)
 	);
 	wp_localize_script(
 		'kyaf-catalog-related-content',

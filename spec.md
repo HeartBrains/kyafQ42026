@@ -1,6 +1,61 @@
 # Workspace Specification
 
-## Active Feature: Mobile Detail Galleries and WordPress Gallery Uploads
+## Gallery Editor UI: Use JetEngine Field Without Duplicate Panel
+
+### Objective
+
+Avoid confusing editors with two controls for the same gallery by hiding the catalog plugin’s custom “Primary Gallery Images” panel while keeping the existing JetEngine `gallery_media` field as the editor-facing control.
+
+### Requirements
+
+1. Do not register or display the catalog plugin’s custom “Primary Gallery Images” meta box on supported post types.
+2. Keep the JetEngine `gallery_media` field available as the sole gallery editor for exhibitions, activities, moving image, artists/residency, and blog records.
+3. Keep the existing `gallery_media` metadata key, accepted URL/attachment-ID formats, sanitizer, REST exposure, and frontend mapping unchanged.
+4. On detail pages, `gallery_media` remains the primary gallery source. If it yields no usable images, the older `gallery` text field remains the fallback. If neither contains images, preserve the existing featured-image or empty-gallery behavior.
+5. Listing cards may use the first `gallery_media` image as their hover image; `gallery_media` remains distinct from the featured/cover-image field.
+6. Do not rewrite stored gallery data. Deploy only the catalog plugin PHP change to staging WordPress; do not deploy static-site output or production systems.
+
+### Constraints
+
+- Preserve the existing metadata key `gallery_media`, its JetEngine configuration, and accepted URL/attachment-ID formats.
+- Do not rewrite or migrate existing WordPress gallery records.
+- Remove only the custom plugin editor panel and assets that are exclusively used by it; retain gallery sanitization and REST/frontend support.
+- Do not confuse the gallery with the featured image, which remains the listing/default image and the fallback when no gallery image is available.
+- No frontend, gallery display, listing hover, static-site build, or production deployment behavior changes are in scope.
+
+### Architecture
+
+```text
+WordPress JetEngine gallery control
+  └─ `gallery_media` metadata
+       ├─ detail gallery/carousel (primary source)
+       ├─ legacy `gallery` metadata (fallback only)
+       └─ first gallery image may be used for listing-card hover
+
+Featured image remains separate and supplies the listing/default image or
+the detail-page fallback when neither gallery field has usable images.
+```
+
+JetEngine remains responsible for the WordPress gallery editor control. The catalog-schema plugin continues registering/sanitizing the `gallery_media` metadata and exposing it to REST, but must not add its own competing editor panel. The frontend mapper in `lib/wp-mappers.ts` reads `gallery_media` first and reads legacy `gallery` only if the primary field provides no usable images. Detail templates then render the mapped gallery, with existing featured-image fallback behavior.
+
+### Implementation steps
+
+1. Remove the catalog plugin’s custom “Primary Gallery Images” meta-box registration and its panel-only uploader assets.
+2. Keep the JetEngine `gallery_media` field, plugin metadata registration/sanitizer, REST exposure, and frontend mapping intact.
+3. Verify PHP syntax and confirm the plugin no longer renders/enqueues the duplicate panel while retaining existing gallery behavior.
+
+### Success criteria
+
+- Only one editor-facing gallery control remains: JetEngine’s `gallery_media` field.
+- The plugin no longer shows its duplicate “Primary Gallery Images” panel or loads its uploader assets.
+- Gallery data, REST behavior, detail galleries, listing hover images, and featured-image fallback remain unchanged.
+- PHP syntax validation passes; no WordPress records or production/static-site deployment state are changed.
+
+---
+
+## Previously Specified Feature: Mobile Detail Galleries and WordPress Gallery Uploads
+
+> Earlier implementation plan retained for context. The “Gallery Editor UI” section above governs the current request to use JetEngine’s existing gallery control without a duplicate plugin panel.
 
 ### Objective
 

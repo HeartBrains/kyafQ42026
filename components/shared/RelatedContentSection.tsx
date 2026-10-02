@@ -34,7 +34,10 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
   };
   const seen = new Set<string>();
   const visible = (items ?? [])
-    .filter((item) => item.id !== currentId && item.type !== currentType && item.site === site && Boolean(routeSegments[item.type]))
+    // Exhibition pages intentionally recommend other types, not another
+    // exhibition. Other detail pages can show curated records of their own type
+    // (for example, related Activities or Moving Image records).
+    .filter((item) => item.id !== currentId && !(currentType === 'exhibitions' && item.type === 'exhibitions') && item.site === site && Boolean(routeSegments[item.type]))
     .filter((item) => {
       const key = `${item.type}:${item.id}`;
       if (seen.has(key)) return false;
@@ -47,7 +50,9 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
   const archiveTypes = new Set<RelatedContentItem['type']>(['exhibitions', 'activities', 'moving-image']);
   const groupFor = (item: RelatedContentItem): RelatedGroupKey =>
     item.type === 'blog' || (archiveTypes.has(item.type) && item.status === 'past') ? 'blogs-archives' : item.type;
-  const groupOrder: RelatedGroupKey[] = ['exhibitions', 'activities', 'moving-image', 'residency', 'blogs-archives'];
+  // Activity recommendations lead the related-content area, including on
+  // Exhibition details. The same order is shared by BK and KYAF.
+  const groupOrder: RelatedGroupKey[] = ['activities', 'exhibitions', 'moving-image', 'residency', 'blogs-archives'];
   const groupLabels: Record<RelatedGroupKey, { en: string; th: string }> = {
     exhibitions: { en: 'Exhibitions', th: 'นิทรรศการ' },
     activities: { en: 'Activities', th: 'กิจกรรม' },

@@ -473,6 +473,16 @@
   }
 }
 
+.activity-detail-tag-filter .activity-tag-filter__heading,
+.activity-detail-tag-filter .activity-tag-filter__button {
+  font-size: 66%;
+}
+
+.activity-detail-tag-filter .activity-tag-filter__heading svg {
+  width: 0.9em;
+  height: 0.9em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .dual-hero__image {
     transition: none;
