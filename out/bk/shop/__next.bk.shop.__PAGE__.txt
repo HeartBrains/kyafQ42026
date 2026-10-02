@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[5343,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","4286","static/chunks/4286-3114d8a161acc5f7.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-eb38036fcdf5e857.js","3148","static/chunks/3148-dae4173e1872c896.js","2579","static/chunks/2579-cb3ac3ca9d74da62.js","556","static/chunks/556-ccc36654f420adc5.js","4506","static/chunks/4506-5d300a96bb53c791.js","1425","static/chunks/app/bk/shop/page-7b551526e70722f3.js"],"ClientPage"]
+2:I[5343,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","4286","static/chunks/4286-3114d8a161acc5f7.js","6437","static/chunks/6437-e2444ce22a270c53.js","1193","static/chunks/1193-a949bef9f6df8fef.js","3148","static/chunks/3148-0e74034cc73ee330.js","2579","static/chunks/2579-fa7ea9e010261b56.js","556","static/chunks/556-ccc36654f420adc5.js","4506","static/chunks/4506-69aa952ac2a825e7.js","1425","static/chunks/app/bk/shop/page-7b551526e70722f3.js"],"ClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","component":"ShopPage"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"4Y81O1GleW5zKQjUzZQNA"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","component":"ShopPage"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"wLgn_Udfkl0_lo78bQtXa"}
 5:null
