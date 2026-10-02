@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[6599,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-e9d3448cbf7da940.js","6599","static/chunks/6599-fdf0e5e4e2b5b4f4.js","56","static/chunks/app/kyaf/activities/%5Bslug%5D/page-375de8e2bd17caf3.js"],"ActivityDetailClientPage"]
+2:I[6599,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-e9d3448cbf7da940.js","6599","static/chunks/6599-12e6a22e16ef65e7.js","56","static/chunks/app/kyaf/activities/%5Bslug%5D/page-375de8e2bd17caf3.js"],"ActivityDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"kyaf","slug":"k-bar-experience"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"VwtIr2BMdC1ZBChQs-Xbf"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"kyaf","slug":"k-bar-experience"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"0vyQPiTVMKZA4Sg361lR3"}
 5:null
