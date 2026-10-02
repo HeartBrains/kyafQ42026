@@ -73,7 +73,8 @@
 
 .dual-hero {
   position: relative;
-  min-height: 80vh;
+  height: 50vh;
+  max-height: 50vh;
   overflow: hidden;
   background: #111;
   color: white;
