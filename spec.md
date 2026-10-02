@@ -1,14 +1,104 @@
-# Specification: Curated Related Records
+# Workspace Specification
 
-## Objective
+## Active Feature: Mobile Detail Galleries and WordPress Gallery Uploads
+
+### Objective
+
+Make gallery uploads easy and reliable for WordPress editors, make uploaded WordPress media the primary gallery source on both sites, and cap detail-page hero sliders at 50vh on mobile so landscape images have more room in the viewport.
+
+This is a planning document only. No application or WordPress code has been changed as part of this update.
+
+### Requirements
+
+#### WordPress gallery editor
+
+1. Replace the current comma-separated `gallery_media` ID text input with a WordPress media-library gallery control in the post editor sidebar.
+2. Show the control prominently as the primary gallery-editing field for all catalog post types supported by the plugin: exhibitions, activities, moving image, artists/residency, and blog, on both `/bk/` (`bkkk`) and `/kyaf/` (`kyaf`).
+3. Editors can select/upload multiple images, see selected-image previews, remove images, and preserve/reorder the gallery sequence before saving.
+4. Persist the ordered WordPress attachment IDs in the existing `gallery_media` post meta field as an integer array compatible with the existing REST schema. Protect saves using WordPress capabilities and nonces.
+5. Do not delete or rewrite existing values in the legacy URL-text `gallery` field as part of this change.
+
+#### Front-end gallery source and presentation
+
+1. Treat successfully resolved `gallery_media` attachment IDs as the primary gallery. Preserve their editorial order and use that gallery without appending legacy URL entries.
+2. For legacy records with no valid/resolved `gallery_media` items, continue to use the existing URL-text `gallery` field as a backward-compatible fallback.
+3. If neither source provides images, retain each detail page's existing featured-image/empty-gallery behavior; this feature does not change empty-gallery semantics.
+4. On mobile viewports, cap the complete hero/gallery slider area on every detail page on both sites at a maximum height of `50vh`.
+5. Apply the mobile cap across exhibition, activity, moving-image, artist/residency, and blog detail pages. Keep carousel navigation, slide order, and single-image behavior unchanged.
+6. Preserve current image-fit/cropping behavior and current desktop sizing; this request changes the mobile maximum height only.
+
+### Constraints
+
+- Keep `/bk/` mapped to internal site ID `bkkk`, and `/kyaf/` mapped to `kyaf`.
+- Retain `gallery_media` as the stable CMS/REST field and its ordered integer-ID shape; do not introduce a public unauthenticated write endpoint.
+- Keep the legacy `gallery` URL string readable for existing posts. Uploaded media takes precedence; legacy URLs are used only when no valid uploaded media resolves.
+- Apply one consistent mobile height rule to every supported detail template while avoiding unrelated changes to page layouts, carousel behavior, or desktop presentation.
+- Use staging WordPress (`q42026.content.khaoyaiart.org`) and staging site (`dev.khaoyaiart.org`) for verification. Production CMS/hosting changes are out of scope.
+- WordPress plugin deployment and static-site deployment are separate workflows. Do not deploy either as part of this planning task; later implementation must follow `AGENTS.md` and the repository deployment instructions.
+- Before writing application code, follow the repository's requirement to read the relevant Next.js guides under `node_modules/next/dist/docs/`.
+- Preserve unrelated existing worktree changes; this specification update does not authorize changing application code or generated `out/` files.
+
+### Architecture
+
+```text
+WordPress editor sidebar
+  └─ media-library gallery selector
+       └─ ordered attachment IDs in `gallery_media`
+            └─ existing REST field (integer array)
+                 └─ batch media resolver in the front end
+                      ├─ use resolved uploaded media as the primary gallery
+                      └─ fall back to legacy URL-text `gallery` when empty
+                           └─ detail-page carousel on BK and KYAF
+                                └─ mobile slider maximum height: 50vh
+```
+
+The WordPress schema already exposes `gallery_media` as an array of integer attachment IDs, and the front-end fetch/mapping path already resolves those IDs to image URLs. The CMS currently renders the field as a plain comma-separated text input in the main catalog metabox, while the detail templates merge resolved media and URL text. The implementation should upgrade the editor control and adjust precedence in the existing mapping path, rather than add another gallery data field or endpoint.
+
+Detail hero carousels are currently implemented in site-specific detail templates. Apply the mobile cap consistently across the five supported detail types on both sites, preferably through a shared style/helper where practical, while preserving each template's current image-fit behavior and desktop sizing.
+
+### Implementation steps
+
+1. **Confirm the current contracts and responsive breakpoint**
+   - Review the catalog plugin's `gallery_media` registration/sanitizer, REST payload, media resolver, all detail templates, and the project's existing mobile breakpoint conventions.
+   - Keep the current ordered integer-array REST contract and identify every supported BK/KYAF detail carousel.
+2. **Build the WordPress sidebar media selector**
+   - Replace the comma-separated text input with a media-library multi-select/uploader in the editor sidebar for every supported catalog post type.
+   - Support preview, add/upload, remove, and reorder; save ordered attachment IDs to `gallery_media` with nonce/capability protection.
+3. **Make uploaded media the primary front-end source**
+   - Keep the existing batch media resolution path.
+   - When one or more gallery attachment IDs resolve, use those URLs in the stored order and do not append legacy URLs.
+   - When no uploaded media resolves, preserve support for the existing `gallery` URL-text field.
+4. **Cap detail sliders on mobile**
+   - Apply a 50vh maximum to the hero/gallery slider area at the existing mobile breakpoint in all exhibition, activity, moving-image, artist/residency, and blog detail templates for both sites.
+   - Retain the existing crop/fit rules, navigation, dots, slide count, and desktop sizing.
+5. **Verify on staging**
+   - Test selecting, uploading, reordering, removing, saving, and reopening a multi-image gallery in the WordPress sidebar for representative post types.
+   - Confirm the REST response stores ordered IDs and the site displays the uploaded images first; confirm a legacy-only record still renders its URL gallery.
+   - Check mobile portrait and landscape images, one- and multi-slide galleries, and all supported detail-page types on both sites; confirm the slider never exceeds 50vh on mobile and desktop remains unchanged.
+   - Run the configured staging build/deployment verification only after implementation is authorized and changes are ready.
+
+### Success criteria
+
+- Editors can manage the gallery through a prominent WordPress sidebar media-library control rather than entering comma-separated IDs.
+- The selected gallery order persists as integer attachment IDs in `gallery_media` for all supported post types.
+- Resolved `gallery_media` images are the primary gallery and are not mixed with stale legacy URL images; records without uploaded media continue to use legacy `gallery` URLs.
+- Every supported BK and KYAF detail-page hero/gallery slider is at most 50vh tall on mobile, with current image-fit behavior and carousel interactions preserved.
+- Desktop hero/gallery sizing and unrelated page content remain unchanged.
+- Staging validation succeeds without changing production systems, credentials, or unrelated worktree files.
+
+---
+
+## Previously Specified Feature: Curated Related Records
+
+### Objective
 
 Let WordPress editors curate any number of related records for each eligible record on the Bangkok Kunsthalle (`/bk/`, internal site ID `bkkk`) and Khao Yai Art Forest (`/kyaf/`, internal site ID `kyaf`). Display those recommendations as portrait-image cards at the bottom of each corresponding detail page.
 
 This document is an implementation plan only. No application or WordPress code has been changed as part of writing this specification.
 
-## Requirements
+### Requirements
 
-### Editorial relationships
+#### Editorial relationships
 
 1. Add a relationship selector to the WordPress edit screen for records of every supported type: exhibitions, activities, moving image, artists/residency, and blog.
 2. Editors may select zero or more related records per record, with no fixed count limit. Selection must be searchable and support records from all five supported types.
@@ -16,7 +106,7 @@ This document is an implementation plan only. No application or WordPress code h
 4. Selection order is editorial order and is preserved on the front end. Do not generate automatic recommendations from tags or other metadata.
 5. Prevent a record from linking to itself and remove duplicate selections.
 
-### Detail-page presentation
+#### Detail-page presentation
 
 1. Render selected relationships on all eligible detail pages for both sites, reusing the existing `Related Content` section title and site language handling.
 2. Place the section at the bottom of the detail page, after the main content, embedded video, and any existing detail sections. Do not show a second/duplicate related section.
@@ -25,7 +115,7 @@ This document is an implementation plan only. No application or WordPress code h
 5. Each card links to the correct detail route for its record type under the current site prefix. Artists/residency records use the existing artists detail route.
 6. Preserve the card title and any optional category/date metadata currently supported. Use the appropriate English or Thai title.
 
-### Supported type-to-route mapping
+#### Supported type-to-route mapping
 
 | WordPress record type | Front-end relation type | Detail route segment |
 |---|---|---|
@@ -35,7 +125,7 @@ This document is an implementation plan only. No application or WordPress code h
 | Artist / residency | `residency` | `artists` |
 | Blog | `blog` | `blog` |
 
-## Constraints
+### Constraints
 
 - Keep `/bk/` mapped to internal site ID `bkkk` and `/kyaf/` mapped to `kyaf`.
 - WordPress remains the editorial source of truth; the front end must not hard-code recommendation lists.
@@ -47,7 +137,7 @@ This document is an implementation plan only. No application or WordPress code h
 - Do not commit credentials or stale generated `out/` output. Normal source deployment is handled by the staging GitHub Actions workflow.
 - Implementation must follow the repository's current Next.js guidance in `node_modules/next/dist/docs/` before changing application code.
 
-## Architecture
+### Architecture
 
 ```text
 WordPress editor (site-scoped selector; no count limit)
@@ -74,7 +164,7 @@ The current `RelatedContentSection` is shared by exhibition, activity, moving-im
 
 For the CMS field, use a WordPress/JetEngine relationship selector that can search across the supported record types while enforcing the current site and allowing an unrestricted number of relationships. If JetEngine cannot provide the required cross-type, site-scoped selector, document and implement the smallest authenticated WordPress admin/meta integration that exposes the same REST contract; do not add a public write API.
 
-## Implementation steps
+### Implementation steps
 
 1. **Confirm CMS data shape**
    - Inspect the staging WordPress post types, site-identification metadata, and current `related_content_json` / `related_content` values.
@@ -95,7 +185,7 @@ For the CMS field, use a WordPress/JetEngine relationship selector that can sear
    - Confirm the editor rejects cross-site/self/duplicate selections and that the REST payload preserves all selected IDs in order with required display fields.
    - Verify rendered cards, links, localization, responsive layout, empty state, and static build through the configured GitHub Actions workflow.
 
-## Success criteria
+### Success criteria
 
 - Editors can select and order any number of records from the five supported types for each eligible post in WordPress.
 - The editor only offers same-site candidates; no recommendation can navigate from `/bk/` to `/kyaf/` or vice versa.

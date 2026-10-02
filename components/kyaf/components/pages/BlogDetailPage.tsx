@@ -61,7 +61,7 @@ export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPagePro
                   <ImageWithFallback
                     src={src}
                     alt={`${wpPost.title[language] || wpPost.title.en} Gallery ${index + 1}`}
-                    className="w-full h-auto min-h-[50vh] max-h-[80vh] object-cover block opacity-90"
+                    className="w-full h-auto min-h-0 max-h-[50vh] object-cover block opacity-90 md:min-h-[50vh] md:max-h-[80vh]"
                   />
                 </CarouselItem>
               ))}

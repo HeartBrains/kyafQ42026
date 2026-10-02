@@ -47,7 +47,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
                   <img
                     src={src}
                     alt={`${data.name} ${index + 1}`}
-                    className="w-full h-auto max-h-[80vh] object-cover block"
+                    className="w-full h-auto min-h-0 max-h-[50vh] object-cover block md:max-h-[80vh]"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />

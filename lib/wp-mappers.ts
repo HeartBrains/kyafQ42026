@@ -19,8 +19,9 @@ type Lang = 'en' | 'th';
 
 function m(post: WPRawPost, key: string): string {
   const val = post.meta?.[key];
-  if (Array.isArray(val)) return val.join(',');
-  return val ?? '';
+  if (Array.isArray(val)) return val.map(String).join(',');
+  if (typeof val === 'string' || typeof val === 'number') return String(val);
+  return '';
 }
 
 // Decode HTML entities in plain-text fields (e.g. &amp; → &, &#8217; → ')
@@ -120,7 +121,7 @@ function featuredImageUrl(post: WPRawPost): string {
   return '';
 }
 
-// Gallery: native WP media IDs (resolved at fetch time) merged with text URL fallback
+// Gallery: uploaded WordPress media is authoritative; legacy URL text is fallback-only.
 function galleryUrls(post: WPRawPost): string[] {
   const resolved = post.resolvedGallery ?? [];
 
@@ -130,14 +131,10 @@ function galleryUrls(post: WPRawPost): string[] {
     ? (galleryMedia as string[]).filter(u => typeof u === 'string' && u.startsWith('http'))
     : [];
 
-  const text = splitUrls(m(post, 'gallery'));
+  const uploadedMedia = [...new Set([...resolved, ...mediaUrls])];
+  if (uploadedMedia.length > 0) return uploadedMedia;
 
-  // Merge all sources, deduplicated
-  const merged = [...resolved];
-  for (const url of [...mediaUrls, ...text]) {
-    if (!merged.includes(url)) merged.push(url);
-  }
-  return merged;
+  return [...new Set(splitUrls(m(post, 'gallery')))];
 }
 
 // ─── BKKK Exhibition ─────────────────────────────────────────────────────────

@@ -61,7 +61,7 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
                   <ImageWithFallback
                     src={src}
                     alt={`${title} ${index + 1}`}
-                    className="w-full h-auto min-h-[50vh] max-h-[80vh] object-cover block"
+                    className="w-full h-auto min-h-0 max-h-[50vh] object-cover block md:min-h-[50vh] md:max-h-[80vh]"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     crossOrigin="anonymous"
                   />
@@ -115,6 +115,15 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
               {dateDisplay && dateDisplay.split(',').map((d, i) => (
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
+              <div className="mt-6">
+                <ActivityTagFilter
+                  language={language}
+                  site="kyaf"
+                  variant="sidebar"
+                  initialSelectedTag={selectedTag}
+                  onNavigateToListing={(tag) => onNavigate(activityListingUrl('kyaf', tag))}
+                />
+              </div>
               {data.curator?.en && (
                 <p className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                   Curated by {language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}
@@ -138,15 +147,6 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
                   </a>
                 </div>
               )}
-            </div>
-            <div className="md:px-[28px]">
-              <ActivityTagFilter
-                language={language}
-                site="kyaf"
-                variant="sidebar"
-                initialSelectedTag={selectedTag}
-                onNavigateToListing={(tag) => onNavigate(activityListingUrl('kyaf', tag))}
-              />
             </div>
           </div>
           <div className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>

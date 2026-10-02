@@ -31,7 +31,7 @@ export interface WPRawPost {
   content: { rendered: string } | null;
   date: string;
   modified: string;
-  meta: Record<string, string | string[]>;
+  meta: Record<string, unknown>;
   featured_media?: number;
   // Custom taxonomies are returned as term IDs even when `_embed=wp:term`
   // is unavailable to the public REST context.
