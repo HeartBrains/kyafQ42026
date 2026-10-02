@@ -1,5 +1,82 @@
 # Workspace Specification
 
+## Active Plan: Related-Content Type Groups and Carousel Controls
+
+### Objective
+
+Update the existing related-content presentation on current `/bk/` (`bkkk`) and `/kyaf/` (`kyaf`) detail pages so past records remain grouped with their own content type, and make overflowing related-record carousels visibly navigable with previous/next arrows.
+
+### Requirements
+
+#### WordPress relationship data
+
+1. Keep WordPress as the source of truth for related records. Editors already have an ordered, searchable relationship control, documented in `wordpress/kyaf-catalog-schema/README.md`.
+2. Do not add a second relationship control, modify the CMS field, impose a relationship-count limit, or automatically invent recommendations. Render only the valid records selected in WordPress.
+3. Preserve the existing normalized `related_content_json` contract, same-site relationship restrictions, editorial order, and existing front-end validation.
+
+#### Related-content grouping
+
+1. Render each selected record in the group for its record type, regardless of whether its status is current, upcoming, or past.
+2. Remove the combined `Blogs & Archives` group and do not create an `Archives` group. Past exhibitions, activities, and moving-image records stay with their respective `Exhibitions`, `Activities`, and `Moving Image` groups. Blog records appear in a `Blogs` group.
+3. Preserve the selected editorial order within each type group. For example, a Mooring record with six related Activities must show all six together in its Activities group, including any past Activities.
+4. Apply the grouping consistently to all detail pages that use related content on both sites. Keep existing source-page rules: exhibition detail pages omit related exhibitions; other detail types may show their own type when selected.
+5. Preserve same-site-only cards, valid type-to-route mappings, portrait imagery, bilingual titles, optional card metadata, and the existing no-valid-relations behavior (no related-content section).
+
+#### Carousel controls
+
+1. Keep each type group as a single horizontal row that supports touch swipe, horizontal trackpad/keyboard scrolling, and scroll snapping; cards must not wrap onto a second line.
+2. When a group overflows horizontally, show visible previous and next arrow buttons at the left and right sides of the row. Each arrow advances or retreats by one card.
+3. Keep both arrow positions visible while the group overflows; disable the previous arrow at the beginning and the next arrow at the end. Do not show arrows when the group fits without scrolling.
+4. Give arrow buttons accessible names and keyboard focus styling. Preserve the existing carousel on both `/bk/` and `/kyaf/` through the shared renderer.
+
+### Constraints
+
+- Limit this change to the existing related-content frontend presentation and its tests. The WordPress relationship selector already exists; do not add or replace it.
+- Do not change relationship records in WordPress, auto-populate empty relationships, create reverse relationships, or change the same-site restriction.
+- Keep `/bk/` mapped to `bkkk` and `/kyaf/` mapped to `kyaf`.
+- Do not introduce a new KYAF Moving Image detail route as part of this grouping/presentation task; apply changes to current related-content routes and do not create links to unsupported destinations.
+- Do not commit credentials or stale generated `out/`. Use the `HeartBrains/kyafQ42026` `master` deployment workflow if/when implementation is authorized and complete; CI builds static output and Hostinger serves the staging site.
+- Preserve unrelated existing changes in the worktree.
+
+### Architecture
+
+```text
+WordPress existing relation control
+  └─ ordered, site-local record selections
+       └─ normalized related_content_json
+            └─ lib/wp-mappers.ts validates/maps selected records
+                 └─ RelatedContentSection (shared on both sites)
+                      ├─ filter/group by record type only (ignore status)
+                      ├─ keep past items with their type; Blog is its own group
+                      └─ one-line horizontal carousel per group
+                           ├─ swipe/snap/scroll
+                           └─ previous + next arrow controls when overflowing
+```
+
+The existing WordPress control stores ordered related records, with published records limited to supported types and the current site. The frontend mapper normalizes these values, and `RelatedContentSection` applies the site/type filters and renders the cards. Change the grouping key so status no longer diverts past records into an Archives group. Add arrow controls around the existing scrollable row, derive their enabled/disabled state from the track's scroll position, and scroll one card per activation. Do not change the CMS contract or mutate editorial relationships.
+
+The current KYAF site has no Moving Image detail component or published KYAF Moving Image records. This plan does not create that route; existing supported type-to-route behavior remains unchanged.
+
+### Implementation steps
+
+1. Confirm the current relationship meta shape and shared related-content call sites for BK and KYAF; retain the WordPress selector documented by the catalog-schema README.
+2. Update `RelatedContentSection` grouping to classify by record type only, remove the Archives grouping, and render Blog as its own group. Preserve type-group order and editorial ordering within each group.
+3. Add accessible previous/next buttons to overflowing carousel rows. Measure overflow and scroll position, disable the relevant arrow at each boundary, and advance exactly one card per click while retaining swipe/scroll behavior.
+4. Verify representative selected records across activities, exhibitions, moving image, residency/artists, and blogs; confirm past records remain with their type, the Mooring Activity example groups all six activities together, and no Archives group appears.
+5. Verify both site prefixes, mobile swipe and desktop arrows, empty relationships, edge-disabled buttons, correct links, and the staging build/deploy workflow. Push only after implementation and verification; let the master CI workflow rebuild `out/` for Hostinger.
+
+### Success criteria
+
+- No `Blogs & Archives` or `Archives` related-content group is rendered.
+- Past records are displayed in their own type group alongside other selected records of that type; Blog records have a `Blogs` group.
+- All six selected Activities on the Mooring example are presented together under Activities in their WordPress-selected order.
+- Every overflowing group has clear previous/next arrows at both sides, each moves one card, and the correct arrow is disabled at each end; non-overflowing groups have no arrows.
+- Swipe, snap, horizontal scrolling, keyboard access, portrait cards, localization, and same-site linking continue to work on applicable BK and KYAF detail pages.
+- WordPress relationship data and controls are not changed, and no automatic recommendations are introduced.
+- The staging build/deploy workflow succeeds before reporting the update deployed.
+
+This section is the current implementation plan for related-content grouping and carousel controls. Historical specifications below remain for context where not superseded by these requirements.
+
 ## Gallery Editor UI: Use JetEngine Field Without Duplicate Panel
 
 ### Objective
@@ -143,7 +220,9 @@ Detail hero carousels are currently implemented in site-specific detail template
 
 ---
 
-## Previously Specified Feature: Curated Related Records
+## Historical Initial Plan: Curated Related Records (Superseded by Active Plan Above)
+
+> The relationship selector described below is already present in WordPress, as documented in `wordpress/kyaf-catalog-schema/README.md`. The active plan above is the current scope: keep that control and change only frontend grouping and carousel navigation. Do not follow historical steps below that propose adding or replacing the selector.
 
 ### Objective
 
