@@ -143,7 +143,7 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
           </div>
         </div>
         <VideoPlayerEmbed url={data.videoEmbedUrl} title={`${title || 'Moving image'} video`} />
-        <RelatedContentSection items={data.relatedContent} currentId={data.id} site="bkkk" language={language} />
+        <RelatedContentSection items={data.relatedContent} currentId={data.id} currentType="moving-image" site="bkkk" language={language} />
       </div>
     </div>
   );

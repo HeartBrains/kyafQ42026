@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KYAF Catalog Schema
  * Description: Versioned activity taxonomy, editorial media fields, and curated related-content data for the KYAF/BKKK frontend.
- * Version: 0.5.0
+ * Version: 0.6.0
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: HeartBrains
@@ -200,21 +200,21 @@ function kyaf_catalog_enqueue_related_admin_script( $hook ) {
 		'kyaf-catalog-related-content',
 		plugin_dir_url( __FILE__ ) . 'related-content-admin.js',
 		array(),
-		'0.5.0',
+		'0.6.0',
 		true
 	);
 	wp_enqueue_script(
 		'kyaf-catalog-gallery-media',
 		plugin_dir_url( __FILE__ ) . 'gallery-media-admin.js',
 		array( 'media-editor' ),
-		'0.5.0',
+		'0.6.0',
 		true
 	);
 	wp_enqueue_style(
 		'kyaf-catalog-gallery-media',
 		plugin_dir_url( __FILE__ ) . 'gallery-media-admin.css',
 		array(),
-		'0.5.0'
+		'0.6.0'
 	);
 	wp_localize_script(
 		'kyaf-catalog-gallery-media',
@@ -287,6 +287,7 @@ function kyaf_catalog_related_item( $source_id, $related_id ) {
 	if ( '' === $date ) {
 		$date = get_the_date( 'j F Y', $related_id );
 	}
+	$status = sanitize_key( (string) get_post_meta( $related_id, 'status', true ) );
 	$post_type_object = get_post_type_object( $related->post_type );
 
 	return array(
@@ -300,6 +301,7 @@ function kyaf_catalog_related_item( $source_id, $related_id ) {
 		'date'     => $date,
 		'image'    => $image,
 		'category' => $post_type_object ? $post_type_object->labels->singular_name : '',
+		'status'   => in_array( $status, array( 'current', 'upcoming', 'past' ), true ) ? $status : '',
 		'site'     => $site,
 	);
 }
@@ -576,7 +578,7 @@ function kyaf_catalog_render_settings_page() {
 		<h2><?php echo esc_html__( 'Schema status', 'kyaf-catalog-schema' ); ?></h2>
 		<table class="widefat striped" style="max-width: 760px">
 			<tbody>
-				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.5.0</td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.6.0</td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Activity tags', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d tagged / %d total', $tagged, $total ) ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Need tag review', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( (string) $untagged ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Last activation migration', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d automatically mapped', absint( $report['mapped'] ?? 0 ) ) ); ?></td></tr>

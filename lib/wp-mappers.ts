@@ -86,6 +86,7 @@ function relatedContent(post: WPRawPost) {
         date: typeof item.date === 'string' ? item.date : undefined,
         image: typeof item.image === 'string' ? item.image : undefined,
         category: typeof item.category === 'string' ? item.category : undefined,
+        status: item.status === 'current' || item.status === 'upcoming' || item.status === 'past' ? item.status : undefined,
       }];
     }).filter((item) => {
       if (item.id === String(post.id) || item.site !== sourceSite) return false;

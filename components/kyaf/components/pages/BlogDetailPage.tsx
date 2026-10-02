@@ -143,7 +143,7 @@ export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPagePro
             )}
           </div>
         </div>
-        <RelatedContentSection items={wpPost.relatedContent} currentId={wpPost.id} site="kyaf" language={language} />
+        <RelatedContentSection items={wpPost.relatedContent} currentId={wpPost.id} currentType="blog" site="kyaf" language={language} />
       </div>
     </div>
   );

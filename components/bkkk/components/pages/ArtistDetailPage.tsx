@@ -148,7 +148,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
             )}
           </div>
         </div>
-        <RelatedContentSection items={data.relatedContent} currentId={String(data.id)} site="bkkk" language={language} />
+        <RelatedContentSection items={data.relatedContent} currentId={String(data.id)} currentType="residency" site="bkkk" language={language} />
       </div>
     </div>
   );
