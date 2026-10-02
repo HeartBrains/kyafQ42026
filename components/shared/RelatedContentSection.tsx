@@ -22,7 +22,7 @@ interface RelatedContentSectionProps {
   language: 'en' | 'th';
 }
 
-type RelatedGroupKey = RelatedContentItem['type'] | 'blogs-archives';
+type RelatedGroupKey = Exclude<RelatedContentItem['type'], 'blog'> | 'blogs-archives';
 
 export function RelatedContentSection({ items, currentId, currentType, site, language }: RelatedContentSectionProps) {
   const routeSegments: Record<RelatedContentItem['type'], string> = {
