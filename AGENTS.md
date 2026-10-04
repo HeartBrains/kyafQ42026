@@ -4,6 +4,10 @@
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
 <!-- END:nextjs-agent-rules -->
 
+## Current repository
+
+The current project is `HeartBrains/kyafQ42026`, using the `master` branch. Use this repository for ongoing work. `HeartBrains/khaoyaiart-next` is a separate repository and is not the current target; do not edit or push there unless the user explicitly requests a repository switch.
+
 ## URL prefix mapping
 
 The BK site uses `/bk/` in URLs but the internal site identifier is `bkkk`. The KYAF site uses `/kyaf/`.
