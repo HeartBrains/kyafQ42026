@@ -64,7 +64,7 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
 
       </div>
     </footer>
-    <div className="md:hidden fixed inset-x-0 bottom-0 z-50 bg-black text-white shadow-[0_-4px_18px_rgba(0,0,0,0.2)]" role="contentinfo">
+    <div data-mobile-sticky-footer className="md:hidden fixed inset-x-0 bottom-0 z-50 bg-black text-white shadow-[0_-4px_18px_rgba(0,0,0,0.2)]" role="contentinfo">
       {isExpanded && (
         <div className="border-b border-white/20 px-6 py-5">
           <div className="flex items-center justify-between gap-4">
