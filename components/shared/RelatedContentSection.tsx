@@ -191,7 +191,7 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
       <div className="flex flex-col gap-12">
         {groups.map((group) => (
           <section key={group.key} aria-labelledby={`related-${currentId}-${group.key}`}>
-            <h2 id={`related-${currentId}-${group.key}`} className="mb-5 text-base font-bold">
+            <h2 id={`related-${currentId}-${group.key}`} className="mb-5 text-xl md:text-2xl font-bold">
               {groupLabels[group.key][language]}
             </h2>
             <RelatedContentCarousel

@@ -1,6 +1,61 @@
 # Workspace Specification
 
-## Active Plan: Related-Content Type Groups and Carousel Controls
+## Active Plan: Site-Cover Preview from Main Menu
+
+### Objective
+
+On both `/bk/` and `/kyaf/`, let visitors preview the corresponding site cover from the existing site-name link in the open hamburger menu. Hovering a site name reveals that site's existing landing-page cover image across the full viewport. The normal menu appearance is restored when the pointer enters the left half of the viewport. Clicking the site name navigates to that site.
+
+### Requirements
+
+1. Apply the interaction to the cross-site links in both existing menu overlays: “Khao Yai Art Forest” links to `/kyaf/`, and “Bangkok Kunsthalle” links to `/bk/`.
+2. On desktop pointer hover, display the matching existing landing-page cover image as a full-viewport background preview: Bangkok Kunsthalle uses the existing BK landing cover; Khao Yai Art Forest uses the existing KYAF landing cover.
+3. Keep the open menu and its links visible and usable above the preview, with adequate contrast. The preview changes only the visual background; it does not navigate or otherwise alter the menu state.
+4. Restore the normal menu appearance, including its original menu background, when the pointer enters the left half of the viewport. Closing the menu also clears the preview.
+5. Clicking/tapping either site-name link navigates to its corresponding site route. Do not require a separate click target or change the destination.
+6. Make the preview available on keyboard focus of the site-name link and clear it when focus leaves the link/menu context. Preserve visible focus treatment and normal keyboard navigation.
+7. On touch devices, where hover is unavailable, keep the site-name links as ordinary direct navigation links; do not require a preview action before navigation.
+8. Use a smooth, reduced-motion-aware transition consistent with the landing page's existing image fade. Keep the image decorative to assistive technology; retain accessible site names on the links.
+
+### Constraints
+
+- Limit the change to the BK and KYAF frontend menu overlays and related shared styling as needed.
+- Reuse the current landing-page cover assets and existing site routes; do not introduce new images, WordPress fields, or content-fetch behavior.
+- Keep the menu's existing navigation, search, language switcher, close behavior, and responsive layout intact.
+- Do not change the root site chooser or the automatic home hero slideshow.
+- Preserve unrelated existing worktree changes; do not include `out/` or unrelated artifacts in a future source push.
+
+### Architecture
+
+```text
+BK / KYAF Header menu button
+  └─ existing MenuOverlay
+       ├─ existing cross-site name link
+       │    ├─ hover / keyboard focus → site-specific full-viewport cover preview
+       │    └─ click / tap → /bk/ or /kyaf/
+       ├─ pointer enters viewport's left half → clear preview, restore normal overlay
+       └─ close overlay → clear preview
+```
+
+Add an overlay-local preview state to each site's `MenuOverlay`. Render the selected landing-cover image in a decorative, full-screen layer behind the menu content, keeping navigation above it. Connect each site's existing site-name link to the matching preview state while preserving its current destination. Clear preview state when the pointer crosses into the viewport's left half or the overlay closes. Keep focus-based preview behavior accessible and avoid hover-only requirements on touch input.
+
+### Implementation steps
+
+1. Verify the landing-page image asset used for each site and confirm the site-name link locations and destinations in both menu overlays.
+2. Add the full-viewport image preview and transition to the existing BK and KYAF menu overlays, preserving the current menu foreground and contrast.
+3. Wire pointer hover, left-half pointer reset, keyboard focus/blur, overlay-close reset, and direct site-link navigation.
+4. Verify both menu overlays at desktop and mobile widths, including pointer transition to the left half, focus/keyboard use, reduced motion, close/reset, and correct `/bk/` and `/kyaf/` destinations.
+5. Run the relevant checks and review the exact diff. When implementation is authorized and complete, follow the staging `HeartBrains/kyafQ42026/master` workflow; Hostinger deploys from that branch.
+
+### Success criteria
+
+- Hovering or keyboard-focusing either site-name link shows the correct existing landing cover across the viewport without hiding or disabling menu navigation.
+- Moving the pointer into the left half restores the normal open-menu background; closing the overlay leaves no preview state behind.
+- Clicking/tapping “Khao Yai Art Forest” navigates to `/kyaf/`; clicking/tapping “Bangkok Kunsthalle” navigates to `/bk/`.
+- Touch users can navigate directly without hover, and keyboard users can identify/focus/activate both links.
+- Existing menu controls, root landing chooser, and hero slideshow are unchanged.
+
+## Prior Plan (reference): Related-Content Type Groups and Carousel Controls
 
 ### Objective
 

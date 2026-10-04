@@ -1,12 +1,17 @@
 'use client';
 import { X, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ASSETS } from '@/utils/assets';
 import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig } from '@/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
+
+const SITE_COVER_PREVIEWS = {
+  bk: '/assets/c62c64ac454fd8fd1b5ba6a64e8e3a9305f2f778.png',
+  kyaf: '/assets/cf64d0ac119d7726ae241c9d4cf05ce82a8d3c8c.png',
+} as const;
 
 interface MenuOverlayProps {
   isOpen: boolean;
@@ -24,6 +29,11 @@ interface MenuItem {
 
 export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOverlayProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [siteCoverPreview, setSiteCoverPreview] = useState<keyof typeof SITE_COVER_PREVIEWS | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) setSiteCoverPreview(null);
+  }, [isOpen]);
   
   // Safe hook call with fallback for HMR
   let language: 'en' | 'th' = 'en';
@@ -159,18 +169,38 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex text-white font-sans"
+          onPointerMove={(event) => {
+            if (event.pointerType === 'mouse' && event.clientX < event.currentTarget.clientWidth / 2) {
+              setSiteCoverPreview(null);
+            }
+          }}
+          onBlurCapture={(event) => {
+            const nextFocusedElement = event.relatedTarget;
+            if (!(nextFocusedElement instanceof Node) || !event.currentTarget.contains(nextFocusedElement)) {
+              setSiteCoverPreview(null);
+            }
+          }}
         >
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+            style={{ backgroundImage: siteCoverPreview ? `url(${SITE_COVER_PREVIEWS[siteCoverPreview]})` : undefined }}
+          />
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+          />
           {/* Left Image Side - Hidden on Mobile */}
           <motion.div 
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ duration: 0.5, ease: "circOut" }}
-            className="hidden md:block w-1/2 h-full relative overflow-hidden"
+            className="relative z-10 hidden h-full w-1/2 overflow-hidden md:block"
             onClick={onClose}
           >
             <div 
-              className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+              className={`absolute inset-0 h-full w-full bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-0' : 'opacity-100'}`}
               style={{ backgroundImage: `url(${ASSETS.BUILDING})`, filter: 'saturate(0) brightness(0.85)' }}
             />
 
@@ -182,7 +212,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="w-full md:w-1/2 h-full bg-black flex flex-col relative overflow-y-auto"
+            className={`relative z-10 flex h-full w-full flex-col overflow-y-auto transition-colors duration-700 ease-in-out motion-reduce:transition-none md:w-1/2 ${siteCoverPreview ? 'bg-transparent' : 'bg-black'}`}
           >
              {/* Close Button */}
              <div className="absolute top-[8vh] right-[6vw] z-20">
@@ -311,6 +341,10 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         )}
                         <a 
                             href="/kyaf"
+                            onPointerEnter={(event) => {
+                                if (event.pointerType === 'mouse') setSiteCoverPreview('kyaf');
+                            }}
+                            onFocus={() => setSiteCoverPreview('kyaf')}
                             className="text-[18px] text-white font-normal hover:text-gray-300 transition-colors tracking-wide"
                         >
                             Khao Yai Art Forest
