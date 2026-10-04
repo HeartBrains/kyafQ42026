@@ -13,6 +13,9 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
     { href: 'https://www.instagram.com/khaoyai_art_forest/', label: 'Instagram', icon: Instagram },
     { href: 'mailto:info@khaoyaiart.com', label: 'Email', icon: AtSign },
   ];
+  const mobileMailingListTriggerClassName = language === 'th'
+    ? 'inline-block max-w-[72px] whitespace-normal text-[10px] leading-tight'
+    : 'whitespace-nowrap text-[10px] leading-none';
   
   return (
     <>
@@ -94,7 +97,7 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
           ))}
         </div>
         <div className="flex min-w-0 items-center justify-self-end gap-1">
-          <MailingListSignup site="kyaf" triggerClassName="whitespace-nowrap text-[10px] leading-none" />
+          <MailingListSignup site="kyaf" triggerClassName={mobileMailingListTriggerClassName} />
           <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-expanded={isExpanded} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'}>
             {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
           </button>

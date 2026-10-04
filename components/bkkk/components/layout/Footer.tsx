@@ -13,6 +13,9 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
     { href: 'https://www.facebook.com/BangkokKunsthalle', label: 'Facebook', icon: Facebook },
     { href: 'mailto:info@bangkok-kunsthalle.org', label: 'Email', icon: AtSign },
   ];
+  const mobileMailingListTriggerClassName = language === 'th'
+    ? 'inline-block max-w-[72px] whitespace-normal text-[10px] leading-tight'
+    : 'whitespace-nowrap text-[10px] leading-none';
   
   return (
     <>
@@ -86,7 +89,7 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
           ))}
         </div>
         <div className="flex min-w-0 items-center justify-self-end gap-1">
-          <MailingListSignup site="bkkk" triggerClassName="whitespace-nowrap text-[10px] leading-none" />
+          <MailingListSignup site="bkkk" triggerClassName={mobileMailingListTriggerClassName} />
           <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-expanded={isExpanded} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'}>
             {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
           </button>
