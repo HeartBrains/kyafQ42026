@@ -8,6 +8,8 @@ import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig, isSectionVisible } from '@/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
+import KyafWhite from '../../imports/KyafWhite';
+import { Logo } from '../../../bkkk/components/ui/Logo';
 
 const SITE_COVER_PREVIEWS = {
   bk: '/assets/c62c64ac454fd8fd1b5ba6a64e8e3a9305f2f778.png',
@@ -168,6 +170,15 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             aria-hidden="true"
             className={`pointer-events-none absolute inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-0 z-[2] flex items-center justify-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <div className="aspect-[371/159] w-[min(32vw,420px)] min-w-[220px]">
+              {siteCoverPreview === 'bk' && <Logo className="h-auto w-full" white />}
+              {siteCoverPreview === 'kyaf' && <KyafWhite />}
+            </div>
+          </div>
           {/* Left Image Side - Hidden on Mobile */}
           <motion.div 
             initial={{ x: '-100%' }}
@@ -310,7 +321,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         show: { opacity: 1, y: 0 }
                     }}
                 >
-                    <div className="flex items-center gap-6">
+                    <div className="flex w-full items-center gap-6">
                         <ExpandingSearch 
                             onNavigate={(page, slug) => {
                                 onNavigate(page, slug);
@@ -326,7 +337,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                                 if (event.pointerType === 'mouse') setSiteCoverPreview('bk');
                             }}
                             onFocus={() => setSiteCoverPreview('bk')}
-                            className="text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors tracking-wide cursor-pointer"
+                            className="ml-auto text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors tracking-wide cursor-pointer"
                         >
                             Bangkok Kunsthalle
                         </a>

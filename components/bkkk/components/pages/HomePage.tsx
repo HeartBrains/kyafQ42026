@@ -73,7 +73,6 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
         slides={homeHeroSlides}
         previousLabel={language === 'th' ? 'สไลด์ก่อนหน้า' : 'Previous slide'}
         nextLabel={language === 'th' ? 'สไลด์ถัดไป' : 'Next slide'}
-        locationLabel={language === 'th' ? 'เลือกสถานที่' : 'Select location'}
         navigationLabel={language === 'th' ? 'ควบคุมสไลด์' : 'Slide navigation'}
       />
 

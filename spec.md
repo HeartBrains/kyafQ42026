@@ -1,21 +1,106 @@
 # Workspace Specification
 
-## Active Plan: Site-Cover Preview from Main Menu
+## Active Plan: Assess and Upgrade kyafQ42026 WordPress to 7.1 (or 6.9 fallback)
 
 ### Objective
 
-On both `/bk/` and `/kyaf/`, let visitors preview the corresponding site cover from the existing site-name link in the open hamburger menu. Hovering a site name reveals that site's existing landing-page cover image across the full viewport. The normal menu appearance is restored when the pointer enters the left half of the viewport. Clicking the site name navigates to that site.
+Determine the current WordPress core version on the `kyafQ42026` main/staging installation and upgrade it to the newest supported stable branch that passes compatibility checks. The preferred target is the current 7.1 maintenance release; use the latest 6.9 maintenance release only if a verified plugin/theme or hosting incompatibility blocks 7.1. Keep the static frontend repository and production WordPress systems unchanged unless separately approved.
+
+### Version recommendation
+
+Prefer WordPress **7.1.x** for this staging installation, specifically the latest 7.1 maintenance release available at execution time. WordPress.org lists 7.1 as the actively maintained branch and lists 7.1.2 as the latest release; 6.9 remains available as a maintained older branch with 6.9.9 listed in the release archive. [WordPress release archive](https://wordpress.org/download/releases/) The recommendation is conditional on compatibility testing: 7.1's editor, media, responsive-style, and accessibility changes require validation against JetEngine, the custom catalog plugin, the active theme, REST routes, and the frontend build. If those checks fail, choose the latest 6.9.x security/maintenance release as the interim target and document the blocker.
+
+### Target environment
+
+- WordPress API: `https://q42026.content.khaoyaiart.org`
+- Frontend/deployment consumer: `HeartBrains/kyafQ42026` on `master`
+- Hostinger static site: `https://dev.khaoyaiart.org`
+- Scope: the kyafQ42026 main/staging WordPress installation only
+
+### Requirements
+
+1. Establish the installed WordPress core version, PHP version, database version, active theme, active plugins, multisite status, REST/API health, and available disk space before changing anything.
+2. Confirm the installed version and compare it with the selected target: latest stable 7.1.x by default, or latest 6.9.x only when 7.1 compatibility evidence is insufficient. If the installation is already on the selected/current branch, do not perform a redundant core upgrade.
+3. Create and verify recoverable backups of the database, `wp-content`, and the current WordPress core state before the upgrade. Record backup timestamps and locations without committing credentials or backup data to Git.
+4. Check the active theme, active plugins, custom post types, JetEngine fields, REST routes, authentication, media handling, and the frontend's required API responses for the selected WordPress branch (7.1.x preferred, 6.9.x fallback).
+5. Upgrade WordPress core only through the authorized WordPress administration/WP-CLI/Hostinger procedure. Do not silently upgrade unrelated plugins, themes, PHP, or database settings as part of this plan.
+6. Preserve all existing content, custom fields, media, permalinks, REST routes, staging-only indexing settings, and the `q42026` API contract.
+7. After the upgrade, run WordPress health checks and verify representative REST endpoints used by the frontend, including catalog records, media, menus/site configuration, related-content metadata, mailing-list behavior, and any protected routes that require authentication.
+8. If frontend compatibility changes are needed, implement them separately in the `kyafQ42026` source repository and deploy through its normal `master` GitHub Actions workflow. Do not manually commit stale `out/` output unless the documented CI fallback is required after a confirmed workflow failure.
+9. Define a tested rollback path before execution: restore the database and `wp-content`, restore the prior core version, and confirm the staging API and frontend can recover.
+
+### Constraints
+
+- This plan is for `q42026.content.khaoyaiart.org` only. Production WordPress, production APIs, production hosting, and `khaoyaiart-next` are out of scope.
+- Do not expose or store SSH private keys, WordPress credentials, API passwords, salts, database dumps, or backup URLs in the repository, logs, or `spec.md`.
+- Do not modify WordPress content or relationship records while testing. Any synthetic test record must be explicitly approved, isolated, and removed afterward.
+- Do not change the WordPress REST schema, custom post type names, JetEngine field keys, mailing-list route, CORS behavior, or indexing policy without a separate requirement.
+- Do not upgrade plugins/themes or change PHP/database versions automatically; compatibility remediation requires a separate decision and test result.
+- Keep the frontend's static deployment isolated: WordPress plugin changes are deployed separately over authorized Hostinger SSH, while frontend source changes go through `HeartBrains/kyafQ42026/master`.
+- Respect the repository's existing deployment guidance: CI builds with Node 20, consumes the staging WordPress API, commits generated `out/`, and Hostinger serves `dev.khaoyaiart.org`.
+
+### Architecture
+
+```text
+kyafQ42026 WordPress staging
+  ├─ core/version + PHP/database + active extensions
+  ├─ active theme/plugins + custom post types/JetEngine fields
+  ├─ REST API + auth/CORS + mailing-list route
+  └─ database + wp-content backup
+           │
+           ├─ preflight compatibility and backup verification
+           ├─ controlled WordPress 7.1.x core upgrade
+           │    └─ latest 6.9.x fallback only if compatibility blocks 7.1
+           └─ post-upgrade health/API/content checks
+                    │
+                    v
+          kyafQ42026 static frontend build
+                    │
+                    v
+          Hostinger: https://dev.khaoyaiart.org
+```
+
+WordPress remains the source of truth for content and metadata. The frontend consumes the existing REST contract and is not rebuilt until post-upgrade API checks show that the contract remains compatible. WordPress core upgrade operations and frontend static deployment remain separate change paths.
+
+### Implementation steps
+
+1. Inspect the current staging installation and document WordPress core, PHP, database, theme/plugin, multisite, and disk-space versions; capture the current API and frontend health baseline.
+2. Inventory compatibility-sensitive integrations: custom post types, JetEngine fields, catalog metadata, REST routes, mailing-list plugin, authentication, media endpoints, menus/site configuration, and any scheduled jobs.
+3. Create database and file backups, verify that they are readable/restorable, record checksums or equivalent verification, and document the exact rollback commands/procedure.
+4. Confirm the maintenance window and authorized upgrade mechanism, then upgrade only WordPress core to the selected target on q42026 staging: latest 7.1.x by default, latest 6.9.x if the documented compatibility gate fails.
+5. Run WordPress Site Health/WP-CLI checks, inspect logs for new PHP/database errors, verify admin login and editor save/read behavior, and exercise representative REST API requests without mutating production-like content.
+6. Run the kyafQ42026 static build workflow against the upgraded staging API. Verify representative `/bk/` and `/kyaf/` pages, detail records, images/galleries, video previews, related content, menus, mailing-list submission behavior, and indexing-disabled headers.
+7. If all checks pass, document the resulting versions and deployment run. If checks fail, stop frontend rollout, use the prepared rollback path, and record the failing integration and evidence before proposing remediation.
+
+### Success criteria
+
+- The current WordPress version is recorded, and the decision to upgrade or remain on the current version is evidence-based.
+- If an upgrade is approved and needed, q42026 runs the selected WordPress branch (7.1.x preferred; latest 6.9.x fallback) with verified backups and a documented rollback path.
+- Existing content, media, custom fields, REST routes, authentication, CORS, mailing-list behavior, and staging indexing policy remain functional.
+- No production WordPress or production site is changed.
+- The kyafQ42026 GitHub Actions build completes successfully against the upgraded staging API, and Hostinger serves the resulting static output at `https://dev.khaoyaiart.org`.
+- Any incompatibility is isolated, reproducible, and documented; no unreviewed plugin/theme/PHP/database upgrades are bundled into the core upgrade.
+
+
+## Active Plan: Landing-Style Site Link Preview from Main Menu
+
+### Objective
+
+On both `/bk/` and `/kyaf/`, let visitors preview the corresponding site cover from the existing site-name link in the open main navigation. Hovering a site name reveals that site's existing landing-page cover image across the full viewport and shows the matching landing-page logo. The site links align to the right side of the navigation footer for easier activation. The normal menu appearance is restored when the pointer enters the left half of the viewport. Clicking the site name navigates directly to that site.
 
 ### Requirements
 
 1. Apply the interaction to the cross-site links in both existing menu overlays: “Khao Yai Art Forest” links to `/kyaf/`, and “Bangkok Kunsthalle” links to `/bk/`.
 2. On desktop pointer hover, display the matching existing landing-page cover image as a full-viewport background preview: Bangkok Kunsthalle uses the existing BK landing cover; Khao Yai Art Forest uses the existing KYAF landing cover.
-3. Keep the open menu and its links visible and usable above the preview, with adequate contrast. The preview changes only the visual background; it does not navigate or otherwise alter the menu state.
-4. Restore the normal menu appearance, including its original menu background, when the pointer enters the left half of the viewport. Closing the menu also clears the preview.
-5. Clicking/tapping either site-name link navigates to its corresponding site route. Do not require a separate click target or change the destination.
-6. Make the preview available on keyboard focus of the site-name link and clear it when focus leaves the link/menu context. Preserve visible focus treatment and normal keyboard navigation.
-7. On touch devices, where hover is unavailable, keep the site-name links as ordinary direct navigation links; do not require a preview action before navigation.
-8. Use a smooth, reduced-motion-aware transition consistent with the landing page's existing image fade. Keep the image decorative to assistive technology; retain accessible site names on the links.
+3. While a preview is active, show the matching white landing-page logo above the decorative cover layer, using the same logo artwork as the landing page.
+4. Keep the open menu and its links visible and usable above the preview and logo, with adequate contrast. The preview changes only the visual background/logo; it does not navigate or otherwise alter the menu state.
+5. Align the site-name links to the right side of the navigation footer while keeping search and language controls functional.
+6. Restore the normal menu appearance, including its original menu background and hidden preview logo, when the pointer enters the left half of the viewport. Closing the menu also clears the preview.
+7. Clicking/tapping either site-name link navigates to its corresponding site route. Do not require a separate click target or change the destination.
+8. Make the preview available on keyboard focus of the site-name link and clear it when focus leaves the link/menu context. Preserve visible focus treatment and normal keyboard navigation.
+9. On touch devices, where hover is unavailable, keep the site-name links as ordinary direct navigation links; do not require a preview action before navigation.
+10. Use a smooth, reduced-motion-aware transition consistent with the landing page's existing image fade. Keep the cover and logo decorative to assistive technology; retain accessible site names on the links.
+11. Remove the duplicate landing-hero site selector labels and the bottom “Explore …” site link. The main navigation site links are the only cross-site navigation controls required for this interaction.
 
 ### Constraints
 
@@ -54,6 +139,7 @@ Add an overlay-local preview state to each site's `MenuOverlay`. Render the sele
 - Clicking/tapping “Khao Yai Art Forest” navigates to `/kyaf/`; clicking/tapping “Bangkok Kunsthalle” navigates to `/bk/`.
 - Touch users can navigate directly without hover, and keyboard users can identify/focus/activate both links.
 - Existing menu controls, root landing chooser, and hero slideshow are unchanged.
+- The landing hero no longer renders the circled duplicate site labels or bottom Explore link; slide arrows, the active site's imagery, and the main navigation remain available.
 
 ## Prior Plan (reference): Related-Content Type Groups and Carousel Controls
 

@@ -7,6 +7,8 @@ import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig } from '@/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
+import { Logo } from '../ui/Logo';
+import KyafWhite from '../../../kyaf/imports/KyafWhite';
 
 const SITE_COVER_PREVIEWS = {
   bk: '/assets/c62c64ac454fd8fd1b5ba6a64e8e3a9305f2f778.png',
@@ -190,6 +192,15 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             aria-hidden="true"
             className={`pointer-events-none absolute inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
+          <div
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-0 z-[2] flex items-center justify-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <div className="w-[min(32vw,420px)] min-w-[220px]">
+              {siteCoverPreview === 'bk' && <Logo className="h-auto w-full" white />}
+              {siteCoverPreview === 'kyaf' && <div className="aspect-[371/159] w-full"><KyafWhite /></div>}
+            </div>
+          </div>
           {/* Left Image Side - Hidden on Mobile */}
           <motion.div 
             initial={{ x: '-100%' }}
@@ -327,7 +338,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         show: { opacity: 1, y: 0 }
                     }}
                 >
-                    <div className="flex items-center gap-6">
+                    <div className="flex w-full items-center gap-6">
                         {siteConfig.menu.search && (
                           <ExpandingSearch 
                               onNavigate={(page, slug) => {
@@ -345,7 +356,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                                 if (event.pointerType === 'mouse') setSiteCoverPreview('kyaf');
                             }}
                             onFocus={() => setSiteCoverPreview('kyaf')}
-                            className="text-[18px] text-white font-normal hover:text-gray-300 transition-colors tracking-wide"
+                            className="ml-auto text-[18px] text-white font-normal hover:text-gray-300 transition-colors tracking-wide"
                         >
                             Khao Yai Art Forest
                         </a>
