@@ -426,6 +426,9 @@ export function mapBlogPost(post: WPRawPost) {
       return fi ? [fi] : [];
     })(),
     imageCredits: m(post, 'image_credits'),
+    videoEmbedUrl: m(post, 'video_embed_url') || m(post, 'video_url'),
+    videoPreviewUrl: post.resolvedVideoPreview?.url,
+    videoPreviewMimeType: post.resolvedVideoPreview?.mimeType,
     content: {
       en: m(post, 'content_en') || post.content?.rendered || '',
       th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',

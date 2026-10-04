@@ -10,6 +10,7 @@ import { useScrollHide } from '@/utils/useScrollHide';
 import { useBlogPostBySlug } from '@/lib/useWPData';
 import { RichContent } from '@/utils/richContent';
 import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
+import { VideoPlayerEmbed } from '@/components/shared/VideoPlayerEmbed';
 
 interface BlogDetailPageProps {
   onNavigate: (page: string) => void;
@@ -136,6 +137,12 @@ export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPagePro
             <Reveal delay={0.2}>
               <div><RichContent content={wpPost.content[language] || wpPost.content.en} /></div>
             </Reveal>
+            <VideoPlayerEmbed
+              url={wpPost.videoEmbedUrl}
+              title={`${wpPost.title[language] || wpPost.title.en} video`}
+              previewUrl={wpPost.videoPreviewUrl}
+              previewMimeType={wpPost.videoPreviewMimeType}
+            />
             {wpPost.imageCredits && (
               <Reveal delay={0.3}>
                 <p className={`text-base text-gray-500 font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{wpPost.imageCredits}</p>

@@ -8,6 +8,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { useBlogPostBySlug } from '@/lib/useWPData';
 import { RichContent } from '@/utils/richContent';
 import { RelatedContentSection } from '@/components/shared/RelatedContentSection';
+import { VideoPlayerEmbed } from '@/components/shared/VideoPlayerEmbed';
 
 interface BlogDetailPageProps {
   onNavigate: (page: string) => void;
@@ -121,6 +122,12 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
             {/* Right Column */}
             <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                <div className="[&>p]:mb-8"><RichContent content={wpPost.content[language] || wpPost.content.en} /></div>
+               <VideoPlayerEmbed
+                 url={wpPost.videoEmbedUrl}
+                 title={`${wpPost.title[language] || wpPost.title.en} video`}
+                 previewUrl={wpPost.videoPreviewUrl}
+                 previewMimeType={wpPost.videoPreviewMimeType}
+               />
 
                {wpPost.imageCredits && (
                  <p className={`text-base text-gray-500 font-normal leading-tight mt-8 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
