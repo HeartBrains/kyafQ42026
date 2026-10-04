@@ -14,7 +14,7 @@
 		var allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'video/mp4', 'video/webm'];
 
 		function showAttachment(attachment) {
-			var mime = attachment.mime || '';
+			var mime = attachment.mime || attachment.mime_type || '';
 			if (allowedMimeTypes.indexOf(mime) === -1) {
 				window.alert('Choose a JPEG, PNG, WebP, or GIF image, or an MP4 or WebM video.');
 				return;
@@ -49,7 +49,9 @@
 					title: 'Choose video preview media',
 					button: { text: 'Use as video preview' },
 					multiple: false,
-					library: { type: ['image', 'video'] }
+					// Don't constrain the media query by generic image/video prefixes.
+					// Keep the full library visible and enforce supported MIME types on select.
+					library: {}
 				});
 				frame.on('select', function () {
 					var selection = frame.state().get('selection').first();

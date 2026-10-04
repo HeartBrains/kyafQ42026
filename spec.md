@@ -131,6 +131,10 @@ The plugin continues to register, sanitize, and expose the hidden URL metadata; 
 
 Let WordPress editors attach a custom image or short video preview to existing YouTube/Vimeo embeds. Show that preview in the current video area, and load the external player only after the visitor chooses to play the video.
 
+### Editor field meaning
+
+The WordPress field labeled **“Video preview image or clip”** is the thumbnail/poster shown before playback; it is not the YouTube/Vimeo URL or the video itself. Choose an image to show a still or animated thumbnail, or a short video clip to loop silently as the preview. Clicking **Play video** switches to the external video. The attachment is stored separately as `video_preview_media_id`, so it does not change the record’s `video_embed_url`, `gallery_media`, featured image, or detail-page gallery.
+
 ### Requirements
 
 1. Add a WordPress Media Library upload/select control alongside the existing Video URL field for every existing detail page that renders `VideoPlayerEmbed`: BK and KYAF Exhibitions and Activities, plus BK Moving Image details.

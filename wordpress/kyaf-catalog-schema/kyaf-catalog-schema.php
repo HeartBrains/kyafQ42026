@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KYAF Catalog Schema
  * Description: Versioned activity taxonomy, editorial media fields, and curated related-content data for the KYAF/BKKK frontend.
- * Version: 0.7.2
+ * Version: 0.7.3
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: HeartBrains
@@ -266,14 +266,14 @@ function kyaf_catalog_enqueue_related_admin_script( $hook ) {
 		'kyaf-catalog-related-content',
 		plugin_dir_url( __FILE__ ) . 'related-content-admin.js',
 		array(),
-		'0.7.2',
+		'0.7.3',
 		true
 	);
 	wp_enqueue_script(
 		'kyaf-catalog-video-preview',
 		plugin_dir_url( __FILE__ ) . 'video-preview-admin.js',
-		array(),
-		'0.7.2',
+		array( 'media-views' ),
+		'0.7.3',
 		true
 	);
 	wp_localize_script(
@@ -659,7 +659,7 @@ function kyaf_catalog_render_settings_page() {
 		<h2><?php echo esc_html__( 'Schema status', 'kyaf-catalog-schema' ); ?></h2>
 		<table class="widefat striped" style="max-width: 760px">
 			<tbody>
-				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.7.2</td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.7.3</td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Activity tags', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d tagged / %d total', $tagged, $total ) ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Need tag review', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( (string) $untagged ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Last activation migration', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d automatically mapped', absint( $report['mapped'] ?? 0 ) ) ); ?></td></tr>
