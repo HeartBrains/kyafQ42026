@@ -82,18 +82,21 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
           </div>
         </div>
       )}
-      <div className="flex min-h-16 items-center justify-between gap-4 px-5 py-3">
-        <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-expanded={isExpanded} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'} className="flex min-w-0 items-center">
-          <div className="h-8 w-[76px]"><KyafWhite /></div>
+      <div className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 py-3">
+        <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-expanded={isExpanded} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'} className="flex min-w-0 items-center justify-self-start">
+          <div className="h-[22px] w-[52px]"><KyafWhite /></div>
         </button>
-        <div className="flex items-center gap-5">
+        <div className="flex items-center justify-center gap-2">
           {socialLinks.map(({ href, label, icon: Icon }) => (
             <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined} aria-label={label} className="hover:text-gray-300">
-              <Icon className="h-5 w-5" />
+              <Icon className="h-4 w-4" />
             </a>
           ))}
-          <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'}>
-            {isExpanded ? <ChevronDown className="h-5 w-5" /> : <ChevronUp className="h-5 w-5" />}
+        </div>
+        <div className="flex min-w-0 items-center justify-self-end gap-1">
+          <MailingListSignup site="kyaf" triggerClassName="whitespace-nowrap text-[10px] leading-none" />
+          <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-expanded={isExpanded} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'}>
+            {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
           </button>
         </div>
       </div>

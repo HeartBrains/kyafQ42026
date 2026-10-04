@@ -7,11 +7,12 @@ import { useLanguage } from '@/utils/languageContext';
 
 type MailingListSignupProps = {
   site: 'bkkk' | 'kyaf';
+  triggerClassName?: string;
 };
 
 type SubmissionState = 'idle' | 'submitting' | 'success' | 'error';
 
-export function MailingListSignup({ site }: MailingListSignupProps) {
+export function MailingListSignup({ site, triggerClassName = '' }: MailingListSignupProps) {
   const { language, t } = useLanguage();
   const [state, setState] = useState<SubmissionState>('idle');
   const [isOpen, setIsOpen] = useState(false);
@@ -75,7 +76,7 @@ export function MailingListSignup({ site }: MailingListSignupProps) {
             if (state === 'success') setState('idle');
             setIsOpen(true);
           }}
-          className="text-right text-sm font-normal tracking-wide transition-colors hover:text-gray-300 md:text-base"
+          className={`text-right text-sm font-normal tracking-wide transition-colors hover:text-gray-300 md:text-base ${triggerClassName}`}
         >
           {t('footer.joinMailingList')}
         </button>
