@@ -1,14 +1,22 @@
 'use client';
-import { Instagram, Facebook, AtSign } from 'lucide-react';
+import { Instagram, Facebook, AtSign, ChevronUp, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 import { useLanguage } from '@/utils/languageContext';
 import KyafWhite from '../../imports/KyafWhite';
 import { MailingListSignup } from '@/components/common/MailingListSignup';
 
 export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) {
   const { language } = useLanguage();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const socialLinks = [
+    { href: 'https://www.facebook.com/profile.php?id=61569868164323', label: 'Facebook', icon: Facebook },
+    { href: 'https://www.instagram.com/khaoyai_art_forest/', label: 'Instagram', icon: Instagram },
+    { href: 'mailto:info@khaoyaiart.com', label: 'Email', icon: AtSign },
+  ];
   
   return (
-    <footer className="w-full bg-black text-white px-[6vw] border-t border-white/10 py-12">
+    <>
+    <footer className="hidden md:block w-full bg-black text-white px-[6vw] border-t border-white/10 py-12">
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-12 md:gap-0">
         
         {/* Left: Logo */}
@@ -46,15 +54,11 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
             </div>
 
             <div className="flex-1 flex justify-start md:justify-around items-center gap-6 w-[80%] sm:w-[40%] px-0 md:px-[29px] py-[0px]">
-              <a href="https://www.facebook.com/profile.php?id=61569868164323" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors cursor-pointer">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="https://www.instagram.com/khaoyai_art_forest/" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors cursor-pointer">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="mailto:info@khaoyaiart.com" className="hover:text-gray-300 transition-colors cursor-pointer">
-                <AtSign className="w-5 h-5" />
-              </a>
+              {socialLinks.map(({ href, label, icon: Icon }) => (
+                <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined} aria-label={label} className="hover:text-gray-300 transition-colors cursor-pointer">
+                  <Icon className="w-5 h-5" />
+                </a>
+              ))}
             </div>
 
             <div className="ml-auto flex flex-col items-end gap-2 text-right">
@@ -68,5 +72,32 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
 
       </div>
     </footer>
+    <div className="md:hidden fixed inset-x-0 bottom-0 z-50 bg-black text-white shadow-[0_-4px_18px_rgba(0,0,0,0.2)]" role="contentinfo">
+      {isExpanded && (
+        <div className="border-b border-white/20 px-6 py-5">
+          <div className="flex items-center justify-between gap-4">
+            <button type="button" onClick={() => onNavigate?.('support')} className="text-left text-sm hover:text-gray-300">{language === 'th' ? 'การสนับสนุน' : 'Support us'}</button>
+            <button type="button" onClick={() => onNavigate?.('contact')} className="text-left text-sm hover:text-gray-300">{language === 'th' ? 'สมัครรับข่าวสาร' : 'Contact us'}</button>
+            <span className="text-[10px] text-gray-500 whitespace-nowrap">©2026 Khao Yai Art Forest</span>
+          </div>
+        </div>
+      )}
+      <div className="flex min-h-16 items-center justify-between gap-4 px-5 py-3">
+        <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-expanded={isExpanded} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'} className="flex min-w-0 items-center">
+          <div className="h-8 w-[76px]"><KyafWhite /></div>
+        </button>
+        <div className="flex items-center gap-5">
+          {socialLinks.map(({ href, label, icon: Icon }) => (
+            <a key={label} href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined} aria-label={label} className="hover:text-gray-300">
+              <Icon className="h-5 w-5" />
+            </a>
+          ))}
+          <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'}>
+            {isExpanded ? <ChevronDown className="h-5 w-5" /> : <ChevronUp className="h-5 w-5" />}
+          </button>
+        </div>
+      </div>
+    </div>
+    </>
   );
 }

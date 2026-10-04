@@ -56,7 +56,7 @@ export function KyafShell({ children, initialCovers, initialCss }: KyafShellProp
           onNavigate={navigate}
           activePage={pathname}
         />
-        <main>{children}</main>
+        <main className="pb-20 md:pb-0">{children}</main>
         <div ref={anchorRef} aria-hidden="true" />
         <div aria-hidden="true" style={{ height: isSticky ? footerHeight : 0 }} />
         <div ref={footerRef} className={isSticky ? 'fixed inset-x-0 bottom-0 z-40' : undefined}>
