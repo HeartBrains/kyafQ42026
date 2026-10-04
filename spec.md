@@ -266,11 +266,11 @@ The plugin continues to register, sanitize, and expose the hidden URL metadata; 
 - `gallery_media` and the featured image are clearly identified as separate, currently used image sources.
 - Frontend behavior is unchanged.
 
-## Uploaded Preview Media for Embedded Videos
+## Uploaded Preview Media for Embedded Videos, Including Blog Posts
 
 ### Objective
 
-Let WordPress editors attach a custom image or short video preview to existing YouTube/Vimeo embeds. Show that preview in the current video area, and load the external player only after the visitor chooses to play the video.
+Let WordPress editors attach a custom image or short video preview to YouTube/Vimeo embeds on every supported catalog record, including blog posts. Show that preview in detail video players and, for blog listings, lazily on card hover; load the external player only after the visitor chooses to play the video.
 
 ### Editor field meaning
 
@@ -278,58 +278,59 @@ The WordPress field labeled **“Video preview image or clip”** is the thumbna
 
 ### Requirements
 
-1. Add a WordPress Media Library upload/select control alongside the existing Video URL field for every existing detail page that renders `VideoPlayerEmbed`: BK and KYAF Exhibitions and Activities, plus BK Moving Image details.
+1. Show a WordPress Media Library upload/select control labeled **“Video preview image or clip”** alongside **Video URL** in **KYAF Catalog Fields** for `exhibition`, `activity`, `blog_post`, and `moving_image` records. This includes both BK and KYAF blog posts, which share the `blog_post` post type.
 2. Allow one optional preview attachment per record. Support static JPEG/PNG/WebP images, animated GIF/WebP images, and short MP4/WebM video clips. Do not promise animated-JPEG behavior; browser support is inconsistent.
 3. Keep the preview separate from `video_embed_url`, `gallery_media`, and the featured image. Store a media attachment ID in a dedicated field such as `video_preview_media_id`; expose the resolved preview URL and MIME type through the existing WordPress REST flow.
 4. When a valid YouTube/Vimeo URL and preview image are present, display the image in the existing 16:9 video area with an accessible Play video control. When a preview clip is present, show it muted, inline, and looping as a preview; the Play video control must load the YouTube/Vimeo player, not replace it with the preview clip.
 5. Do not load the YouTube/Vimeo iframe until the visitor clicks Play. If no custom preview is set, preserve the existing black Play video screen and its click-to-load behavior.
-6. Do not render a preview by itself when the record has no valid video URL.
-7. Keep preview video short, honor the staging WordPress upload-size/type policy, and avoid changing global server upload limits without separate approval. Lazy-load or defer the preview clip where practical and pause it when it is not visible.
-8. Preserve existing video URL validation, embed allowlist, consent behavior, gallery slideshows, and saved media. Require normal WordPress edit/upload permissions; do not create an unauthenticated upload or metadata-write endpoint.
+6. On both BK and KYAF blog listing pages, request a blog's preview only when its card is hovered. Show supported images/GIFs as images and MP4/WebM clips muted and inline while hovered; pause clips when hover ends. Keep the featured image initially visible and retain the first gallery image as the fallback if no usable preview is assigned. Do not request preview media for every blog card during initial page load.
+7. Do not render a preview in detail or listing views when the record has no valid video URL.
+8. Keep preview video short, honor the staging WordPress upload-size/type policy, and avoid changing global server upload limits without separate approval. Lazy-load or defer preview files where practical and pause preview clips when not visible.
+9. Preserve existing video URL validation, embed allowlist, consent behavior, gallery slideshows, and saved media. Require normal WordPress edit/upload permissions; do not create an unauthenticated upload or metadata-write endpoint.
 
 ### Constraints
 
-- This applies only to current detail pages that already render `VideoPlayerEmbed`; do not create a new KYAF Moving Image route.
+- Add the preview editor control to blog posts without adding any new post type or route. Keep current supported detail-page scope: BK and KYAF Exhibitions and Activities, BK Moving Image, and blog detail pages for both sites. Do not create a new KYAF Moving Image route.
 - Uploads go through WordPress Media Library and staging WordPress only. Do not send the preview through the static-site repository or store video binaries in Git.
 - Validate that the selected attachment is an allowed image/video MIME type and belongs to the current WordPress installation; keep the metadata API protected by WordPress edit permissions.
 - Existing records with a video URL and no preview must continue to work without editor changes.
 - Uploading, changing, or removing a preview must not mutate the actual YouTube/Vimeo URL, gallery order, or featured image.
-- Deploy the WordPress plugin change separately to staging over authorized SSH, lint it with PHP, and deploy frontend changes through the `kyafQ42026/master` build workflow. Production systems remain out of scope.
+- The current gap is in `wordpress/kyaf-catalog-schema/kyaf-catalog-schema.php`: preview metadata is already registered and saved for all catalog post types, and the media script is enqueued for them, but the editor's render condition currently limits the picker to `exhibition`, `activity`, and `moving_image`. Include `blog_post` without changing unrelated editor controls.
+- Deploy the WordPress plugin change separately to staging over authorized SSH, lint it with PHP, and deploy any frontend changes through the `kyafQ42026/master` build workflow. Production systems remain out of scope.
 
 ### Architecture
 
 ```text
 WordPress editor
-  ├─ existing video_embed_url (YouTube/Vimeo URL)
-  └─ Media Library selection ─ video_preview_media_id
-          │                         │
-          └──── protected REST metadata + attachment URL/MIME ────┐
-                                                                   v
-lib/wp-api.ts + lib/wp-mappers.ts resolve preview data
-          │
-          v
-shared VideoPlayerEmbed
-  ├─ image attachment: render as poster with Play control
-  ├─ video attachment: muted/inline/looping preview with Play control
-  └─ click Play: replace preview with YouTube/Vimeo iframe
-       no preview: retain current black Play video screen
+  ├─ Video URL (YouTube/Vimeo) ─ video_embed_url
+  └─ Media Library preview picker ─ video_preview_media_id
+       available on exhibition, activity, blog_post, moving_image
+                   │
+                   └─ protected REST metadata + attachment URL/MIME
+                         ├─ detail fetch/mapping ─ shared VideoPlayerEmbed
+                         │    ├─ image/GIF: poster before Play
+                         │    └─ clip: muted inline preview; Play loads external video
+                         └─ lazy blog-card request on hover (both sites)
+                              ├─ image/GIF: hover image
+                              └─ clip: muted preview while hovered
 ```
 
-The plugin owns the editor control, attachment validation, dedicated metadata key, and REST exposure. The fetch/mapping layer resolves the attachment's URL and MIME type for the shared player. The player selects image or video rendering from MIME type and retains the current explicit-click behavior for third-party embeds. Preview media does not become the record's gallery or cover image.
+The staging plugin already registers `video_preview_media_id`, validates and saves it for every catalog type, and enqueues the Media Library script on each catalog editor. The defect is that `kyaf_catalog_render_meta_box()` omits `blog_post` from the conditional that renders the picker, so blog editors see Video URL and Related records but no preview control. Add `blog_post` to that render condition; do not introduce another metadata key or upload mechanism. The existing REST and frontend code resolves the attachment URL/MIME. Detail players use the preview as a poster/clip before explicit Play; blog-listing cards fetch preview metadata only on hover and preserve their featured/gallery fallback.
 
 ### Implementation steps
 
-1. Add the protected preview attachment metadata and Media Library picker to the KYAF Catalog Fields editor UI for supported post types, preserving the Video URL input and existing metadata.
-2. Validate and save one image/video attachment ID, add REST/media MIME resolution, and map preview URL/type into records consumed by current video-enabled detail templates.
-3. Update `VideoPlayerEmbed` to render image or muted looping clip previews and transition to the external iframe only after a Play action; preserve the current fallback when preview media is absent.
-4. Verify upload/select, replace, remove, save/reopen, MIME validation, existing video URLs, no-preview fallback, both languages/sites, and mobile/desktop layout. Confirm YouTube/Vimeo network requests remain deferred until Play.
-5. PHP-lint and deploy the plugin separately to staging; run the frontend static build through the configured staging workflow. Do not deploy to production.
+1. Extend the preview-picker render condition in `kyaf_catalog_render_meta_box()` to include `blog_post`; verify the existing media script, metadata registration, authorization, validation, and save path cover BK and KYAF blog records. Keep the Video URL and Related records controls unchanged.
+2. Bump the plugin version/script cache version as appropriate, and update the plugin README/help text to state that blog posts support the same optional preview field.
+3. Verify in WordPress that a BK blog post and a KYAF blog post both show the picker next to Video URL. Select/upload, save, reopen, replace, and remove a JPEG/GIF and an MP4/WebM preview; confirm invalid MIME types are rejected and the saved attachment ID survives refresh.
+4. Confirm public REST responses expose `video_preview_media_id`; verify the frontend resolves the matching attachment URL/MIME. Test blog detail poster/clip and Play behavior, plus listing hover's lazy request, image/GIF display, muted clip pause-on-leave, and featured/gallery fallback. Confirm no preview appears without a valid video URL.
+5. PHP-lint and deploy the plugin separately to staging over authorized SSH. Run the frontend static build through the configured `kyafQ42026/master` workflow if frontend source changes are needed. Do not deploy to production.
 
 ### Success criteria
 
-- Editors can upload/select and remove one preview asset next to Video URL in WordPress for all current video-enabled detail records.
+- Editors can upload/select and remove one preview asset next to Video URL in WordPress for exhibitions, activities, moving-image records, and blog posts on both sites.
 - Static and animated supported images render as previews; MP4/WebM clips preview muted, inline, and looping without audio.
 - Clicking Play loads the record's existing YouTube/Vimeo video; the uploaded preview does not replace or alter the source video.
+- On both blog listing pages, preview metadata/media is loaded only after hovering a card; supported image/GIF previews display and video clips play muted only while hovered, with gallery fallback when no preview is available.
 - Without preview media, the current black Play video screen works as before; invalid URLs and disallowed attachment MIME types are safely rejected/fallback.
 - No iframe is requested before an explicit Play click, and existing gallery, featured-image, and video behavior stays intact.
 - Staging plugin lint/deployment and frontend build succeed; production remains unchanged.

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { fetchCPTBySlug, fetchMenuConfig, galleryMediaEntries, resolveGalleryMedia, type WPRawPost, type MenuConfig, type MenuConfigMap, type CoverConfigMap } from './wp-api';
 import { mapAboutUs } from './wp-mappers';
+import { safeVideoEmbedUrl } from './video-url';
 import {
   mapBkkkExhibition, mapKyafExhibition, mapMovingImage,
   mapActivity, mapResidencyArtist, mapBkkkTeamMember, mapKyafTeamMember, mapPressItem, mapBlogPost,
@@ -71,6 +72,8 @@ export async function fetchBlogVideoPreviewBySlug(
     const posts: Array<{ meta?: Record<string, unknown> }> = await response.json();
     const post = posts.find((candidate) => candidate.meta?.site === site)
       ?? (posts.length === 1 ? posts[0] : null);
+    const videoUrl = String(post?.meta?.video_embed_url ?? post?.meta?.video_url ?? '').trim();
+    if (!post || !safeVideoEmbedUrl(videoUrl)) return null;
     const previewId = Number(post?.meta?.video_preview_media_id);
     if (!Number.isInteger(previewId) || previewId <= 0) return null;
 

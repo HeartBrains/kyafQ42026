@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { safeVideoEmbedUrl } from '@/lib/video-url';
 
 interface VideoPlayerEmbedProps {
   url?: string;
@@ -9,36 +10,12 @@ interface VideoPlayerEmbedProps {
   previewMimeType?: string;
 }
 
-function safeEmbedUrl(value: string): string | null {
-  try {
-    const url = new URL(value);
-    if (url.protocol !== 'https:') return null;
-    if (url.hostname === 'youtu.be') {
-      const id = url.pathname.split('/').filter(Boolean)[0];
-      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
-    }
-    if (url.hostname === 'youtube.com' || url.hostname === 'www.youtube.com') {
-      if (url.pathname.startsWith('/embed/')) return `https://www.youtube-nocookie.com${url.pathname}`;
-      const id = url.searchParams.get('v');
-      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
-    }
-    if (url.hostname === 'vimeo.com' || url.hostname === 'www.vimeo.com') {
-      const id = url.pathname.split('/').filter(Boolean)[0];
-      return id && /^\d+$/.test(id) ? `https://player.vimeo.com/video/${id}?dnt=1` : null;
-    }
-    if (url.hostname === 'player.vimeo.com' && url.pathname.startsWith('/video/')) return url.toString();
-    return null;
-  } catch {
-    return null;
-  }
-}
-
 export function VideoPlayerEmbed({ url, title, previewUrl, previewMimeType }: VideoPlayerEmbedProps) {
   const [consentedUrl, setConsentedUrl] = useState<string | null>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
   const previewVideoRef = useRef<HTMLVideoElement>(null);
   const consented = consentedUrl === url;
-  const embedUrl = useMemo(() => url ? safeEmbedUrl(url) : null, [url]);
+  const embedUrl = useMemo(() => url ? safeVideoEmbedUrl(url) : null, [url]);
   const previewKind = useMemo(() => {
     if (!previewUrl || !previewMimeType) return null;
     if (['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(previewMimeType)) return 'image';

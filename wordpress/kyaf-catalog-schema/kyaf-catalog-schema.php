@@ -2,7 +2,7 @@
 /**
  * Plugin Name: KYAF Catalog Schema
  * Description: Versioned activity taxonomy, editorial media fields, and curated related-content data for the KYAF/BKKK frontend.
- * Version: 0.7.3
+ * Version: 0.7.4
  * Requires at least: 6.5
  * Requires PHP: 8.0
  * Author: HeartBrains
@@ -266,14 +266,14 @@ function kyaf_catalog_enqueue_related_admin_script( $hook ) {
 		'kyaf-catalog-related-content',
 		plugin_dir_url( __FILE__ ) . 'related-content-admin.js',
 		array(),
-		'0.7.3',
+		'0.7.4',
 		true
 	);
 	wp_enqueue_script(
 		'kyaf-catalog-video-preview',
 		plugin_dir_url( __FILE__ ) . 'video-preview-admin.js',
 		array( 'media-views' ),
-		'0.7.3',
+		'0.7.4',
 		true
 	);
 	wp_localize_script(
@@ -384,11 +384,11 @@ function kyaf_catalog_render_meta_box( $post ) {
 	$preview    = $preview_id && kyaf_catalog_is_allowed_video_preview( $preview_id ) ? get_post( $preview_id ) : null;
 	$preview_url = $preview ? wp_get_attachment_url( $preview_id ) : '';
 	$preview_mime = $preview ? get_post_mime_type( $preview_id ) : '';
-	if ( in_array( $post->post_type, array( 'exhibition', 'activity', 'moving_image' ), true ) ) :
+	if ( in_array( $post->post_type, array( 'exhibition', 'activity', 'blog_post', 'moving_image' ), true ) ) :
 	?>
 	<div class="kyaf-catalog-video-preview" data-kyaf-video-preview>
 		<p><strong>Video preview image or clip</strong></p>
-		<p class="description">Optional. Displays before the YouTube or Vimeo video is loaded. Images may be JPEG, PNG, WebP, or GIF; short clips may be MP4 or WebM. Clicking the preview still opens the external video.</p>
+		<p class="description">Optional. Displays before the YouTube or Vimeo video is loaded. Blog previews also appear when hovering listing cards. Images may be JPEG, PNG, WebP, or GIF; short clips may be MP4 or WebM. Clicking the preview still opens the external video.</p>
 		<input type="hidden" name="video_preview_media_id" value="<?php echo esc_attr( $preview ? $preview_id : '' ); ?>" data-video-preview-id>
 		<div data-video-preview-status role="status" aria-live="polite"><?php echo $preview ? esc_html( sprintf( 'Selected: %s', get_the_title( $preview_id ) ) ) : esc_html__( 'No preview selected.', 'kyaf-catalog-schema' ); ?></div>
 		<div data-video-preview-display<?php echo $preview ? '' : ' hidden'; ?>>
@@ -659,7 +659,7 @@ function kyaf_catalog_render_settings_page() {
 		<h2><?php echo esc_html__( 'Schema status', 'kyaf-catalog-schema' ); ?></h2>
 		<table class="widefat striped" style="max-width: 760px">
 			<tbody>
-				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.7.3</td></tr>
+				<tr><th scope="row"><?php echo esc_html__( 'Plugin version', 'kyaf-catalog-schema' ); ?></th><td>0.7.4</td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Activity tags', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d tagged / %d total', $tagged, $total ) ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Need tag review', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( (string) $untagged ); ?></td></tr>
 				<tr><th scope="row"><?php echo esc_html__( 'Last activation migration', 'kyaf-catalog-schema' ); ?></th><td><?php echo esc_html( sprintf( '%d automatically mapped', absint( $report['mapped'] ?? 0 ) ) ); ?></td></tr>
