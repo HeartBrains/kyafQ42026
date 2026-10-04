@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[6599,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-569ba6c715fe4e27.js","6399","static/chunks/6399-38c6880c068bae43.js","6599","static/chunks/6599-6ccc29110b4b1466.js","56","static/chunks/app/kyaf/activities/%5Bslug%5D/page-8ec3caeff4831e4e.js"],"ActivityDetailClientPage"]
+2:I[6599,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-c164bf197f3a1809.js","6399","static/chunks/6399-6aeb35f021fb9478.js","6599","static/chunks/6599-6ccc29110b4b1466.js","56","static/chunks/app/kyaf/activities/%5Bslug%5D/page-8ec3caeff4831e4e.js"],"ActivityDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"kyaf","slug":"forest-print"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"xVex8oJ2UQvkPrCFVvcZO"}
+0:{"rsc":["$","$1","c",{"children":[[null,["$","$L2",null,{"site":"kyaf","slug":"forest-print"}]],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"-z3cUVT9a8g0TGwxk9A-9"}
 5:null
