@@ -368,12 +368,22 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                     <div className="flex w-full items-center gap-6">
                         <a 
                             href="/kyaf"
+                            aria-label="Open Khao Yai Art Forest"
                             onPointerEnter={(event) => {
-                                if (event.pointerType === 'mouse') setSiteCoverPreview('kyaf');
+                              if (event.pointerType === 'mouse') setSiteCoverPreview('kyaf');
                             }}
-                            className="ml-auto inline-flex items-center gap-3 text-[18px] text-white font-normal hover:text-gray-300 transition-colors tracking-wide"
+                            className="ml-auto inline-flex items-center transition-opacity hover:opacity-75"
                         >
-                            <span>Khao Yai Art Forest</span>
+                            <Image
+                              src="/assets/khao-yai-art-forest-wordmark.png"
+                              alt=""
+                              width={371}
+                              height={159}
+                              aria-hidden="true"
+                              loading="eager"
+                              decoding="async"
+                              className="h-auto w-36 object-contain md:w-40"
+                            />
                         </a>
                     </div>
 

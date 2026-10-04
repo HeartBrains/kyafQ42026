@@ -349,12 +349,22 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                     <div className="flex w-full items-center gap-6">
                         <a 
                             href="/bk"
+                            aria-label="Open Bangkok Kunsthalle"
                             onPointerEnter={(event) => {
-                                if (event.pointerType === 'mouse') setSiteCoverPreview('bk');
+                              if (event.pointerType === 'mouse') setSiteCoverPreview('bk');
                             }}
-                            className="ml-auto inline-flex items-center gap-3 text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors tracking-wide cursor-pointer"
+                            className="ml-auto inline-flex items-center transition-opacity hover:opacity-75"
                         >
-                            <span>Bangkok Kunsthalle</span>
+                            <Image
+                              src="/assets/bangkok-kunsthalle-wordmark.png"
+                              alt=""
+                              width={355}
+                              height={133}
+                              aria-hidden="true"
+                              loading="eager"
+                              decoding="async"
+                              className="h-auto w-36 object-contain md:w-40"
+                            />
                         </a>
                     </div>
 
