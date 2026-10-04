@@ -122,12 +122,6 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
             {/* Right Column */}
             <div className={`md:col-start-7 md:col-span-6 text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                <div className="[&>p]:mb-8"><RichContent content={wpPost.content[language] || wpPost.content.en} /></div>
-               <VideoPlayerEmbed
-                 url={wpPost.videoEmbedUrl}
-                 title={`${wpPost.title[language] || wpPost.title.en} video`}
-                 previewUrl={wpPost.videoPreviewUrl}
-                 previewMimeType={wpPost.videoPreviewMimeType}
-               />
 
                {wpPost.imageCredits && (
                  <p className={`text-base text-gray-500 font-normal leading-tight mt-8 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
@@ -136,6 +130,12 @@ export function BlogDetailPage({ onNavigate, slug }: BlogDetailPageProps) {
                )}
             </div>
          </div>
+         <VideoPlayerEmbed
+           url={wpPost.videoEmbedUrl}
+           title={`${wpPost.title[language] || wpPost.title.en} video`}
+           previewUrl={wpPost.videoPreviewUrl}
+           previewMimeType={wpPost.videoPreviewMimeType}
+         />
          <RelatedContentSection items={wpPost.relatedContent} currentId={wpPost.id} currentType="blog" site="bkkk" language={language} />
       </div>
     </div>
