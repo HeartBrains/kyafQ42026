@@ -85,13 +85,13 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       {/* Hero Section with Slider */}
       {movingImageHero ? (
-        <div className="relative w-full h-[80vh] min-h-[35vh] overflow-hidden z-0">
+        <div className="relative w-full h-[50vh] min-h-[50vh] max-h-[50vh] overflow-hidden z-0">
           <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${movingImageHero})` }} />
           <div className="absolute inset-0 bg-black/40 pointer-events-none" />
           <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
         </div>
       ) : (
-        <div className="relative w-full h-[80vh] min-h-[35vh] bg-gray-100" />
+        <div className="relative w-full h-[50vh] min-h-[50vh] max-h-[50vh] bg-gray-100" />
       )}
 
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">

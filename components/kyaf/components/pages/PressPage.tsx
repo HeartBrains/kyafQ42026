@@ -28,7 +28,7 @@ export function PressPage() {
       {/* Hero Section */}
       <ParallaxHero 
         image={ASSETS.BUILDING} 
-        height="h-[80vh]"
+        height="h-[50vh] min-h-[50vh] max-h-[50vh]"
       >
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </ParallaxHero>
