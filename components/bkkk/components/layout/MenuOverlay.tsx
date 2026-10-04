@@ -319,6 +319,20 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         );
                     })}
 
+                    {siteConfig.menu.search && (
+                      <div className="mt-3">
+                        <ExpandingSearch
+                          onNavigate={(page, slug) => {
+                            onNavigate(page, slug);
+                            onClose();
+                          }}
+                          className="gap-2"
+                          iconClassName="w-6 h-6 text-white"
+                          inputClassName="w-40 text-[18px] text-white placeholder:text-gray-500"
+                        />
+                      </div>
+                    )}
+
                     {/* Footer Section */}
                 </div>
 
@@ -330,17 +344,6 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                     }}
                 >
                     <div className="flex w-full items-center gap-6">
-                        {siteConfig.menu.search && (
-                          <ExpandingSearch 
-                              onNavigate={(page, slug) => {
-                                  onNavigate(page, slug);
-                                  onClose();
-                              }}
-                              className="gap-2"
-                              iconClassName="w-6 h-6 text-white"
-                              inputClassName="w-40 text-[18px] text-white placeholder:text-gray-500"
-                          />
-                        )}
                         <a 
                             href="/kyaf"
                             onPointerEnter={(event) => {
