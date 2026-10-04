@@ -25,7 +25,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ github.token }}
+          # Use the repository PAT so the generated-output push also triggers
+          # Hostinger's Git deployment webhook.
+          token: ${{ secrets.GH_PAT }}
 
       - uses: actions/setup-node@v4
         with:
