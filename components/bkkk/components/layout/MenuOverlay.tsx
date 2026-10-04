@@ -192,15 +192,6 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             aria-hidden="true"
             className={`pointer-events-none fixed inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
-          <div
-            aria-hidden="true"
-            className={`pointer-events-none fixed inset-0 z-[2] flex items-center justify-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <div className="w-[min(32vw,420px)] min-w-[220px]">
-              {siteCoverPreview === 'bk' && <Logo className="h-auto w-full" white />}
-              {siteCoverPreview === 'kyaf' && <div className="aspect-[371/159] w-full"><KyafWhite /></div>}
-            </div>
-          </div>
           {/* Left Image Side - Hidden on Mobile */}
           <motion.div 
             initial={{ x: '-100%' }}
@@ -356,9 +347,16 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                                 if (event.pointerType === 'mouse') setSiteCoverPreview('kyaf');
                             }}
                             onFocus={() => setSiteCoverPreview('kyaf')}
-                            className="ml-auto text-[18px] text-white font-normal hover:text-gray-300 transition-colors tracking-wide"
+                            onPointerLeave={() => setSiteCoverPreview(null)}
+                            onBlur={() => setSiteCoverPreview(null)}
+                            className="ml-auto inline-flex items-center gap-3 text-[18px] text-white font-normal hover:text-gray-300 transition-colors tracking-wide"
                         >
-                            Khao Yai Art Forest
+                            <span>Khao Yai Art Forest</span>
+                            {siteCoverPreview === 'kyaf' && (
+                              <span aria-hidden="true" className="h-7 w-[66px] shrink-0">
+                                <KyafWhite />
+                              </span>
+                            )}
                         </a>
                     </div>
 

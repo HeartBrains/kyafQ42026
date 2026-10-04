@@ -9,6 +9,7 @@ on:
       - 'lib/**'
       - 'utils/**'
       - 'public/**'
+      - '.github/workflows/**'
       - 'next.config.ts'
       - 'package.json'
   repository_dispatch:
@@ -18,11 +19,13 @@ on:
 jobs:
   build-and-commit:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ github.token }}
 
       - uses: actions/setup-node@v4
         with:
@@ -43,6 +46,7 @@ jobs:
           KYAF_BASE_URL: ${{ secrets.KYAF_BASE_URL || 'https://dev.khaoyaiart.org/kyaf' }}
           SITE_URL: ${{ secrets.SITE_URL || 'https://dev.khaoyaiart.org' }}
           NEXT_PUBLIC_ENABLE_TRACKING: 'false'
+          NEXT_PUBLIC_ENABLE_GA4: 'true'
           NEXT_PUBLIC_ALLOW_INDEXING: 'false'
 
       - name: Commit build output

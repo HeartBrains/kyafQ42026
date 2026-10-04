@@ -5,6 +5,9 @@ import { LanguageProvider } from '@/utils/languageContext';
 
 const SITE_URL = (process.env.SITE_URL ?? 'https://dev.khaoyaiart.org').replace(/\/$/, '');
 const TRACKING_ENABLED = process.env.NEXT_PUBLIC_ENABLE_TRACKING === 'true';
+const GA4_ENABLED = process.env.NEXT_PUBLIC_ENABLE_GA4 === 'true';
+const GA4_MEASUREMENT_ID = 'G-GVJF8L2FG3';
+const ADS_CONVERSION_ID = 'AW-18039634862';
 const INDEXING_ENABLED = process.env.NEXT_PUBLIC_ALLOW_INDEXING === 'true';
 
 export const metadata: Metadata = {
@@ -38,10 +41,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body>
-        {TRACKING_ENABLED && (
+        {(TRACKING_ENABLED || GA4_ENABLED) && (
           <>
             <Script
-              src="https://www.googletagmanager.com/gtag/js?id=AW-18039634862"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ENABLED ? GA4_MEASUREMENT_ID : ADS_CONVERSION_ID}`}
               strategy="afterInteractive"
             />
             <Script id="gtag-init" strategy="afterInteractive">
@@ -49,7 +52,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', 'AW-18039634862');
+                ${GA4_ENABLED ? `gtag('config', '${GA4_MEASUREMENT_ID}');` : ''}
+                ${TRACKING_ENABLED ? `gtag('config', '${ADS_CONVERSION_ID}');` : ''}
               `}
             </Script>
           </>

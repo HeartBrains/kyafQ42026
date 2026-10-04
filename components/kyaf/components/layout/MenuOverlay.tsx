@@ -170,15 +170,6 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             aria-hidden="true"
             className={`pointer-events-none fixed inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
-          <div
-            aria-hidden="true"
-            className={`pointer-events-none fixed inset-0 z-[2] flex items-center justify-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <div className="aspect-[371/159] w-[min(32vw,420px)] min-w-[220px]">
-              {siteCoverPreview === 'bk' && <Logo className="h-auto w-full" white />}
-              {siteCoverPreview === 'kyaf' && <KyafWhite />}
-            </div>
-          </div>
           {/* Left Image Side - Hidden on Mobile */}
           <motion.div 
             initial={{ x: '-100%' }}
@@ -337,9 +328,16 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                                 if (event.pointerType === 'mouse') setSiteCoverPreview('bk');
                             }}
                             onFocus={() => setSiteCoverPreview('bk')}
-                            className="ml-auto text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors tracking-wide cursor-pointer"
+                            onPointerLeave={() => setSiteCoverPreview(null)}
+                            onBlur={() => setSiteCoverPreview(null)}
+                            className="ml-auto inline-flex items-center gap-3 text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors tracking-wide cursor-pointer"
                         >
-                            Bangkok Kunsthalle
+                            <span>Bangkok Kunsthalle</span>
+                            {siteCoverPreview === 'bk' && (
+                              <span aria-hidden="true" className="w-[70px] shrink-0">
+                                <Logo className="h-auto w-full" white />
+                              </span>
+                            )}
                         </a>
                     </div>
 
