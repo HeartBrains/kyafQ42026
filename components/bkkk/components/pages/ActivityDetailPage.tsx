@@ -110,7 +110,7 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
       <div className="w-full px-[5%] pt-[96px] pb-[0px]">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-12 md:gap-x-8">
           <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-0 px-0 md:px-[28px] py-[0px]">
+            <div className="activity-detail-metadata flex flex-col gap-0 px-0 py-[0px] text-xl md:px-[28px] md:text-2xl">
               <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
               {categories?.map((cat, idx) => (
                 <p key={idx} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{cat}</p>

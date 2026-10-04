@@ -1001,3 +1001,15 @@ html {
 .detail-additional-info--small {
   font-size: calc(0.875rem * 0.75);
 }
+
+/* Activity detail metadata and filters match the main detail-copy scale. */
+.activity-detail-metadata .detail-curated-text,
+.activity-detail-metadata .detail-additional-info,
+.activity-detail-metadata .detail-additional-info .rich-content p {
+  font-size: inherit;
+}
+
+.activity-detail-metadata .activity-detail-tag-filter .activity-tag-filter__heading,
+.activity-detail-metadata .activity-detail-tag-filter .activity-tag-filter__button {
+  font-size: inherit;
+}
