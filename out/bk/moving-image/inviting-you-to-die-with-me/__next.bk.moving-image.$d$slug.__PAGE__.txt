@@ -1,6 +1,6 @@
 1:"$Sreact.fragment"
-2:I[837,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-e9d3448cbf7da940.js","9857","static/chunks/app/bk/moving-image/%5Bslug%5D/page-5341cc3a46e93d26.js"],"MovingImageDetailClientPage"]
+2:I[837,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-1e4d55264c06d205.js","9857","static/chunks/app/bk/moving-image/%5Bslug%5D/page-9405a74263413e39.js"],"MovingImageDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"inviting-you-to-die-with-me"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"HtwQtMagkTpeqJEb_jZnt"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"inviting-you-to-die-with-me"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"Ur8DjSIJpzPAPX9HN_rwP"}
 5:null
