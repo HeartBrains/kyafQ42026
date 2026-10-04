@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { fetchFirstGalleryImageBySlug } from '@/lib/useWPData';
+import { fetchBlogVideoPreviewBySlug, fetchFirstGalleryImageBySlug, type VideoPreviewMedia } from '@/lib/useWPData';
 
 export interface RelatedContentItem {
   id: string;
@@ -35,6 +35,7 @@ const relatedRestTypes: Record<RelatedContentItem['type'], Parameters<typeof fet
   'moving-image': 'moving_image',
 };
 const galleryPreviewRequests = new Map<string, Promise<string | null>>();
+const blogVideoPreviewRequests = new Map<string, Promise<VideoPreviewMedia | null>>();
 
 async function fetchFirstGalleryImage(item: RelatedContentItem, site: 'kyaf' | 'bkkk'): Promise<string | null> {
   const key = `${site}:${item.type}:${item.slug}`;
@@ -44,6 +45,16 @@ async function fetchFirstGalleryImage(item: RelatedContentItem, site: 'kyaf' | '
   const request = fetchFirstGalleryImageBySlug(relatedRestTypes[item.type], item.slug, site);
 
   galleryPreviewRequests.set(key, request);
+  return request;
+}
+
+function fetchBlogVideoPreview(item: RelatedContentItem, site: 'kyaf' | 'bkkk'): Promise<VideoPreviewMedia | null> {
+  const key = `${site}:blog:${item.slug}`;
+  const cached = blogVideoPreviewRequests.get(key);
+  if (cached) return cached;
+
+  const request = fetchBlogVideoPreviewBySlug(item.slug, site);
+  blogVideoPreviewRequests.set(key, request);
   return request;
 }
 
@@ -60,18 +71,43 @@ function RelatedContentCard({
 }) {
   const [galleryImage, setGalleryImage] = useState<string | null>(null);
   const [galleryImageLoaded, setGalleryImageLoaded] = useState(false);
+  const [videoPreview, setVideoPreview] = useState<VideoPreviewMedia | null>(null);
+  const [videoPreviewLoaded, setVideoPreviewLoaded] = useState(false);
   const [isPreviewActive, setIsPreviewActive] = useState(false);
   const requestedGalleryImage = useRef(false);
+  const previewVideoRef = useRef<HTMLVideoElement>(null);
 
   const requestGalleryPreview = () => {
     setIsPreviewActive(true);
     if (requestedGalleryImage.current) return;
     requestedGalleryImage.current = true;
 
-    void fetchFirstGalleryImage(item, site).then((url) => {
+    const loadGalleryImage = () => fetchFirstGalleryImage(item, site).then((url) => {
       if (url && url !== item.image) setGalleryImage(url);
     });
+
+    if (item.type === 'blog') {
+      void fetchBlogVideoPreview(item, site).then((preview) => {
+        if (preview) setVideoPreview(preview);
+        else void loadGalleryImage();
+      });
+      return;
+    }
+
+    void loadGalleryImage();
   };
+
+  useEffect(() => {
+    const video = previewVideoRef.current;
+    if (!video) return;
+
+    if (isPreviewActive) {
+      void video.play().catch(() => undefined);
+    } else {
+      video.pause();
+      if (video.readyState > 0) video.currentTime = 0;
+    }
+  }, [isPreviewActive, videoPreview]);
 
   const title = language === 'th' ? (item.title.th || item.title.en) : item.title.en;
 
@@ -92,10 +128,35 @@ function RelatedContentCard({
             loading="lazy"
             decoding="async"
             fetchPriority="low"
-            className={`h-full w-full object-cover transition-[opacity,transform] duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03] ${galleryImage && isPreviewActive && galleryImageLoaded ? 'opacity-0' : 'opacity-100'}`}
+            className={`h-full w-full object-cover transition-[opacity,transform] duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03] ${(galleryImage && galleryImageLoaded || videoPreview && videoPreviewLoaded) && isPreviewActive ? 'opacity-0' : 'opacity-100'}`}
           />
         ) : null}
-        {galleryImage && (
+        {videoPreview?.mimeType.startsWith('video/') ? (
+          <video
+            ref={previewVideoRef}
+            src={videoPreview.url}
+            muted
+            loop
+            playsInline
+            autoPlay={isPreviewActive}
+            preload={isPreviewActive ? 'auto' : 'none'}
+            aria-hidden="true"
+            tabIndex={-1}
+            onLoadedData={() => setVideoPreviewLoaded(true)}
+            className={`absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03] ${isPreviewActive && videoPreviewLoaded ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ) : videoPreview ? (
+          <img
+            src={videoPreview.url}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            fetchPriority="low"
+            onLoad={() => setVideoPreviewLoaded(true)}
+            className={`absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03] ${isPreviewActive && videoPreviewLoaded ? 'opacity-100' : 'opacity-0'}`}
+          />
+        ) : galleryImage && (
           <img
             src={galleryImage}
             alt=""

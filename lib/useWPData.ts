@@ -52,6 +52,48 @@ export async function fetchFirstGalleryImageBySlug(
   }
 }
 
+export interface VideoPreviewMedia {
+  url: string;
+  mimeType: string;
+}
+
+export async function fetchBlogVideoPreviewBySlug(
+  slug: string,
+  site: 'bkkk' | 'kyaf',
+): Promise<VideoPreviewMedia | null> {
+  try {
+    const response = await fetch(
+      `${WP_BASE}/blog_post?slug=${encodeURIComponent(slug)}&_fields=slug,meta`,
+      { cache: 'force-cache' },
+    );
+    if (!response.ok) return null;
+
+    const posts: Array<{ meta?: Record<string, unknown> }> = await response.json();
+    const post = posts.find((candidate) => candidate.meta?.site === site)
+      ?? (posts.length === 1 ? posts[0] : null);
+    const previewId = Number(post?.meta?.video_preview_media_id);
+    if (!Number.isInteger(previewId) || previewId <= 0) return null;
+
+    const mediaResponse = await fetch(
+      `${WP_BASE}/media?include=${previewId}&per_page=1&_fields=id,source_url,mime_type`,
+      { cache: 'force-cache' },
+    );
+    if (!mediaResponse.ok) return null;
+
+    const media: Array<{ source_url: string; mime_type: string }> = await mediaResponse.json();
+    const preview = media[0];
+    if (!preview?.source_url) return null;
+
+    const supportedPreview = [
+      'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+      'video/mp4', 'video/webm',
+    ].includes(preview.mime_type);
+    return supportedPreview ? { url: preview.source_url, mimeType: preview.mime_type } : null;
+  } catch {
+    return null;
+  }
+}
+
 async function batchResolveActivityTerms(ids: number[]) {
   const unique = [...new Set(ids.filter(id => id > 0))];
   if (unique.length === 0) return new Map<number, { id: number; name: string; slug: string; taxonomy: string }>();
