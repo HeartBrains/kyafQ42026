@@ -2,13 +2,12 @@
 import { X, ChevronDown, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { ASSETS } from '@/utils/assets';
 import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig } from '@/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
-import { Logo } from '../ui/Logo';
-import KyafWhite from '../../../kyaf/imports/KyafWhite';
 
 const SITE_COVER_PREVIEWS = {
   bk: '/assets/c62c64ac454fd8fd1b5ba6a64e8e3a9305f2f778.png',
@@ -198,11 +197,18 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
               <a
                 href="/kyaf"
                 aria-label="Open Khao Yai Art Forest"
-                className="pointer-events-auto block w-[40vw] max-w-[42rem]"
+                className="pointer-events-auto block w-[min(31vw,22rem)]"
               >
-                <span aria-hidden="true" className="relative block aspect-[371/159] w-full">
-                  <KyafWhite />
-                </span>
+                <Image
+                  src="/assets/khao-yai-art-forest-wordmark.png"
+                  alt=""
+                  width={371}
+                  height={159}
+                  aria-hidden="true"
+                  loading="eager"
+                  decoding="async"
+                  className="block h-auto w-full object-contain"
+                />
               </a>
             </div>
           )}
