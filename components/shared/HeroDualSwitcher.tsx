@@ -93,7 +93,7 @@ export function HeroDualSwitcher({
         />
       ))}
       <div className="dual-hero__shade" aria-hidden="true" />
-      <Link className="dual-hero__slide-link" href={activeSlide.href}>
+      <Link className="dual-hero__slide-link text-xl md:text-2xl font-normal" href={activeSlide.href}>
         {activeSlide.label}
       </Link>
       <div className="dual-hero__slide-count" aria-hidden="true">

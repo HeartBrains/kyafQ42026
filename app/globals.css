@@ -130,8 +130,6 @@
   z-index: 4;
   width: min(80%, 42rem);
   color: inherit;
-  font-size: clamp(2rem, 5vw, 4.5rem);
-  font-weight: 700;
   line-height: 1.08;
   text-align: center;
   text-decoration: none;
@@ -236,11 +234,6 @@
     transform: none;
   }
 
-  .dual-hero__slide-link {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translate(-50%, -50%);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
