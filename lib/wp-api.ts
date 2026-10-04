@@ -39,6 +39,7 @@ export interface WPRawPost {
   // Resolved at fetch time — safe flat strings, no nested WP objects
   resolvedFeaturedImage?: string;
   resolvedGallery?: string[];
+  resolvedVideoPreview?: { url: string; mimeType: string };
   _embedded?: {
     'wp:term'?: Array<Array<{ id: number; name: string; slug: string; taxonomy: string }>>;
   };
@@ -58,16 +59,16 @@ async function resolveActivityTerms(ids: number[]) {
   }
 }
 
-// Batch-fetch media URLs for a set of IDs in one request
-async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
+// Batch-fetch media URLs and MIME types so uploaded previews can be rendered safely.
+async function batchResolveMedia(ids: number[]): Promise<Map<number, { url: string; mimeType: string }>> {
   const unique = [...new Set(ids.filter(id => id > 0))];
   if (unique.length === 0) return new Map();
   try {
-    const url = `${WP_BASE}/media?include=${unique.join(',')}&per_page=100&_fields=id,source_url&_=${Date.now()}`;
+    const url = `${WP_BASE}/media?include=${unique.join(',')}&per_page=100&_fields=id,source_url,mime_type&_=${Date.now()}`;
     const res = await fetchWithRetry(url);
     if (!res) return new Map();
-    const data: Array<{ id: number; source_url: string }> = await res.json();
-    return new Map(data.map(m => [m.id, m.source_url]));
+    const data: Array<{ id: number; source_url: string; mime_type: string }> = await res.json();
+    return new Map(data.map(m => [m.id, { url: m.source_url, mimeType: m.mime_type }]));
   } catch {
     return new Map();
   }
@@ -186,10 +187,13 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
       galleryMediaEntries(post.meta?.gallery_media).forEach((entry) => {
         if (entry.type === 'id') mediaIds.push(entry.id);
       });
+      const previewId = Number(post.meta?.video_preview_media_id);
+      if (Number.isInteger(previewId) && previewId > 0) mediaIds.push(previewId);
     }
 
     // Batch-resolve all IDs in one request
     const mediaMap = await batchResolveMedia(mediaIds);
+    const mediaUrlMap = new Map<number, string>([...mediaMap].map(([id, media]): [number, string] => [id, media.url]));
 
     // Attach resolved URLs to each post
     return filtered.map(post => {
@@ -197,10 +201,12 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
       const fiu = post.meta?.featured_image_url;
       const fiuId = typeof fiu === 'number' ? fiu : (typeof fiu === 'string' && /^\d+$/.test(fiu) ? Number(fiu) : 0);
       const featuredUrl = post.featured_media && post.featured_media > 0
-        ? (mediaMap.get(post.featured_media) ?? '')
-        : fiuId > 0 ? (mediaMap.get(fiuId) ?? '') : '';
+        ? (mediaMap.get(post.featured_media)?.url ?? '')
+        : fiuId > 0 ? (mediaMap.get(fiuId)?.url ?? '') : '';
 
-      const galleryUrls = resolveGalleryMedia(post.meta?.gallery_media, mediaMap);
+      const galleryUrls = resolveGalleryMedia(post.meta?.gallery_media, mediaUrlMap);
+      const previewId = Number(post.meta?.video_preview_media_id);
+      const previewMedia = Number.isInteger(previewId) && previewId > 0 ? mediaMap.get(previewId) : undefined;
 
       const taxonomyTerms = (post.activity_tag ?? [])
         .map((id) => activityTerms.get(Number(id)))
@@ -212,6 +218,7 @@ export async function fetchCPT(cpt: string, site: WPSite): Promise<WPRawPost[]> 
           : post._embedded,
         resolvedFeaturedImage: featuredUrl,
         resolvedGallery: galleryUrls,
+        resolvedVideoPreview: previewMedia ? { url: previewMedia.url, mimeType: previewMedia.mimeType } : undefined,
       };
     });
   } catch {
@@ -293,16 +300,20 @@ export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPo
     // Resolve featured_media and gallery_media IDs to URLs
     const mediaIds: number[] = [];
     if (post.featured_media && post.featured_media > 0) mediaIds.push(post.featured_media);
+    const previewId = Number(post.meta?.video_preview_media_id);
+    if (Number.isInteger(previewId) && previewId > 0) mediaIds.push(previewId);
     const gm = post.meta?.gallery_media;
     galleryMediaEntries(gm).forEach((entry) => {
       if (entry.type === 'id') mediaIds.push(entry.id);
     });
 
     const mediaMap = await batchResolveMedia(mediaIds);
+    const mediaUrlMap = new Map<number, string>([...mediaMap].map(([id, media]): [number, string] => [id, media.url]));
 
     const featuredUrl = post.featured_media && post.featured_media > 0
-      ? (mediaMap.get(post.featured_media) ?? '') : '';
-    const galleryUrls = resolveGalleryMedia(gm, mediaMap);
+      ? (mediaMap.get(post.featured_media)?.url ?? '') : '';
+    const galleryUrls = resolveGalleryMedia(gm, mediaUrlMap);
+    const previewMedia = Number.isInteger(previewId) && previewId > 0 ? mediaMap.get(previewId) : undefined;
 
     const taxonomyTerms = (post.activity_tag ?? [])
       .map((id) => activityTerms.get(Number(id)))
@@ -314,6 +325,7 @@ export async function fetchCPTBySlug(cpt: string, slug: string): Promise<WPRawPo
         : post._embedded,
       resolvedFeaturedImage: featuredUrl,
       resolvedGallery: galleryUrls,
+      resolvedVideoPreview: previewMedia ? { url: previewMedia.url, mimeType: previewMedia.mimeType } : undefined,
     };
   } catch {
     return null;

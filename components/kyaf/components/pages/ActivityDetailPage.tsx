@@ -169,7 +169,7 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
             )}
           </div>
         </div>
-        <VideoPlayerEmbed url={data.videoEmbedUrl} title={title || 'Activity video'} />
+        <VideoPlayerEmbed url={data.videoEmbedUrl} title={title || 'Activity video'} previewUrl={data.videoPreviewUrl} previewMimeType={data.videoPreviewMimeType} />
         <RelatedContentSection items={data.relatedContent} currentId={data.id} currentType="activities" site="kyaf" language={language} />
       </div>
     </div>

@@ -225,7 +225,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 )}
             </div>
         </div>
-        <VideoPlayerEmbed url={exhibitionData.videoEmbedUrl} title={`${language === 'th' ? exhibitionData.title.th : exhibitionData.title.en} video`} />
+        <VideoPlayerEmbed url={exhibitionData.videoEmbedUrl} title={`${language === 'th' ? exhibitionData.title.th : exhibitionData.title.en} video`} previewUrl={exhibitionData.videoPreviewUrl} previewMimeType={exhibitionData.videoPreviewMimeType} />
         <RelatedContentSection items={exhibitionData.relatedContent} currentId={exhibitionData.id} currentType="exhibitions" site="kyaf" language={language} />
       </div>
     </div>

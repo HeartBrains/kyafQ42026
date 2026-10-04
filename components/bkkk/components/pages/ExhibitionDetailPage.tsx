@@ -134,7 +134,7 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
             )}
           </div>
         </div>
-        <VideoPlayerEmbed url={data.videoEmbedUrl} title={`${title || 'Exhibition'} video`} />
+        <VideoPlayerEmbed url={data.videoEmbedUrl} title={`${title || 'Exhibition'} video`} previewUrl={data.videoPreviewUrl} previewMimeType={data.videoPreviewMimeType} />
         <RelatedContentSection items={data.relatedContent} currentId={data.id} currentType="exhibitions" site="bkkk" language={language} />
       </div>
     </div>

@@ -78,6 +78,117 @@ The current KYAF site has no Moving Image detail component or published KYAF Mov
 
 This section is the current implementation plan for related-content grouping and carousel controls. Historical specifications below remain for context where not superseded by these requirements.
 
+## Hide Redundant WordPress Catalog Image URL Inputs
+
+### Objective
+
+Hide the circled `Secondary card image URL`, `Hero landscape image URL`, and `Hero portrait image URL` inputs from the WordPress “KYAF Catalog Fields” panel so editors are not confused by fields that do not affect the current frontend.
+
+### Requirements
+
+1. Remove the three inputs from the plugin's visible editor meta box. Keep the Video URL and Related records controls visible.
+2. Preserve the metadata keys, registration, sanitization, REST exposure, and any existing frontend mapper behavior for the hidden fields.
+3. Do not clear or migrate existing values. Hiding an input must not delete values when a record is saved.
+4. Keep `gallery_media` as the separate JetEngine-managed detail gallery/slideshow field and retain featured-image behavior.
+5. Update the plugin's settings-page help text so it no longer tells editors to look for hidden hero/secondary image fields.
+
+### Constraints
+
+- Only editor-facing field visibility and related explanatory text may change.
+- Preserve all current metadata values and REST keys; no frontend rendering behavior changes.
+- The `secondaryImage` mapper property may remain for compatibility even though no current component consumes it.
+
+### Architecture
+
+```text
+WordPress plugin meta box
+  ├─ visible: video URL + Related records
+  └─ hidden inputs: secondary_image_url, hero_landscape_image, hero_portrait_image
+       └─ stored metadata/REST registration remain intact
+
+JetEngine gallery_media ─── REST/media resolution ── detail gallery/slideshow
+featured image ──────────────────────────────────── listing/default image + fallback
+```
+
+The plugin continues to register, sanitize, and expose the hidden URL metadata; it simply stops rendering those three input rows in its editor meta box. The TypeScript mapper reads `secondary_image_url` into `secondaryImage`, but current page components do not render that property. The two hero-orientation keys have no mapper/component readers. The existing JetEngine `gallery_media` field remains the editor-facing detail gallery control.
+
+### Implementation steps
+
+1. Remove only the three redundant image URL inputs from the plugin meta box, retaining video and related-record controls.
+2. Update the settings help text and bump the plugin patch version.
+3. Run `php -l`, deploy the plugin file to staging over authorized SSH, and verify the plugin remains active and visible WordPress fields exclude the three inputs.
+
+### Success criteria
+
+- The three confusing URL inputs are absent from the WordPress editor panel; video and related-record controls remain.
+- Existing stored values and REST-visible metadata remain intact.
+- `gallery_media` and the featured image are clearly identified as separate, currently used image sources.
+- Frontend behavior is unchanged.
+
+## Uploaded Preview Media for Embedded Videos
+
+### Objective
+
+Let WordPress editors attach a custom image or short video preview to existing YouTube/Vimeo embeds. Show that preview in the current video area, and load the external player only after the visitor chooses to play the video.
+
+### Requirements
+
+1. Add a WordPress Media Library upload/select control alongside the existing Video URL field for every existing detail page that renders `VideoPlayerEmbed`: BK and KYAF Exhibitions and Activities, plus BK Moving Image details.
+2. Allow one optional preview attachment per record. Support static JPEG/PNG/WebP images, animated GIF/WebP images, and short MP4/WebM video clips. Do not promise animated-JPEG behavior; browser support is inconsistent.
+3. Keep the preview separate from `video_embed_url`, `gallery_media`, and the featured image. Store a media attachment ID in a dedicated field such as `video_preview_media_id`; expose the resolved preview URL and MIME type through the existing WordPress REST flow.
+4. When a valid YouTube/Vimeo URL and preview image are present, display the image in the existing 16:9 video area with an accessible Play video control. When a preview clip is present, show it muted, inline, and looping as a preview; the Play video control must load the YouTube/Vimeo player, not replace it with the preview clip.
+5. Do not load the YouTube/Vimeo iframe until the visitor clicks Play. If no custom preview is set, preserve the existing black Play video screen and its click-to-load behavior.
+6. Do not render a preview by itself when the record has no valid video URL.
+7. Keep preview video short, honor the staging WordPress upload-size/type policy, and avoid changing global server upload limits without separate approval. Lazy-load or defer the preview clip where practical and pause it when it is not visible.
+8. Preserve existing video URL validation, embed allowlist, consent behavior, gallery slideshows, and saved media. Require normal WordPress edit/upload permissions; do not create an unauthenticated upload or metadata-write endpoint.
+
+### Constraints
+
+- This applies only to current detail pages that already render `VideoPlayerEmbed`; do not create a new KYAF Moving Image route.
+- Uploads go through WordPress Media Library and staging WordPress only. Do not send the preview through the static-site repository or store video binaries in Git.
+- Validate that the selected attachment is an allowed image/video MIME type and belongs to the current WordPress installation; keep the metadata API protected by WordPress edit permissions.
+- Existing records with a video URL and no preview must continue to work without editor changes.
+- Uploading, changing, or removing a preview must not mutate the actual YouTube/Vimeo URL, gallery order, or featured image.
+- Deploy the WordPress plugin change separately to staging over authorized SSH, lint it with PHP, and deploy frontend changes through the `kyafQ42026/master` build workflow. Production systems remain out of scope.
+
+### Architecture
+
+```text
+WordPress editor
+  ├─ existing video_embed_url (YouTube/Vimeo URL)
+  └─ Media Library selection ─ video_preview_media_id
+          │                         │
+          └──── protected REST metadata + attachment URL/MIME ────┐
+                                                                   v
+lib/wp-api.ts + lib/wp-mappers.ts resolve preview data
+          │
+          v
+shared VideoPlayerEmbed
+  ├─ image attachment: render as poster with Play control
+  ├─ video attachment: muted/inline/looping preview with Play control
+  └─ click Play: replace preview with YouTube/Vimeo iframe
+       no preview: retain current black Play video screen
+```
+
+The plugin owns the editor control, attachment validation, dedicated metadata key, and REST exposure. The fetch/mapping layer resolves the attachment's URL and MIME type for the shared player. The player selects image or video rendering from MIME type and retains the current explicit-click behavior for third-party embeds. Preview media does not become the record's gallery or cover image.
+
+### Implementation steps
+
+1. Add the protected preview attachment metadata and Media Library picker to the KYAF Catalog Fields editor UI for supported post types, preserving the Video URL input and existing metadata.
+2. Validate and save one image/video attachment ID, add REST/media MIME resolution, and map preview URL/type into records consumed by current video-enabled detail templates.
+3. Update `VideoPlayerEmbed` to render image or muted looping clip previews and transition to the external iframe only after a Play action; preserve the current fallback when preview media is absent.
+4. Verify upload/select, replace, remove, save/reopen, MIME validation, existing video URLs, no-preview fallback, both languages/sites, and mobile/desktop layout. Confirm YouTube/Vimeo network requests remain deferred until Play.
+5. PHP-lint and deploy the plugin separately to staging; run the frontend static build through the configured staging workflow. Do not deploy to production.
+
+### Success criteria
+
+- Editors can upload/select and remove one preview asset next to Video URL in WordPress for all current video-enabled detail records.
+- Static and animated supported images render as previews; MP4/WebM clips preview muted, inline, and looping without audio.
+- Clicking Play loads the record's existing YouTube/Vimeo video; the uploaded preview does not replace or alter the source video.
+- Without preview media, the current black Play video screen works as before; invalid URLs and disallowed attachment MIME types are safely rejected/fallback.
+- No iframe is requested before an explicit Play click, and existing gallery, featured-image, and video behavior stays intact.
+- Staging plugin lint/deployment and frontend build succeed; production remains unchanged.
+
 ## Gallery Editor UI: Use JetEngine Field Without Duplicate Panel
 
 ### Objective
