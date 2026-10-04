@@ -4,9 +4,15 @@ import { bkkkMetadata } from '@/lib/seo';
 import { BlogDetailClientPage } from '@/components/bkkk/BlogDetailClientPage';
 export const dynamicParams = false;
 
+const FALLBACK_SLUGS = ['bk-blog'];
+
 export async function generateStaticParams() {
   const posts = await fetchCPT('blog_post', 'bkkk');
-  return posts.map(p => ({ slug: p.slug }));
+  if (posts.length === 0) {
+    console.warn('[generateStaticParams] bk/blog: WP returned no posts — using FALLBACK_SLUGS.');
+  }
+  const slugs = Array.from(new Set([...posts.map(post => post.slug), ...FALLBACK_SLUGS]));
+  return slugs.map(slug => ({ slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
