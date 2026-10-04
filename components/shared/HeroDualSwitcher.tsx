@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import Link from 'next/link';
 import type { HomeHeroSlide } from './homeHeroSlides';
 
 type SiteId = 'kyaf' | 'bkkk';
@@ -26,6 +27,7 @@ export function HeroDualSwitcher({
   const pointerStartX = useRef<number | null>(null);
   const dragged = useRef(false);
   const activeSlides = slides[initialSite];
+  const activeSlide = activeSlides[activeSlideIndex % activeSlides.length];
 
   useEffect(() => {
     const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -91,6 +93,9 @@ export function HeroDualSwitcher({
         />
       ))}
       <div className="dual-hero__shade" aria-hidden="true" />
+      <Link className="dual-hero__slide-link" href={activeSlide.href}>
+        {activeSlide.label}
+      </Link>
       <div className="dual-hero__slide-count" aria-hidden="true">
         {activeSlideIndex + 1} / {activeSlides.length}
       </div>
