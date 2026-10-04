@@ -185,16 +185,16 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
         >
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+            className={`pointer-events-none fixed inset-0 z-0 bg-cover bg-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
             style={{ backgroundImage: siteCoverPreview ? `url(${SITE_COVER_PREVIEWS[siteCoverPreview]})` : undefined }}
           />
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+            className={`pointer-events-none fixed inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-0 z-[2] flex items-center justify-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+            className={`pointer-events-none fixed inset-0 z-[2] flex items-center justify-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           >
             <div className="w-[min(32vw,420px)] min-w-[220px]">
               {siteCoverPreview === 'bk' && <Logo className="h-auto w-full" white />}

@@ -163,16 +163,16 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
         >
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-0 z-0 bg-cover bg-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+            className={`pointer-events-none fixed inset-0 z-0 bg-cover bg-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
             style={{ backgroundImage: siteCoverPreview ? `url(${SITE_COVER_PREVIEWS[siteCoverPreview]})` : undefined }}
           />
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+            className={`pointer-events-none fixed inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
           <div
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-0 z-[2] flex items-center justify-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
+            className={`pointer-events-none fixed inset-0 z-[2] flex items-center justify-center transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           >
             <div className="aspect-[371/159] w-[min(32vw,420px)] min-w-[220px]">
               {siteCoverPreview === 'bk' && <Logo className="h-auto w-full" white />}
@@ -213,7 +213,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
 
              {/* Navigation Links Container */}
              <motion.div 
-                className={`flex-1 flex flex-col px-[6vw] py-[8vh] transition-colors duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'bg-black/25' : 'bg-black/60'}`}
+                className={`flex-1 flex flex-col px-[6vw] py-[8vh] transition-colors duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'bg-transparent' : 'bg-black/60'}`}
                 onClick={(e) => e.stopPropagation()}
                 initial="hidden"
                 animate="show"
