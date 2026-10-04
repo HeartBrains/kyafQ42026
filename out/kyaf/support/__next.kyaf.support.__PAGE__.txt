@@ -2,5 +2,5 @@
 2:I[9778,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","4286","static/chunks/4286-3114d8a161acc5f7.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-1e4d55264c06d205.js","3148","static/chunks/3148-6d4dea3d49ac2ecc.js","2519","static/chunks/2519-1fab60b9a7d6166f.js","2783","static/chunks/2783-0154e3639822081e.js","2068","static/chunks/2068-840852446b450618.js","1280","static/chunks/app/kyaf/support/page-6f02d91a2a989b97.js"],"ClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"kyaf","component":"SupportPage"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"as3kBhKEcpKwRvOaNqJ_J"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"kyaf","component":"SupportPage"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"4TWXd8WdeOCn9j_7uEzo8"}
 5:null
