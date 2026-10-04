@@ -2,5 +2,5 @@
 2:I[837,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-c164bf197f3a1809.js","6399","static/chunks/6399-6aeb35f021fb9478.js","9857","static/chunks/app/bk/moving-image/%5Bslug%5D/page-95fdb17d53da1d07.js"],"MovingImageDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"watching-together-at-the-boundary"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"-z3cUVT9a8g0TGwxk9A-9"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"watching-together-at-the-boundary"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"GucNiBjNkIeD_IEhJrO0z"}
 5:null
