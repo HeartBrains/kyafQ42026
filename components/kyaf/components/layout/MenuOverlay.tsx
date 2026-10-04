@@ -154,6 +154,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
               setSiteCoverPreview(null);
             }
           }}
+          onPointerLeave={() => setSiteCoverPreview(null)}
           onBlurCapture={(event) => {
             const nextFocusedElement = event.relatedTarget;
             if (!(nextFocusedElement instanceof Node) || !event.currentTarget.contains(nextFocusedElement)) {
@@ -170,6 +171,19 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             aria-hidden="true"
             className={`pointer-events-none fixed inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
+          {siteCoverPreview === 'bk' && (
+            <div className="pointer-events-none fixed inset-0 z-20 flex items-center justify-end pr-[6vw]">
+              <a
+                href="/bk"
+                aria-label="Open Bangkok Kunsthalle"
+                className="pointer-events-auto block w-[40vw] max-w-[42rem]"
+              >
+                <span aria-hidden="true" className="block aspect-[355/133] w-full">
+                  <Logo className="size-full" white />
+                </span>
+              </a>
+            </div>
+          )}
           {/* Left Image Side - Hidden on Mobile */}
           <motion.div 
             initial={{ x: '-100%' }}
@@ -192,7 +206,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className={`relative z-10 flex h-full w-full flex-col overflow-y-auto transition-colors duration-700 ease-in-out motion-reduce:transition-none md:w-1/2 ${siteCoverPreview ? 'bg-transparent' : 'bg-black'}`}
+            aria-hidden={Boolean(siteCoverPreview)}
+            inert={Boolean(siteCoverPreview)}
+            className={`relative z-10 flex h-full w-full flex-col overflow-y-auto transition-[background-color,opacity] duration-700 ease-in-out motion-reduce:transition-none md:w-1/2 ${siteCoverPreview ? 'pointer-events-none bg-transparent opacity-0' : 'bg-black opacity-100'}`}
             onClick={onClose}
           >
              {/* Close Button */}
@@ -330,17 +346,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                             onPointerEnter={(event) => {
                                 if (event.pointerType === 'mouse') setSiteCoverPreview('bk');
                             }}
-                            onFocus={() => setSiteCoverPreview('bk')}
-                            onPointerLeave={() => setSiteCoverPreview(null)}
-                            onBlur={() => setSiteCoverPreview(null)}
                             className="ml-auto inline-flex items-center gap-3 text-xl md:text-2xl text-white font-normal hover:text-gray-300 transition-colors tracking-wide cursor-pointer"
                         >
                             <span>Bangkok Kunsthalle</span>
-                            {siteCoverPreview === 'bk' && (
-                              <span aria-hidden="true" className="w-[70px] shrink-0">
-                                <Logo className="h-auto w-full" white />
-                              </span>
-                            )}
                         </a>
                     </div>
 
