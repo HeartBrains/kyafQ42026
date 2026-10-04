@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { fetchFirstGalleryImageBySlug } from '@/lib/useWPData';
 
 export interface RelatedContentItem {
   id: string;
@@ -26,6 +27,94 @@ interface RelatedContentSectionProps {
 
 type RelatedGroupKey = RelatedContentItem['type'];
 
+const relatedRestTypes: Record<RelatedContentItem['type'], Parameters<typeof fetchFirstGalleryImageBySlug>[0]> = {
+  exhibitions: 'exhibition',
+  activities: 'activity',
+  residency: 'residency_artist',
+  blog: 'blog_post',
+  'moving-image': 'moving_image',
+};
+const galleryPreviewRequests = new Map<string, Promise<string | null>>();
+
+async function fetchFirstGalleryImage(item: RelatedContentItem, site: 'kyaf' | 'bkkk'): Promise<string | null> {
+  const key = `${site}:${item.type}:${item.slug}`;
+  const cached = galleryPreviewRequests.get(key);
+  if (cached) return cached;
+
+  const request = fetchFirstGalleryImageBySlug(relatedRestTypes[item.type], item.slug, site);
+
+  galleryPreviewRequests.set(key, request);
+  return request;
+}
+
+function RelatedContentCard({
+  item,
+  prefix,
+  site,
+  language,
+}: {
+  item: RelatedContentItem;
+  prefix: string;
+  site: 'kyaf' | 'bkkk';
+  language: 'en' | 'th';
+}) {
+  const [galleryImage, setGalleryImage] = useState<string | null>(null);
+  const [galleryImageLoaded, setGalleryImageLoaded] = useState(false);
+  const [isPreviewActive, setIsPreviewActive] = useState(false);
+  const requestedGalleryImage = useRef(false);
+
+  const requestGalleryPreview = () => {
+    setIsPreviewActive(true);
+    if (requestedGalleryImage.current) return;
+    requestedGalleryImage.current = true;
+
+    void fetchFirstGalleryImage(item, site).then((url) => {
+      if (url && url !== item.image) setGalleryImage(url);
+    });
+  };
+
+  const title = language === 'th' ? (item.title.th || item.title.en) : item.title.en;
+
+  return (
+    <Link
+      href={`${prefix}/${routeSegments[item.type]}/${item.slug}/`}
+      className="group block w-[82%] shrink-0 snap-start focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-[calc(50%_-_1rem)] lg:w-[calc(33.333%_-_1.333rem)]"
+      onPointerEnter={(event) => event.pointerType === 'mouse' && requestGalleryPreview()}
+      onPointerLeave={() => setIsPreviewActive(false)}
+      onFocus={requestGalleryPreview}
+      onBlur={() => setIsPreviewActive(false)}
+    >
+      <div data-related-carousel-image className="relative mb-4 aspect-[3/4] overflow-hidden bg-gray-100">
+        {item.image ? (
+          <img
+            src={item.image}
+            alt={title}
+            loading="lazy"
+            decoding="async"
+            fetchPriority="low"
+            className={`h-full w-full object-cover transition-[opacity,transform] duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03] ${galleryImage && isPreviewActive && galleryImageLoaded ? 'opacity-0' : 'opacity-100'}`}
+          />
+        ) : null}
+        {galleryImage && (
+          <img
+            src={galleryImage}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            decoding="async"
+            fetchPriority="low"
+            onLoad={() => setGalleryImageLoaded(true)}
+            className={`absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03] ${isPreviewActive && galleryImageLoaded ? 'opacity-100' : 'opacity-0'}`}
+          />
+        )}
+      </div>
+      {item.type === 'blog' && item.category && <p className="mb-1 text-xs uppercase tracking-wide text-gray-500">{item.category}</p>}
+      <h3 className="text-lg font-bold leading-tight">{title}</h3>
+      {item.date && <p className="mt-1 text-sm text-gray-600">{item.date}</p>}
+    </Link>
+  );
+}
+
 const routeSegments: Record<RelatedContentItem['type'], string> = {
   exhibitions: 'exhibitions',
   activities: 'activities',
@@ -39,13 +128,11 @@ function RelatedContentCarousel({
   prefix,
   language,
   label,
-  groupKey,
 }: {
   items: RelatedContentItem[];
   prefix: string;
   language: 'en' | 'th';
   label: string;
-  groupKey: RelatedGroupKey;
 }) {
   const carouselRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -111,18 +198,13 @@ function RelatedContentCarousel({
         tabIndex={0}
       >
         {items.map((item) => (
-          <Link key={`${item.type}:${item.id}`} href={`${prefix}/${routeSegments[item.type]}/${item.slug}/`} className="group block w-[82%] shrink-0 snap-start focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-[calc(50%_-_1rem)] lg:w-[calc(33.333%_-_1.333rem)]">
-            <div data-related-carousel-image className="mb-4 aspect-[3/4] overflow-hidden bg-gray-100">
-              {item.image ? (
-                <img src={item.image} alt={language === 'th' ? (item.title.th || item.title.en) : item.title.en} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03] group-focus-visible:scale-[1.03]" />
-              ) : (
-                <div className="h-full w-full" aria-hidden="true" />
-              )}
-            </div>
-            {groupKey === 'blog' && item.category && <p className="mb-1 text-xs uppercase tracking-wide text-gray-500">{item.category}</p>}
-            <h3 className="text-lg font-bold leading-tight">{language === 'th' ? (item.title.th || item.title.en) : item.title.en}</h3>
-            {item.date && <p className="mt-1 text-sm text-gray-600">{item.date}</p>}
-          </Link>
+          <RelatedContentCard
+            key={`${item.type}:${item.id}`}
+            item={item}
+            prefix={prefix}
+            site={item.site ?? (prefix === '/bk' ? 'bkkk' : 'kyaf')}
+            language={language}
+          />
         ))}
       </div>
       {scrollState.hasOverflow && !scrollState.atStart && (
@@ -199,7 +281,6 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
               prefix={prefix}
               language={language}
               label={groupLabels[group.key][language]}
-              groupKey={group.key}
             />
           </section>
         ))}

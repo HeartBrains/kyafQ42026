@@ -24,6 +24,34 @@ async function batchResolveMedia(ids: number[]): Promise<Map<number, string>> {
   }
 }
 
+export async function fetchFirstGalleryImageBySlug(
+  cpt: 'exhibition' | 'activity' | 'residency_artist' | 'blog_post' | 'moving_image',
+  slug: string,
+  site: 'bkkk' | 'kyaf',
+): Promise<string | null> {
+  try {
+    const response = await fetch(
+      `${WP_BASE}/${cpt}?slug=${encodeURIComponent(slug)}&_fields=slug,meta`,
+      { cache: 'force-cache' },
+    );
+    if (!response.ok) return null;
+
+    const posts: Array<{ meta?: Record<string, unknown> }> = await response.json();
+    const post = posts.find((candidate) => candidate.meta?.site === site)
+      ?? (posts.length === 1 ? posts[0] : null);
+    if (!post) return null;
+
+    const firstImage = galleryMediaEntries(post.meta?.gallery_media)[0];
+    if (!firstImage) return null;
+    if (firstImage.type === 'url') return firstImage.url;
+
+    const media = await batchResolveMedia([firstImage.id]);
+    return media.get(firstImage.id) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 async function batchResolveActivityTerms(ids: number[]) {
   const unique = [...new Set(ids.filter(id => id > 0))];
   if (unique.length === 0) return new Map<number, { id: number; name: string; slug: string; taxonomy: string }>();
