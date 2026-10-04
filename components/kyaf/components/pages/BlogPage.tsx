@@ -1,6 +1,6 @@
 'use client';
 import { useState, useMemo } from 'react';
-import { ImageWithFallback } from '../figma/ImageWithFallback';
+import { BlogPostPreviewImage } from '@/components/shared/BlogPostPreviewImage';
 import { Reveal } from '../ui/Reveal';
 import { ParallaxHero } from '../ui/ParallaxHero';
 import { useCovers } from '@/lib/coversContext';
@@ -95,14 +95,13 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
                                 >
                                     {/* Image */}
                                     <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                                        <ImageWithFallback 
-                                            src={post.featuredImage} 
-                                            hoverSrc={post.gallery?.[0]}
+                                        <BlogPostPreviewImage
+                                            slug={post.slug}
+                                            site="kyaf"
+                                            image={post.featuredImage}
+                                            galleryImage={post.gallery?.[0]}
                                             alt={post.title[language] || post.title.en}
                                             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                                            loading="lazy"
-                                            decoding="async"
-                                            fetchPriority="low"
                                         />
                                     </div>
 
