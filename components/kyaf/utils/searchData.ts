@@ -56,10 +56,11 @@ function m(post: any, key: string): string {
 export async function getFullSearchData(): Promise<SearchDocument[]> {
   const docs: SearchDocument[] = [];
 
-  const [exhibitions, activities, artists] = await Promise.all([
+  const [exhibitions, activities, artists, blogPosts] = await Promise.all([
     fetchCPT('exhibition'),
     fetchCPT('activity'),
     fetchCPT('residency_artist'),
+    fetchCPT('blog_post'),
   ]);
 
   for (const post of exhibitions) {
@@ -89,6 +90,15 @@ export async function getFullSearchData(): Promise<SearchDocument[]> {
     const bioTh = stripHtml(m(post, 'bio_th') || bioEn);
     docs.push({ id: `artist-${post.slug}-en`, title: nameEn, content: bioEn, keywords: `artist resident residency ศิลปิน`, page: 'artist-detail', slug: post.slug, lang: 'en' });
     docs.push({ id: `artist-${post.slug}-th`, title: nameTh, content: bioTh, keywords: `ศิลปิน ศิลปินพำนัก artist residency`, page: 'artist-detail', slug: post.slug, lang: 'th' });
+  }
+
+  for (const post of blogPosts) {
+    const titleEn = decode(post.title?.rendered ?? '');
+    const titleTh = decode((m(post, 'title_th') || post.title?.rendered) ?? '');
+    const contentEn = stripHtml(m(post, 'content_en') || post.content?.rendered || '');
+    const contentTh = stripHtml(m(post, 'content_th') || contentEn);
+    docs.push({ id: `blog-${post.slug}-en`, title: titleEn, content: contentEn, keywords: 'blog article story news Khao Yai Art Forest', page: 'blog-detail', slug: post.slug, lang: 'en' });
+    docs.push({ id: `blog-${post.slug}-th`, title: titleTh, content: contentTh, keywords: 'บล็อก เรื่องราว ข่าว blog article', page: 'blog-detail', slug: post.slug, lang: 'th' });
   }
 
   const staticPages = [

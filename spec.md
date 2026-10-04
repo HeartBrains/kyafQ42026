@@ -586,3 +586,209 @@ For the CMS field, use a WordPress/JetEngine relationship selector that can sear
 - Selection order is maintained; self-links, duplicates, invalid types, malformed entries, and empty relationship fields produce no bad cards.
 - Existing content without relationship data continues to build and render normally.
 - Staging build and deployment workflow succeeds, with no production systems or credentials changed.
+
+---
+
+## SEO and AEO Audit: BK and KYAF Sites
+
+**Audit date:** 2026-10-04
+
+**Scope:** Read-only review of the public production URLs at `https://khaoyaiart.org/` and both site prefixes (`/bk/`, `/kyaf/`), plus the current staging deployment at `https://dev.khaoyaiart.org/`. The audit covers source in this repository and live crawler-facing output. No application code or hosting configuration was changed.
+
+### Objective
+
+Establish whether both sites currently support technical SEO and answer-engine discovery, record verified gaps, and define a safe staging-first remediation plan. “AEO” here means discoverability and answerability through crawlable, accurate, well-structured public content; it is not a ranking guarantee or a separate metadata standard.
+
+### Audit findings
+
+| Area | Observed state | Assessment |
+|---|---|---|
+| Page metadata | Shared helpers provide page titles, descriptions, canonicals, Open Graph, and Twitter cards; home and listing metadata is present on live pages. | Good foundation, but production canonicals for both site prefixes and their details duplicate the prefix: `/bk/bk/...` and `/kyaf/kyaf/...`. |
+| Dynamic detail metadata | A live BK exhibition detail rendered an empty title (`| Bangkok Kunsthalle / Khao Yai Art Forest`) and no description, although its visible H1 and content loaded after JavaScript. `str()` returns an empty string, so `str(data?.title) ?? slug` does not fall back to the slug. | High-priority correctness issue. Make fallbacks non-empty and ensure CMS/API misses cannot publish blank metadata. |
+| Robots / index policy | Production `robots.txt` allows all user agents, and production pages are `index, follow`. Staging `robots.txt` disallows all and staging metadata is `noindex, nofollow`. | Production is crawl-permitted. Staging's restriction is intentional and must remain; do not promote the staging `public/robots.txt` policy to production. |
+| Production sitemap discovery | Production `robots.txt` advertises three `bkkkapp.com` sitemap URLs; the two subdomains tested failed DNS resolution. The active `https://khaoyaiart.org/sitemap.xml` responds but is not the sitemap URL advertised in production `robots.txt`. | Broken/stale sitemap references can prevent consistent discovery. |
+| Sitemap coverage | The active root sitemap lists 36 URLs, including sitemap endpoints as if they were content pages. The live `/bk/sitemap.xml` and `/kyaf/sitemap.xml` each list only static routes (17 and 16 entries respectively), with no published detail URLs. | Publish one coherent active-domain sitemap index, include eligible published detail pages, and exclude sitemap endpoints from ordinary URL entries. |
+| Structured data | Organization JSON-LD is present on the two site home pages. The source has ExhibitionEvent and BreadcrumbList helpers for exhibition/activity details, but a sampled live BK exhibition detail had no JSON-LD after hydration. Blog and artist details have no corresponding Article/Person markup in source. | Partial, inconsistent coverage. Validate that data is present in the actual built HTML, truthful, and useful for each content type. |
+| Entity identity | Homepage Organization `sameAs` Instagram URLs do not match the profile URLs used by the site footer on either site. | Reconcile canonical social profile URLs with the owner before updating entity markup. |
+| Rendered content / AEO | The sampled production detail's initial HTML had no H1/body content; the browser showed a loading state first, then rendered the H1 and full text after client-side loading. Production `robots.txt`'s wildcard allow also permits `OAI-SearchBot`. | Content becomes readable after JavaScript, but first-response HTML is a weaker basis for crawlers and answer engines. Prioritize meaningful static HTML and clear page structure. Crawler permission does not guarantee inclusion or citation. |
+| Language targeting | The document root declares `lang="en"`; EN/TH changes are client-side on the same URL, with no distinct language URLs or `hreflang` alternates. | Thai content is not independently addressable as a search landing page. Do not emit misleading `hreflang`; a locale-URL decision is needed before implementing separate language SEO. |
+| Measurement | No Search Console ownership, URL Inspection results, index coverage report, or AI referral analysis was available in this audit. | This is a technical-readiness review, not a ranking, indexing, or AI-citation performance report. |
+
+### Requirements
+
+1. Build canonical URLs from the correct environment origin and exactly one site prefix. Every canonical and `og:url` must match the final public URL and trailing-slash convention for that page.
+2. Give every indexable route a non-empty, distinct, factual title and description. Dynamic metadata must use a sensible fallback when WordPress data is absent, and social-card URLs/alt text must resolve correctly.
+3. Keep staging explicitly non-indexable (`Disallow: /` and `noindex`) and free of staging-to-production sitemap leakage. Do not change production indexing policy from this staging project without a separate approved release.
+4. For production, maintain crawl access for search and answer engines the owner wants to reach. `OAI-SearchBot` is currently allowed by the wildcard rule; make the choice about `GPTBot`/training policy explicit rather than silently changing it.
+5. Provide a single consistent production sitemap discovery path on `khaoyaiart.org`; it must include each eligible canonical static and published detail URL once, exclude noindex/staging URLs and sitemap endpoints, and use meaningful content modification dates.
+6. Render primary page content in the static HTML response where the build has WordPress content: a clear H1, descriptive text, and visible entity facts (artist/author, dates, venue/location, and media details as applicable). Do not rely only on client-side loading for the main answer.
+7. Add only content-matching structured data: site identity on each home page, breadcrumbs on details, and appropriate Article/Person/Video/Event descriptions where the visible page supports them. Keep schema facts consistent with the page and WordPress source; validate rather than promise a rich result.
+8. Preserve existing routes and keep production repositories, WordPress, hosting, analytics, and crawler policy unchanged unless separately approved. Do not create Thai locale routes or `hreflang` until the owner approves a URL strategy.
+9. Make important content answer-friendly through editorially accurate summaries, descriptive headings, attribution, dates, locations, and accessible link/image labels. No hidden keyword text or unreviewed generated claims.
+
+### Constraints
+
+- Current project is `HeartBrains/kyafQ42026` and its normal build target is staging. `/bk/` maps to internal ID `bkkk`; `/kyaf/` maps to `kyaf`.
+- The site is a Next.js static export built from WordPress REST data and served from `out/`; metadata helpers are in `lib/seo.ts`, JSON-LD helpers in `lib/JsonLd.tsx`, global metadata in `app/layout.tsx`, and sitemap routes/configuration in `app/**/sitemap.ts` and `next-sitemap.config.js`.
+- The staging `robots.txt` deliberately blocks all crawlers. Keep it that way during staging work; staging is not an SEO preview environment.
+- Root and site-prefix sitemaps are generated through multiple mechanisms today. The implementation must consolidate their public discovery behavior without deleting valid content routes.
+- The language switch currently changes client-side state on one URL. Separate indexable English/Thai pages require an owner-approved URL/content strategy; until then, scope this plan to correct English-default metadata and honest language signaling.
+- Search Console access and production release approval are not available in this task. Final indexing and performance validation must be done by an authorized site owner after a production release.
+
+### Architecture
+
+```text
+WordPress REST content ── build-time static export ── Hostinger pages
+                                      │
+                ┌─────────────────────┼─────────────────────┐
+                ▼                     ▼                     ▼
+       metadata URL builder     JSON-LD by page type    sitemap index
+         lib/seo.ts               lib/JsonLd.tsx          app/**/sitemap.ts
+                │                     │                     │
+                └────────────── exact environment config ────┘
+                                      │
+                 staging: blocked + noindex; production: approved crawl policy
+```
+
+Use a single explicit origin/prefix map for canonical and sitemap generation so environment origins and `/bk` or `/kyaf` are joined once. Keep page-specific metadata close to App Router pages, but centralize URL normalization, safe non-empty fallbacks, and schema construction. The build output is the deploy artifact, so validation must inspect both the generated HTML and deployed response—not only client-rendered DOM.
+
+### Implementation steps
+
+1. **Baseline and guardrails**
+   - Capture the public URL inventory and representative home, listing, and detail routes for each site.
+   - Add automated checks for canonical origin/prefix, duplicate or blank titles, sitemap host/index consistency, staging noindex, and staging exclusion from production URLs.
+   - Confirm the staging-only deployment workflow and the separate production boundary before changing source.
+2. **Fix canonical and metadata generation**
+   - Normalize `SITE_URL`, `BKKK_BASE_URL`, and `KYAF_BASE_URL` semantics and join paths once.
+   - Correct `generateMetadata` fallback behavior for exhibitions, activities, moving image, artists, and blogs; ensure valid per-record titles/descriptions and social image fallbacks.
+   - Verify `canonical`, Open Graph URL, and Twitter values for root, both site homes, list pages, and representative detail pages.
+3. **Repair crawl and sitemap configuration**
+   - Remove obsolete/unresolvable sitemap hosts from the production robots configuration and advertise the actual production sitemap index.
+   - Build one index on the production host that includes both site maps or all canonical URLs; ensure dynamic published WordPress details are included and sitemap routes do not appear as content.
+   - Keep the staging robots/noindex behavior and confirm its generated sitemap never lists production URLs.
+4. **Make content and structured data consistent**
+   - Inspect static HTML for H1, summary, and main content; move/reuse build-time WordPress data so the core answer is present before hydration.
+   - Add or repair schema for the actual page entities (Organization/WebSite, BreadcrumbList, BlogPosting/Article, Person, VideoObject, and exhibition/event only when applicable); reconcile `sameAs` with verified official profiles.
+   - Validate JSON-LD against Schema.org and Google tools, and only target Google rich-result features when their content and required fields apply.
+5. **Improve localization and AEO readiness without fabricating variants**
+   - Keep English-default content coherent and add accurate summaries/headings/attribution/media context to the source-driven pages.
+   - Record the separate decision on whether Thai should have distinct URLs. If approved later, add reciprocal `hreflang`, localized metadata/content, and matching sitemap alternates together.
+   - Preserve the current broad public crawler access unless the owner directs a separate training-crawler policy change; verify `OAI-SearchBot` access explicitly.
+6. **Verify staging and hand off production checks**
+   - Build/deploy staging through the configured GitHub Actions workflow; inspect generated and live HTML, robots, sitemap XML, canonicals, titles, descriptions, and schema for both sites.
+   - Check that staging remains non-indexable and its sitemaps do not disclose production URLs.
+   - Report Search Console URL Inspection/index coverage and Search Analytics as owner-run post-release checks; do not claim SEO ranking or AI citation improvements from technical validation alone.
+
+### Success criteria
+
+- `/bk/` and `/kyaf/` pages and details emit a single correct canonical URL, with no duplicated prefix, and matching Open Graph URLs.
+- All sampled indexable pages have meaningful non-empty titles/descriptions; CMS-missing records still have useful fallbacks instead of an empty title.
+- Production `robots.txt` advertises only reachable, same-host sitemap URLs; those sitemaps cover all eligible published detail pages and do not list sitemap endpoints as pages.
+- Staging remains blocked from indexing, has `noindex`, and exposes no production URLs in its sitemap output.
+- Main headings/content are available in the initial static HTML as well as after hydration; visible content and JSON-LD agree.
+- Structured data validates for applicable types, has accurate entity/social details, and does not assert unverified event, author, venue, or media facts.
+- `OAI-SearchBot` is permitted on the approved public site, while any GPTBot training policy remains an explicit owner decision.
+- No Thai `hreflang` is emitted until there are distinct approved language URLs; the current language-switch limitation is documented.
+- Staging build/deploy and SEO checks pass. Search Console/indexing status and actual AI citations are separately reported as unavailable until owner access/measurement is supplied.
+
+### References
+
+- [Google Search Central: Block indexing with `noindex`](https://developers.google.com/search/docs/crawling-indexing/block-indexing)
+- [Google Search Central: General structured data guidelines](https://developers.google.com/search/docs/appearance/structured-data/sd-policies)
+- [Google Search Central: Multilingual and multi-regional sites](https://developers.google.com/search/docs/specialty/international/managing-multi-regional-sites)
+- [Google Search Central: Event structured data](https://developers.google.com/search/docs/appearance/structured-data/event)
+- [OpenAI: Publishers and Developers FAQ](https://help.openai.com/en/articles/12627856-publishers-and-developers-faq)
+
+---
+
+## CMS Updates and Search Index Refresh Audit
+
+**Audit date:** 2026-10-04
+**Target:** `HeartBrains/kyafQ42026` on `master`, staging WordPress `q42026.content.khaoyaiart.org`, and staging frontend `dev.khaoyaiart.org`.
+
+### Objective
+
+Determine what a WordPress publish/edit currently refreshes: the website's own search results, the static site output and sitemaps, or external search-engine indexes. Treat these as separate systems; a site rebuild or sitemap update is not proof that Google or another crawler indexed a URL.
+
+### Implementation status
+
+- Updated the deploy-trigger source default and settings-page default to `HeartBrains/kyafQ42026`, and corrected the fine-grained PAT guidance to require repository `Contents: write` access.
+- Updated the packaged `public/bkkk-deploy-trigger.zip` to match the plugin PHP source.
+- Added the `blog_post` REST collection to BK and KYAF site search, and made the search dialogs refresh data whenever opened.
+- Local source/archive checks pass. A full build/PHP lint could not run in this workspace because Node/npm and PHP are unavailable.
+- The plugin has not been installed/configured on staging WordPress: SSH authentication was unavailable, and saved WordPress options may override the source fallback. Live trigger behavior remains unverified.
+
+### Verified findings
+
+| System | Current behavior in source | Result |
+|---|---|---|
+| CMS-to-build trigger | `wp-plugin/bkkk-deploy-trigger/bkkk-deploy-trigger.php` listens to `transition_post_status` in `auto` mode for published records and dispatches `wp_content_updated`; it also has a delete hook. The watched types include exhibitions, activities, moving image, residency artists, team members, blog posts, press items, posts, and pages. | A CMS save/update can request a rebuild if the plugin is installed and active, the mode is `auto`, and the dispatch succeeds. |
+| Trigger target/configuration | The plugin requires a GitHub token. In this implementation, the checked-in fallback is corrected to `HeartBrains/kyafQ42026`; a constant or already-saved WordPress option can still override it. | The source default now targets the current repo, but the active staging plugin, trigger mode, token presence, and saved/constant repo override could not be confirmed here. Do not claim the live trigger is working until tested. Never record the token. |
+| Static rebuild | `.github/workflows/deploy.yml` listens for `repository_dispatch` type `wp_content_updated`, builds with the q42026 WordPress endpoint and `dev.khaoyaiart.org` URL defaults, commits generated `out/` to `master`, and uses `GH_PAT` so the output push can notify Hostinger. | With a correctly targeted dispatch and valid secrets, CMS changes rebuild the staged static pages and generated sitemap output; Hostinger's Git deployment can then publish the pushed output. This pipeline is conditional on a successful workflow and Hostinger sync. |
+| Website's own search | BK and KYAF `SearchDialog` components fetch `getFullSearchData()` when opened. Their search-data modules fetch published WordPress REST records in the browser and filter records by site metadata; this is a live client-side collection, not a generated JSON search-index artifact. This implementation adds the `blog_post` REST collection to both site indexes. | A fresh search open fetches current CMS content; a dialog already open does not poll/refetch. Blog records are now included in source for both sites, subject to the public REST endpoint returning them. |
+| External search engines | The staging workflow sets `NEXT_PUBLIC_ALLOW_INDEXING=false`; `app/layout.tsx` turns that into `noindex,nofollow`. Staging `public/robots.txt` also disallows all crawlers. | The staging site is intentionally not indexable. A CMS-triggered build does not change this policy and does not itself update Google's index. The production indexing decision/build is separate. |
+| Sitemap / crawler indexing | BK and KYAF sitemap routes fetch WordPress records at static-build time. Google describes a sitemap as a discovery hint, not a guarantee; recrawling may take days to weeks and inclusion is not guaranteed. | A successful rebuild can refresh sitemap contents for crawlers, but the crawler must revisit and independently decide whether/how to index each URL. |
+
+The WordPress core documentation confirms `transition_post_status` also fires when an already-published post is edited without a status change, which supports the plugin's update hook. That describes hook behavior, not proof that the staging plugin is active or its GitHub API request succeeded.
+
+### Requirements
+
+1. Report the three outcomes separately: website-internal search refresh, generated static HTML/sitemap refresh, and Google/other external indexing. Never call these all “the search index.”
+2. Before describing CMS-triggered rebuilds as operational, verify that the deployed staging plugin is active, set to `auto` (or document that editors must use its manual publish control), has a valid repository-dispatch credential, and targets `HeartBrains/kyafQ42026` rather than relying on the legacy source default.
+3. Prove the integration end to end using an authorized, reversible staging content change: observe one `wp_content_updated` event, a successful Actions build, updated expected files/sitemap in the `out/` commit, and Hostinger serving the new version. Do not create or modify content without approval; use a specifically approved test record if a live test is needed.
+4. Keep staging `Disallow: /` and `noindex,nofollow`. Do not submit staging URLs to search engines or remove the staging indexing guard as part of this audit.
+5. Include published blog posts in the website's own search on both BK and KYAF via the `blog_post` REST endpoint, and refresh the results data each time the search dialog opens. Verify site filtering, pagination, language behavior, and failure states.
+6. Keep Google/Search Console recrawl and index status as separate post-release checks. Submit/maintain the production sitemap and use URL Inspection only for URLs the owner controls; do not promise immediate crawling, indexing, ranking, or AEO citations.
+7. Do not change production repositories, WordPress, hosting, robots policy, or crawler policy under this staging audit. Keep credentials out of specs, logs, and commits.
+
+### Constraints
+
+- Repo-side implementation is authorized: update the plugin source/package and BK/KYAF frontend search behavior. Do not mutate live WordPress settings/content or production systems as part of this code change.
+- The authoritative frontend repo is `HeartBrains/kyafQ42026`, not the legacy repo named by the WordPress plugin's checked-in default.
+- Live staging WordPress option values and plugin activation were not verifiable from this workspace. Preserve this as an explicit unknown until confirmed in WordPress admin or through authorized read-only access.
+- The GitHub workflow's defaults point to q42026 WordPress and dev site, and explicitly turn indexing off. Any production build/publishing path needs a separate, reviewed configuration and deployment.
+- Public-search crawler behavior is controlled by the public site's served HTML headers/meta, robots policy, reachable canonical sitemap, and the crawler's own processing—not just the WordPress update hook.
+
+### Architecture
+
+```text
+WordPress publish/edit
+  ├─ website search: browser fetches site-filtered REST collections on each SearchDialog open
+  │    └─ blog_post is included for BK and KYAF; already-open dialogs do not poll
+  └─ optional deploy trigger (must be active + auto + correct repo + credential)
+       └─ repository_dispatch: wp_content_updated
+            └─ kyafQ42026 GitHub Actions static build from q42026 WordPress
+                 ├─ static HTML and sitemap files generated into out/
+                 ├─ out/ committed/pushed to master
+                 └─ Hostinger Git deployment publishes staging output
+
+Staging output: robots Disallow + noindex → intentionally excluded from external indexing
+Production output: separate approved crawl policy → sitemap aids discovery;
+                  Google/crawlers choose crawl/index timing and inclusion
+```
+
+Keep the internal search data path (client-side WordPress REST requests) distinct from build output and crawler indexing. Do not introduce a static search artifact unless separately approved; verify blog search and confirm whether CMS-triggered deployment works in the live staging configuration.
+
+### Implementation steps
+
+1. **Confirm the live dispatch settings without exposing secrets**: verify plugin activation, auto/manual mode, repository target set to `HeartBrains/kyafQ42026`, token/credential validity, and that repository dispatch is enabled. If access is unavailable, report this as unverified rather than infer it from source defaults.
+2. **Deploy the plugin source/package separately**: install the updated plugin package to staging WordPress only through authorized access, set/verify the repository option if an existing value overrides the default, and preserve the token outside the repository.
+3. **Test the rebuild chain safely**: after approval for a staging content test, verify the WordPress event, `wp_content_updated` dispatch, Actions success, new/updated static record and sitemap, pushed `out/`, and Hostinger deployment. Record run IDs/timestamps, not credentials.
+4. **Verify internal search behavior**: test a fresh dialog open after a representative CMS update and confirm the matching published blog appears for the correct site/language, with no cross-site results. Test both sites' other supported record types and API-failure behavior.
+5. **Verify crawler safeguards/discovery**: inspect served staging `robots.txt`, rendered robots meta, canonicals, and sitemap contents after rebuild; confirm they remain staging-only and noindex. For production, check its separately deployed production URLs/sitemaps and Search Console status after an approved release.
+6. **Report the result by system**: state whether CMS edits update the internal search view, static site output/sitemap, and external search listings; list remaining config or access blockers and avoid claiming crawler indexing based only on a successful build.
+
+### Success criteria
+
+- The live CMS trigger is either proven to dispatch automatically to `HeartBrains/kyafQ42026` and reach Hostinger, or clearly reported as unverified/disabled with the exact configuration step remaining.
+- An approved staging publish/edit produces updated static page output and sitemap through the expected workflow; no manual stale `out/` push is used as a substitute.
+- The search dialog refreshes WordPress-backed data whenever it opens, and published blog-post records are included on both sites with correct site/language behavior.
+- Staging continues to serve `Disallow: /` and `noindex,nofollow`, and staging URLs do not enter a production sitemap or index submission.
+- External search-engine indexing is described as crawler-controlled and not guaranteed by CMS publish, a GitHub Actions build, or sitemap submission.
+
+### References
+
+- [WordPress Developer Resources: `wp_transition_post_status()`](https://developer.wordpress.org/reference/functions/wp_transition_post_status/)
+- [WordPress Developer Resources: `transition_post_status` hook](https://developer.wordpress.org/reference/hooks/transition_post_status/)
+- [Google Search Central: Ask Google to recrawl URLs](https://developers.google.com/search/docs/crawling-indexing/ask-google-to-recrawl)
+- [Google Search Central: Sitemap overview](https://developers.google.com/search/docs/crawling-indexing/sitemaps/overview)

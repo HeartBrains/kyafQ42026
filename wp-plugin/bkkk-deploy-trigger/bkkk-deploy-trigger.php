@@ -71,7 +71,7 @@ function bkkk_already_dispatched( int $post_id ): bool {
  */
 function bkkk_dispatch( string $event_type, array $payload = [] ): bool {
     $token = defined( 'BKKK_GH_TOKEN' ) ? BKKK_GH_TOKEN : get_option( 'bkkk_gh_token', '' );
-    $repo  = defined( 'BKKK_GH_REPO' )  ? BKKK_GH_REPO  : get_option( 'bkkk_gh_repo', 'HeartBrains/khaoyaiart-next' );
+    $repo  = defined( 'BKKK_GH_REPO' )  ? BKKK_GH_REPO  : get_option( 'bkkk_gh_repo', 'HeartBrains/kyafQ42026' );
 
     if ( empty( $token ) ) {
         error_log( '[BKKK Deploy] No GitHub token configured — skipping dispatch.' );
@@ -226,8 +226,9 @@ function bkkk_settings_page(): void {
                     <th>GitHub Repo</th>
                     <td>
                         <input type="text" name="bkkk_gh_repo"
-                               value="<?php echo esc_attr( get_option( 'bkkk_gh_repo', 'HeartBrains/khaoyaiart-next' ) ); ?>"
+                               value="<?php echo esc_attr( get_option( 'bkkk_gh_repo', 'HeartBrains/kyafQ42026' ) ); ?>"
                                class="regular-text" placeholder="owner/repo" />
+                        <p class="description">For a fine-grained token, grant <code>Contents: Read and write</code> on the target repository. A classic token requires the <code>repo</code> scope.</p>
                     </td>
                 </tr>
                 <tr>

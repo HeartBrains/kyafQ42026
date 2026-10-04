@@ -19,12 +19,18 @@ export function SearchDialog({ isOpen, onClose, onNavigate, initialQuery = "" }:
     const [results, setResults] = useState<SearchDocument[]>([]);
     const [allData, setAllData] = useState<SearchDocument[]>([]);
 
-    // Fetch search index once on mount
+    // Refresh the search data each time the dialog opens so recent CMS edits are picked up.
     useEffect(() => {
+        if (!isOpen) return;
+
+        let isCurrent = true;
         getFullSearchData().then(fetchedData => {
-            setAllData(fetchedData);
+            if (isCurrent) setAllData(fetchedData);
         });
-    }, []);
+        return () => {
+            isCurrent = false;
+        };
+    }, [isOpen]);
 
     // Perform search when query or language changes
     useEffect(() => {
