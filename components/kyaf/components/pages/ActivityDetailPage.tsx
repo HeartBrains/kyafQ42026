@@ -51,7 +51,7 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
   const galleryImages = data.gallery?.length ? data.gallery : (data.featuredImage ? [data.featuredImage] : []);
 
   return (
-    <div className="w-full bg-white pb-24 min-h-screen">
+    <div className="kyaf-detail-page w-full bg-white pb-24 min-h-screen">
       <div className="w-full relative group">
         {galleryImages.length > 0 ? (
           <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full bg-black" opts={{ align: 'start', loop: true }}>

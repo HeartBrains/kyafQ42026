@@ -882,6 +882,13 @@ html {
   font-size: calc(0.875rem * 0.75);
 }
 
+/* KYAF detail metadata uses the same scale as the surrounding detail copy. */
+.kyaf-detail-page .detail-curated-text,
+.kyaf-detail-page .detail-additional-info,
+.kyaf-detail-page .detail-additional-info .rich-content p {
+  font-size: inherit;
+}
+
 /* Activity detail metadata and filters match the main detail-copy scale. */
 .activity-detail-metadata .detail-curated-text,
 .activity-detail-metadata .detail-additional-info,

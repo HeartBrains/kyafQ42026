@@ -37,7 +37,7 @@ export function ArtistDetailPage({ onNavigate, slug }: ArtistDetailPageProps) {
   const gallery = data.gallery?.length ? data.gallery : (data.featuredImage ? [data.featuredImage] : []);
 
   return (
-    <div className="w-full bg-white pb-24 min-h-screen">
+    <div className="kyaf-detail-page w-full bg-white pb-24 min-h-screen">
       <div className="w-full relative overflow-hidden group bg-black">
         {gallery.length > 0 ? (
           <Carousel setApi={setApi} plugins={[plugin.current]} className="w-full" opts={{ align: 'start', loop: true }}>

@@ -46,7 +46,7 @@ export function BlogDetailPage({ onNavigate, slug, backPage }: BlogDetailPagePro
     : (language === 'th' ? 'กลับไปบล็อก' : 'Back to Blog');
 
   return (
-    <div className="w-full bg-white min-h-screen pb-24">
+    <div className="kyaf-detail-page w-full bg-white min-h-screen pb-24">
       {/* Hero */}
       {galleryImages.length > 0 ? (
         <div className="w-full relative group bg-black">

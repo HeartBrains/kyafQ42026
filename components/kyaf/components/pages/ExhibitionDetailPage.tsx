@@ -60,7 +60,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
     : exhibitionData?.content?.en;
 
   return (
-    <div className="w-full bg-white pb-24 min-h-screen">
+    <div className="kyaf-detail-page w-full bg-white pb-24 min-h-screen">
        {/* Hero Section */}
        <div className="w-full relative overflow-hidden group bg-black">
          {galleryImages.length > 0 ? (
@@ -144,7 +144,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-12 md:gap-x-16">
             
             {/* Left Column - Meta Data */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 text-xl md:text-2xl">
                 <Reveal>
                     <div className="flex flex-col gap-1">
                         <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
