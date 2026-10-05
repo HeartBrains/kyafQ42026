@@ -108,7 +108,7 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <ParallaxHero image={covers.activities || `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Puma_Activity-People-Nawaphon-29.jpg`} height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[65vh] md:min-h-[65vh] md:max-h-[65vh]">
+      <ParallaxHero image={covers.activities || `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Puma_Activity-People-Nawaphon-29.jpg`} height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
       </ParallaxHero>
 

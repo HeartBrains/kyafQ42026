@@ -60,7 +60,7 @@ export function Home() {
   return (
     <div className="w-full bg-white min-h-screen">
       {/* Hero Section */}
-      <div className="relative w-full h-[60vh] md:h-[65vh] md:min-h-[65vh] md:max-h-[65vh]">
+      <div className="relative w-full h-[60vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]">
         <ImageWithFallback
           src={homeHero}
           alt="Hero"
