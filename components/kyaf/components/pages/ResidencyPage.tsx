@@ -133,7 +133,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <ParallaxHero image={covers.residency || IMG_FOG_SRC} height="h-[50vh] min-h-[50vh] max-h-[50vh]">
+      <ParallaxHero image={covers.residency || IMG_FOG_SRC} height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[65vh] md:min-h-[65vh] md:max-h-[65vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
       </ParallaxHero>
 

@@ -183,7 +183,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
       {/* Hero Section */}
       <ParallaxHero 
         image="https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-for-Exhibitions-list-83b680a4.jpg"
-        height="h-[50vh] min-h-[50vh] max-h-[50vh]"
+        height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[65vh] md:min-h-[65vh] md:max-h-[65vh]"
       >
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
       </ParallaxHero>

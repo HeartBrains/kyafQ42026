@@ -58,7 +58,7 @@ export function ShopPage({ onNavigate, targetSectionId }: ShopPageProps) {
       {/* Hero Section */}
       <ParallaxHero 
         image="https://images.unsplash.com/photo-1770086962048-f42543a0ca9f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhcnQlMjBtdXNldW0lMjBzaG9wJTIwaW50ZXJpb3J8ZW58MXx8fHwxNzcyOTc2NjkwfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral" 
-        height="h-[50vh] min-h-[50vh] max-h-[50vh]"
+        height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[65vh] md:min-h-[65vh] md:max-h-[65vh]"
       >
         <div className="absolute inset-0 bg-black/40" />
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />

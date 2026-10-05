@@ -74,11 +74,20 @@
 .dual-hero {
   position: relative;
   height: 50vh;
+  min-height: 50vh;
   max-height: 50vh;
   overflow: hidden;
   background: #111;
   color: white;
   touch-action: pan-y;
+}
+
+@media (min-width: 768px) {
+  .dual-hero {
+    height: 65vh;
+    min-height: 65vh;
+    max-height: 65vh;
+  }
 }
 
 .dual-hero__image,

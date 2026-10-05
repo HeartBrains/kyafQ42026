@@ -130,7 +130,7 @@ export function ResidencyPage({ onNavigate: onNavigateProp, targetSectionId }: R
 
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
-      <div className="w-full h-[50vh] min-h-[50vh] max-h-[50vh] bg-black overflow-hidden">
+      <div className="w-full h-[50vh] min-h-[50vh] max-h-[50vh] bg-black overflow-hidden md:h-[65vh] md:min-h-[65vh] md:max-h-[65vh]">
         <img
           src="https://irp.cdn-website.com/5516674f/dms3rep/multi/1000012646.jpg"
           alt="Residency"
