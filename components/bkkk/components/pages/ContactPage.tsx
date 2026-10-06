@@ -44,7 +44,7 @@ export function ContactPage() {
   return (
     <div className="bg-white min-h-screen pb-24 font-sans text-black">
       {/* Hero Map */}
-       <div className="w-full h-[60vh] md:h-[80vh] bg-[#D9D9D9] relative overflow-hidden">
+       <div className="w-full h-[60vh] min-h-[60vh] max-h-[60vh] bg-[#D9D9D9] relative overflow-hidden">
           <ImageWithFallback 
               src="https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-contact-1-89b6eddb.jpg"
               alt="Bangkok Kunsthalle"
