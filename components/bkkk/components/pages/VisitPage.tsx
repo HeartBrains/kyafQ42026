@@ -11,7 +11,7 @@ export function VisitPage() {
             {/* Hero Section */}
             <ParallaxHero 
                 image="https://irp.cdn-website.com/5516674f/dms3rep/multi/Puma_cover-for-about.jpg"
-                height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[60vh] md:min-h-[60vh] md:max-h-[60vh]"
+                height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]"
             >
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />
             </ParallaxHero>

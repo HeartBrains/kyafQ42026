@@ -27,7 +27,7 @@ export function SupportPage() {
                     `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Puma_Z8A_8030-1.jpg`,
                     `${PUBLIC_WP_ORIGIN}/wp-content/uploads/2026/03/Puma_Z8A_8323-1.jpg`,
                 ]}
-                height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[60vh] md:min-h-[60vh] md:max-h-[60vh]"
+                height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]"
             >
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
             </HeroSlider>
