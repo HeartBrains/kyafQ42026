@@ -16,7 +16,7 @@ export function VisitPage() {
             {/* Hero Section */}
             <ParallaxHero 
                 image={covers.visit || VISIT_HERO_IMAGE}
-                height="h-[60vh] min-h-[60vh] max-h-[60vh]"
+                height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[60vh] md:min-h-[60vh] md:max-h-[60vh]"
             >
                 <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
             </ParallaxHero>
