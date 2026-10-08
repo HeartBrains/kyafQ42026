@@ -370,7 +370,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                             href="/kyaf"
                             aria-label="Open Khao Yai Art Forest"
                             onClick={(event) => {
-                              if (window.matchMedia('(hover: none)').matches && !siteCoverPreview) {
+                              if (!siteCoverPreview) {
                                 event.preventDefault();
                                 setSiteCoverPreview('kyaf');
                               }

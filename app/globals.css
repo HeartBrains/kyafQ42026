@@ -899,6 +899,27 @@ html {
   line-height: 1.1;
 }
 
+.site-sticky-footer[data-sticky='true'] {
+  animation: sticky-footer-slide-up 3s ease-out both;
+}
+
+@keyframes sticky-footer-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-sticky-footer[data-sticky='true'] {
+    animation: none;
+  }
+}
+
 .activity-detail-metadata .activity-detail-tag-filter .activity-tag-filter__heading,
 .activity-detail-metadata .activity-detail-tag-filter .activity-tag-filter__button {
   font-size: inherit;

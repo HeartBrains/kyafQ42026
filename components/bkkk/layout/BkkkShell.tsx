@@ -59,7 +59,7 @@ export function BkkkShell({ children, initialCovers, initialCss }: BkkkShellProp
         <main className="pb-20 md:pb-0">{children}</main>
         <div ref={anchorRef} aria-hidden="true" />
         <div aria-hidden="true" style={{ height: isSticky ? footerHeight : 0 }} />
-        <div ref={footerRef} className={`site-sticky-footer transition-transform duration-500 ease-out motion-reduce:transition-none ${isSticky ? 'fixed inset-x-0 bottom-0 z-40 translate-y-0' : ''}`}>
+        <div ref={footerRef} data-sticky={isSticky ? 'true' : 'false'} className={`site-sticky-footer ${isSticky ? 'fixed inset-x-0 bottom-0 z-40' : ''}`}>
           <Footer onNavigate={navigate} isSticky={isSticky} />
         </div>
         <BackToTop />
