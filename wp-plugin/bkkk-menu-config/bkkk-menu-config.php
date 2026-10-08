@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BKKK Menu Config
  * Description: Options page to toggle menu items, section anchors, page cover images, and inject custom CSS for BKKK and KYAF sites.
- * Version: 2.2.0
+ * Version: 2.3.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -70,7 +70,9 @@ add_action('admin_menu', function() {
 add_action('admin_enqueue_scripts', function($hook) {
     if ($hook !== 'settings_page_bkkk-menu-config') return;
     wp_enqueue_media();
-    wp_enqueue_script('bkkk-media-upload', plugin_dir_url(__FILE__).'media-upload.js', ['jquery'], '1.0', true);
+    $script_path = plugin_dir_path(__FILE__) . 'media-upload.js';
+    $script_version = file_exists($script_path) ? (string) filemtime($script_path) : '2.3.0';
+    wp_enqueue_script('bkkk-media-upload', plugin_dir_url(__FILE__) . 'media-upload.js', ['jquery'], $script_version, true);
 });
 add_action('admin_init', function() {
     register_setting('bkkk_menu_config_group', BKKK_MENU_OPTION,     ['sanitize_callback'=>'bkkk_menu_sanitize']);
