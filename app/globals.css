@@ -896,11 +896,11 @@ html {
   font-size: inherit;
 }
 
-/* Activity supporting metadata matches the reduced Curated by / Additional Info. */
+/* Activity metadata is 25% larger than its reduced scale, with fields aligned. */
 .activity-detail-metadata .detail-curated-text,
 .activity-detail-metadata .detail-additional-info,
 .activity-detail-metadata > p {
-  font-size: 0.585em;
+  font-size: 0.73125em;
 }
 
 .activity-detail-metadata .detail-additional-info .rich-content p {
