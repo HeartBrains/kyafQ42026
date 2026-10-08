@@ -46,6 +46,7 @@ export function KyafShell({ children, initialCovers, initialCss }: KyafShellProp
       <CoversContext.Provider value={covers}>
         <Header
           onMenuClick={() => setIsMenuOpen(!isMenuOpen)}
+          isMenuOpen={isMenuOpen}
           onLogoClick={scrolled ? undefined : () => router.push('/')}
           isTransparent={!scrolled}
           isScrolled={scrolled}

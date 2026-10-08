@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export type SiteSwitchDestination = 'bk' | 'kyaf';
+export type SiteMenuState = 'hidden' | 'expanded' | 'picture';
 type PreviewMode = 'hover' | 'pinned';
 
 interface PreviewState {
@@ -26,6 +27,7 @@ export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOp
   const pointerHoverReadyRef = useRef(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const previewLinkRef = useRef<HTMLAnchorElement>(null);
+  const menuState: SiteMenuState = !isOpen ? 'hidden' : preview ? 'picture' : 'expanded';
 
   const clearDismissTimer = useCallback(() => {
     if (dismissTimerRef.current) {
@@ -129,6 +131,7 @@ export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOp
   useEffect(() => () => clearDismissTimer(), [clearDismissTimer]);
 
   return {
+    menuState,
     preview,
     triggerRef,
     previewLinkRef,

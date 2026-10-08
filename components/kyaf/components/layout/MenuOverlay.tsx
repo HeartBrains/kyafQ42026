@@ -35,6 +35,7 @@ interface MenuItem {
 export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOverlayProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const {
+    menuState,
     preview,
     triggerRef,
     previewLinkRef,
@@ -50,8 +51,12 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
 
   useEffect(() => {
     document.body.toggleAttribute('data-menu-open', isOpen);
-    return () => document.body.removeAttribute('data-menu-open');
-  }, [isOpen]);
+    document.body.setAttribute('data-menu-state', menuState);
+    return () => {
+      document.body.removeAttribute('data-menu-open');
+      document.body.removeAttribute('data-menu-state');
+    };
+  }, [isOpen, menuState]);
 
   // WP-driven menu visibility — merges over siteConfig.kyafMenu; falls back to kyafMenu while loading
   const wpMenu = useMenuConfig('kyaf');
@@ -162,6 +167,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex text-white font-sans"
+          data-menu-state={menuState}
           onBlurCapture={(event) => {
             const nextFocusedElement = event.relatedTarget;
             if (!(nextFocusedElement instanceof Node) || !event.currentTarget.contains(nextFocusedElement)) {
