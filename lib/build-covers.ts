@@ -1,6 +1,7 @@
 import { fetchMenuConfig, type CoverConfigMap } from './wp-api';
 import {
   ABOUT_HERO_IMAGE,
+  BKKK_VISIT_HERO_IMAGE,
   VISIT_HERO_IMAGE,
   TEAM_HERO_IMAGE,
   EXHIBITIONS_HERO_IMAGE,
@@ -21,7 +22,7 @@ export const BKKK_DEFAULT_COVERS: CoverConfigMap = {
   press:       IMG_FOG_SRC,
   team:        BKKK_TEAM_HERO,
   about:       BKKK_ABOUT_HERO,
-  visit:       VISIT_HERO_IMAGE,
+  visit:       BKKK_VISIT_HERO_IMAGE,
   contact:     CONTACT_HERO_IMAGE,
   archives:    IMG_FOG_SRC,
 };

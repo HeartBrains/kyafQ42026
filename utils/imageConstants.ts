@@ -17,6 +17,7 @@ export { imgGodAsset, imgMusicOnTheMoveAsset };
 export const ABOUT_HERO_IMAGE = "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-6.+About+Us--Madrid+Circle-+Krittawat+and+Puttisin+1-1920w.jpg";
 export const CONTACT_HERO_IMAGE = "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-11.+Contact+Us--Activity+-+People-+Puttisin+16-1920w.jpg";
 export const CONTACT_HERO_IMAGE_2 = "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-11.+Contact+Us--Activity+-+People-+Chittawan+Limcharoen+35-1920w.jpg";
+export const BKKK_VISIT_HERO_IMAGE = "https://irp.cdn-website.com/5516674f/dms3rep/multi/Puma_cover-for-about.jpg";
 export const VISIT_HERO_IMAGE = "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-2.+Visit--Activity+-+People-+Rungkit+-+Pongsakorn+3-1920w.jpg";
 export const TEAM_HERO_IMAGE = "https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-7.+Team--Activity+-+People-+Nawaphon-+Film+41-1920w.jpg";
 export const EXHIBITIONS_HERO_IMAGE = "https://irp.cdn-website.com/5516674f/dms3rep/multi/Puma_kyaf-bg-exhibitions__Fog+Forest-+Andrea+Rossetti+5.jpg";

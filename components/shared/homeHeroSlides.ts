@@ -1,5 +1,6 @@
 import { getTranslation } from '@/utils/translations';
 import type { CoverConfigMap } from '@/lib/wp-api';
+import { BKKK_VISIT_HERO_IMAGE, VISIT_HERO_IMAGE } from '@/utils/imageConstants';
 
 export interface HomeHeroSlide {
   image: string;
@@ -11,7 +12,7 @@ export function getHomeHeroSlides(language: 'en' | 'th', covers: CoverConfigMap 
   return {
     kyaf: [
       {
-        image: covers.visit || 'https://lirp.cdn-website.com/5516674f/dms3rep/multi/opt/Puma_Khao+Yai+Art+Forest+Images+for+Website-2.+Visit--Activity+-+People-+Rungkit+-+Pongsakorn+3-1920w.jpg',
+        image: covers.visit || VISIT_HERO_IMAGE,
         label: getTranslation(language, 'nav.visit'),
         href: '/kyaf/visit/',
       },
@@ -43,7 +44,7 @@ export function getHomeHeroSlides(language: 'en' | 'th', covers: CoverConfigMap 
     ] satisfies HomeHeroSlide[],
     bkkk: [
       {
-        image: covers.visit || 'https://irp.cdn-website.com/5516674f/dms3rep/multi/Puma_cover-for-about.jpg',
+        image: covers.visit || BKKK_VISIT_HERO_IMAGE,
         label: getTranslation(language, 'nav.visit'),
         href: '/bk/visit/',
       },
