@@ -23,7 +23,7 @@ export function Footer({ onNavigate, isSticky: _isSticky = false }: { onNavigate
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-12 md:gap-0">
         
         {/* Left: Logo */}
-        <div className="flex flex-col w-[38vw] max-w-[160px] md:w-[7.3vw] md:max-w-none -ml-[20px] md:-ml-[15px]">
+        <div className="flex flex-col w-[38vw] max-w-[208px] md:w-[9.5vw] md:max-w-none -ml-[20px] md:-ml-[15px]">
           <svg 
             className="w-full h-auto" 
             fill="none" 
@@ -87,7 +87,7 @@ export function Footer({ onNavigate, isSticky: _isSticky = false }: { onNavigate
       )}
       <div className="grid min-h-16 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 py-3">
         <button type="button" onClick={() => setIsExpanded((expanded) => !expanded)} aria-expanded={isExpanded} aria-label={isExpanded ? 'Collapse footer' : 'Expand footer'} className="flex min-w-0 items-center justify-self-start">
-          <div className="h-[22px] w-[52px]"><KyafWhite /></div>
+          <div className="h-[29px] w-[68px]"><KyafWhite /></div>
         </button>
         <div className="flex items-center justify-center gap-2">
           {socialLinks.map(({ href, label, icon: Icon }) => (
