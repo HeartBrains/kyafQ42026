@@ -896,11 +896,11 @@ html {
   font-size: inherit;
 }
 
-/* Activity metadata is 25% larger than its reduced scale, with fields aligned. */
+/* Activity metadata matches the filter size from the shared text-xl/md:text-2xl scale. */
 .activity-detail-metadata .detail-curated-text,
 .activity-detail-metadata .detail-additional-info,
 .activity-detail-metadata > p {
-  font-size: 0.73125em;
+  font-size: inherit;
 }
 
 .activity-detail-metadata .detail-additional-info .rich-content p {
