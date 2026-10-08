@@ -866,15 +866,18 @@ html {
   opacity: 0.6;
 }
 
-/* Keep Additional Info typography aligned with Curated by across detail pages. */
+/* Curated by and Additional Info are 25% smaller than their previous size. */
 .detail-curated-text {
-  font-size: calc(1.75rem * 0.75);
+  font-size: calc(1.75rem * 0.5625);
   margin-top: 2rem;
 }
 
-.detail-additional-info,
+.detail-additional-info {
+  font-size: calc(1.75rem * 0.5625);
+}
+
 .detail-additional-info .rich-content p {
-  font-size: calc(1.75rem * 0.75);
+  font-size: inherit;
 }
 
 @media (min-width: 48rem) {
@@ -883,18 +886,25 @@ html {
   }
 }
 
-/* Keep both metadata blocks paired when KYAF inherits its page typography. */
+/* KYAF metadata inherits its page scale; reduce both blocks by the same 25%. */
 .kyaf-detail-page .detail-curated-text,
-.kyaf-detail-page .detail-additional-info,
+.kyaf-detail-page .detail-additional-info {
+  font-size: 0.75em;
+}
+
 .kyaf-detail-page .detail-additional-info .rich-content p {
   font-size: inherit;
 }
 
-/* Activities use a smaller metadata scale on both sites; apply it to both blocks. */
+/* Activity supporting metadata matches the reduced Curated by / Additional Info. */
 .activity-detail-metadata .detail-curated-text,
 .activity-detail-metadata .detail-additional-info,
+.activity-detail-metadata > p {
+  font-size: 0.585em;
+}
+
 .activity-detail-metadata .detail-additional-info .rich-content p {
-  font-size: 0.78em;
+  font-size: inherit;
 }
 
 .moving-image-title {
