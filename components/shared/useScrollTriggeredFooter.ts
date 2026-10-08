@@ -22,7 +22,9 @@ export function useScrollTriggeredFooter() {
   const anchorRef = useRef<HTMLDivElement>(null);
   const footerRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
+  const [isExiting, setIsExiting] = useState(false);
   const [footerHeight, setFooterHeight] = useState(0);
+  const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const sitePrefix = pathname.startsWith('/bk/') || pathname === '/bk'
@@ -37,6 +39,7 @@ export function useScrollTriggeredFooter() {
 
     if (!isEligibleRoute) {
       setIsSticky(false);
+      setIsExiting(false);
       setFooterHeight(0);
       return;
     }
@@ -49,6 +52,7 @@ export function useScrollTriggeredFooter() {
       if (!window.matchMedia('(min-width: 768px)').matches) {
         setFooterHeight(0);
         setIsSticky(false);
+        setIsExiting(false);
         return;
       }
 
@@ -62,6 +66,14 @@ export function useScrollTriggeredFooter() {
       setFooterHeight((currentHeight) => currentHeight === nextHeight ? currentHeight : nextHeight);
       setIsSticky((currentState) => {
         const nextState = hasPassedHero && footerIsBelowViewport;
+        if (currentState && !nextState) {
+          if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
+          setIsExiting(true);
+          exitTimerRef.current = setTimeout(() => setIsExiting(false), 1000);
+        } else if (nextState) {
+          if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
+          setIsExiting(false);
+        }
         return currentState === nextState ? currentState : nextState;
       });
     };
@@ -76,8 +88,9 @@ export function useScrollTriggeredFooter() {
       window.removeEventListener('scroll', updateFooterState);
       window.removeEventListener('resize', updateFooterState);
       resizeObserver.disconnect();
+      if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
     };
   }, [pathname]);
 
-  return { anchorRef, footerRef, footerHeight, isSticky };
+  return { anchorRef, footerRef, footerHeight, isSticky, isExiting };
 }

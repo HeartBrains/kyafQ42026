@@ -37,6 +37,8 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
 
   useEffect(() => {
     if (!isOpen) setSiteCoverPreview(null);
+    document.body.toggleAttribute('data-menu-open', isOpen);
+    return () => document.body.removeAttribute('data-menu-open');
   }, [isOpen]);
 
   // WP-driven menu visibility — merges over siteConfig.kyafMenu; falls back to kyafMenu while loading
@@ -148,12 +150,6 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex text-white font-sans"
-          onPointerMove={(event) => {
-            if (event.pointerType === 'mouse' && event.clientX < event.currentTarget.clientWidth / 2) {
-              setSiteCoverPreview(null);
-            }
-          }}
-          onPointerLeave={() => setSiteCoverPreview(null)}
           onBlurCapture={(event) => {
             const nextFocusedElement = event.relatedTarget;
             if (!(nextFocusedElement instanceof Node) || !event.currentTarget.contains(nextFocusedElement)) {
@@ -197,6 +193,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             exit={{ x: '-100%' }}
             transition={{ duration: 0.5, ease: "circOut" }}
             className="relative z-10 hidden h-full w-1/2 overflow-hidden md:block"
+            onPointerEnter={(event) => {
+              if (event.pointerType === 'mouse') setSiteCoverPreview(null);
+            }}
           >
             <div 
               className={`absolute inset-0 h-full w-full bg-cover bg-center bg-no-repeat transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-0' : 'opacity-100'}`}

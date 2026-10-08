@@ -47,6 +47,7 @@ export function BackToTop() {
   return (
     <button
       onClick={scrollToTop}
+      data-back-to-top
       className="fixed right-6 z-50 p-3 bg-black text-white rounded-full shadow-lg transition-opacity duration-300 md:hidden hover:bg-gray-800"
       style={{ bottom: `${mobileFooterHeight + 20}px` }}
       aria-label="Back to Top"

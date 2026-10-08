@@ -317,7 +317,7 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
   const groupLabels: Record<RelatedGroupKey, { en: string; th: string }> = {
     exhibitions: { en: 'Related Exhibitions', th: 'นิทรรศการที่เกี่ยวข้อง' },
     activities: { en: 'Activities', th: 'กิจกรรม' },
-    'moving-image': { en: 'Related Moving Image', th: 'ภาพเคลื่อนไหวที่เกี่ยวข้อง' },
+    'moving-image': { en: 'Moving Images Program', th: 'โปรแกรมภาพเคลื่อนไหว' },
     residency: { en: 'Residency', th: 'พำนัก' },
     blog: { en: 'Blogs', th: 'บล็อก' },
   };

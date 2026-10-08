@@ -23,7 +23,7 @@ export function BkkkShell({ children, initialCovers, initialCss }: BkkkShellProp
   const navigate = useAppNavigate();
   const router = useRouter();
   const pathname = usePathname();
-  const { anchorRef, footerRef, footerHeight, isSticky } = useScrollTriggeredFooter();
+  const { anchorRef, footerRef, footerHeight, isSticky, isExiting } = useScrollTriggeredFooter();
 
   // Runtime fetch — overrides build-time values once WP responds
   const siteConfig = useSiteConfig('bkkk');
@@ -58,8 +58,8 @@ export function BkkkShell({ children, initialCovers, initialCss }: BkkkShellProp
         />
         <main className="pb-20 md:pb-0">{children}</main>
         <div ref={anchorRef} aria-hidden="true" />
-        <div aria-hidden="true" style={{ height: isSticky ? footerHeight : 0 }} />
-        <div ref={footerRef} data-sticky={isSticky ? 'true' : 'false'} className={`site-sticky-footer ${isSticky ? 'fixed inset-x-0 bottom-0 z-40' : ''}`}>
+        <div aria-hidden="true" style={{ height: isSticky || isExiting ? footerHeight : 0 }} />
+        <div ref={footerRef} data-sticky={isSticky ? 'true' : isExiting ? 'exiting' : 'false'} className={`site-sticky-footer ${isSticky || isExiting ? 'fixed inset-x-0 bottom-0 z-40' : ''}`}>
           <Footer onNavigate={navigate} isSticky={isSticky} />
         </div>
         <BackToTop />
