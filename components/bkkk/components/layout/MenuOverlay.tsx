@@ -209,7 +209,7 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
             aria-hidden="true"
             className={`pointer-events-none fixed inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
-          {siteCoverPreview === 'kyaf' && (
+          {variant === 'desktop' && siteCoverPreview === 'kyaf' && (
             <div
               id="bk-site-switch-preview"
               className="fixed inset-0 z-20 hidden cursor-default items-center justify-end pr-[6vw] md:flex"
@@ -242,7 +242,7 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
               </a>
             </div>
           )}
-          {siteCoverPreview === 'kyaf' && (
+          {variant === 'mobile' && siteCoverPreview === 'kyaf' && (
             <MobileSiteSwitchPreview
               site="kyaf"
               href="/kyaf"

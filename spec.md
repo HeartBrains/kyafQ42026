@@ -10,6 +10,25 @@ the click/tap interaction, while the desktop component must own the hover/focus
 interaction. Only the component for the active viewport should be mounted, so
 the two event systems cannot compete or reset one another.
 
+### Mobile state clarification
+
+The mobile menu must be a deterministic click/tap state machine. Its behavior
+must not depend on mouse movement, pointer hover, hover timers, or focus-driven
+preview activation:
+
+```text
+hidden -- hamburger click --> expanded
+expanded -- hamburger click --> hidden
+expanded -- site-logo click --> picture
+picture -- click outside destination logo --> expanded
+picture -- destination-logo click --> navigate to other site
+```
+
+The mobile component must not register `pointermove`, `pointerenter`,
+`pointerleave`, hover-dismiss timers, or mouse-based state resets. A click on the
+hamburger controls hidden/expanded; a click on the site-logo control controls
+expanded/picture. The desktop component keeps its separate hover behavior.
+
 ### Requirements
 
 1. Add separate menu components for each site variant:
@@ -26,7 +45,9 @@ the two event systems cannot compete or reset one another.
    - `picture`: the destination site preview is visible.
 4. Mobile behavior:
    - the site-logo button changes `expanded` to `picture` on click/tap;
-   - no hover or mouse-pointer readiness handler is used;
+   - the hamburger button toggles `hidden` and `expanded` on click/tap;
+   - no hover, focus-to-preview, pointer-move, pointer-enter, pointer-leave, or
+     mouse-pointer readiness handler is used;
    - tapping outside the destination logo returns to `expanded`;
    - tapping the destination logo navigates to the other site.
 5. Desktop behavior:
