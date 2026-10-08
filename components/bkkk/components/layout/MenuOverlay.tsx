@@ -9,6 +9,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { siteConfig } from '@/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
 import { useSiteSwitchPreview } from '@/components/shared/useSiteSwitchPreview';
+import { MobileSiteSwitchPreview } from '@/components/shared/MobileSiteSwitchPreview';
 
 const SITE_COVER_PREVIEWS = {
   bk: '/assets/c62c64ac454fd8fd1b5ba6a64e8e3a9305f2f778.png',
@@ -202,7 +203,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           {siteCoverPreview === 'kyaf' && (
             <div
               id="bk-site-switch-preview"
-              className="fixed inset-0 z-20 flex cursor-default items-center justify-end pr-[6vw]"
+              className="fixed inset-0 z-20 hidden cursor-default items-center justify-end pr-[6vw] md:flex"
               onClick={() => dismissPreview()}
               onPointerEnter={cancelHoverDismiss}
               onPointerLeave={scheduleHoverDismiss}
@@ -226,6 +227,18 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                 />
               </a>
             </div>
+          )}
+          {siteCoverPreview === 'kyaf' && (
+            <MobileSiteSwitchPreview
+              site="kyaf"
+              href="/kyaf"
+              logoSrc="/assets/khao-yai-art-forest-wordmark.png"
+              logoAlt="Khao Yai Art Forest"
+              width={371}
+              height={159}
+              linkRef={previewLinkRef}
+              onDismiss={() => dismissPreview()}
+            />
           )}
           {/* Left Image Side - Hidden on Mobile */}
           <motion.div 

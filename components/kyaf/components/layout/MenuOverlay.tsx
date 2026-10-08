@@ -10,6 +10,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { siteConfig, isSectionVisible } from '@/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
 import { useSiteSwitchPreview } from '@/components/shared/useSiteSwitchPreview';
+import { MobileSiteSwitchPreview } from '@/components/shared/MobileSiteSwitchPreview';
 
 const SITE_COVER_PREVIEWS = {
   bk: '/assets/c62c64ac454fd8fd1b5ba6a64e8e3a9305f2f778.png',
@@ -180,7 +181,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           {siteCoverPreview === 'bk' && (
             <div
               id="kyaf-site-switch-preview"
-              className="fixed inset-0 z-20 flex cursor-default items-center justify-end pr-[6vw]"
+              className="fixed inset-0 z-20 hidden cursor-default items-center justify-end pr-[6vw] md:flex"
               onClick={() => dismissPreview()}
               onPointerEnter={cancelHoverDismiss}
               onPointerLeave={scheduleHoverDismiss}
@@ -204,6 +205,18 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                 />
               </a>
             </div>
+          )}
+          {siteCoverPreview === 'bk' && (
+            <MobileSiteSwitchPreview
+              site="bk"
+              href="/bk"
+              logoSrc="/assets/bangkok-kunsthalle-wordmark.png"
+              logoAlt="Bangkok Kunsthalle"
+              width={355}
+              height={133}
+              linkRef={previewLinkRef}
+              onDismiss={() => dismissPreview()}
+            />
           )}
           {/* Left Image Side - Hidden on Mobile */}
           <motion.div 
