@@ -866,31 +866,30 @@ html {
   opacity: 0.6;
 }
 
-/* Detail metadata scales to 75% of the existing typography tokens. */
+/* Detail metadata: Additional Info is 75% of the title size (text-xl/md:text-2xl). */
 .detail-curated-text {
   font-size: calc(1.75rem * 0.75);
 }
 
 .detail-additional-info,
 .detail-additional-info .rich-content p {
-  font-size: calc(1rem * 0.75);
+  font-size: calc(1.25rem * 0.75);
 }
 
-.detail-additional-info--small {
-  font-size: calc(0.875rem * 0.75);
+@media (min-width: 48rem) {
+  .detail-additional-info,
+  .detail-additional-info .rich-content p {
+    font-size: calc(1.5rem * 0.75);
+  }
 }
 
-/* KYAF detail metadata uses the same scale as the surrounding detail copy. */
-.kyaf-detail-page .detail-curated-text,
-.kyaf-detail-page .detail-additional-info,
-.kyaf-detail-page .detail-additional-info .rich-content p {
+/* Keep curated-by styling unchanged on KYAF detail pages. */
+.kyaf-detail-page .detail-curated-text {
   font-size: inherit;
 }
 
-/* Activity detail metadata and filters match the main detail-copy scale. */
-.activity-detail-metadata .detail-curated-text,
-.activity-detail-metadata .detail-additional-info,
-.activity-detail-metadata .detail-additional-info .rich-content p {
+/* Keep curated-by styling unchanged on activity detail pages. */
+.activity-detail-metadata .detail-curated-text {
   font-size: 0.78em;
 }
 
