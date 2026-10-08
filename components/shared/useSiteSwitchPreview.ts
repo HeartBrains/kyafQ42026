@@ -23,6 +23,7 @@ export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOp
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shouldFocusPreviewLinkRef = useRef(false);
   const suppressNextFocusOpenRef = useRef(false);
+  const pointerHoverReadyRef = useRef(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const previewLinkRef = useRef<HTMLAnchorElement>(null);
 
@@ -39,6 +40,7 @@ export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOp
   }, []);
 
   const showFromHover = useCallback((site: SiteSwitchDestination) => {
+    if (!pointerHoverReadyRef.current) return;
     clearDismissTimer();
     if (previewRef.current?.mode === 'pinned') return;
     updatePreview({ site, mode: 'hover' });
@@ -92,9 +94,18 @@ export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOp
       clearDismissTimer();
       shouldFocusPreviewLinkRef.current = false;
       suppressNextFocusOpenRef.current = false;
+      pointerHoverReadyRef.current = false;
       updatePreview(null);
       return;
     }
+
+    pointerHoverReadyRef.current = false;
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== 'mouse') return;
+      pointerHoverReadyRef.current = true;
+      document.removeEventListener('pointermove', handlePointerMove);
+    };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
@@ -107,8 +118,12 @@ export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOp
       }
     };
 
+    document.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('keydown', handleKeyDown, true);
-    return () => document.removeEventListener('keydown', handleKeyDown, true);
+    return () => {
+      document.removeEventListener('pointermove', handlePointerMove);
+      document.removeEventListener('keydown', handleKeyDown, true);
+    };
   }, [clearDismissTimer, dismissPreview, isOpen, onClose, updatePreview]);
 
   useEffect(() => () => clearDismissTimer(), [clearDismissTimer]);
