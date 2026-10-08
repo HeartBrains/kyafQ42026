@@ -5,9 +5,10 @@ import { useState, useEffect, useMemo } from 'react';
 import type { MovingImageItem } from '@/lib/wp-mappers';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useMovingImages, useSectionVisibility } from '@/lib/useWPData';
+import { useCovers } from '@/lib/coversContext';
 import { siteConfig } from '@/utils/siteConfig';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
-const movingImageHero = '/assets/429c8ad61cdb4d502462d129e377fe4faf35abf2.png';
+const fallbackMovingImageHero = '/assets/429c8ad61cdb4d502462d129e377fe4faf35abf2.png';
 
 interface MovingImagePageProps {
   onNavigate?: (page: string, slug?: string) => void;
@@ -18,6 +19,8 @@ export function MovingImagePage({ onNavigate: onNavigateProp, targetSectionId }:
   const internalNavigate = useAppNavigate();
   const onNavigate = onNavigateProp ?? internalNavigate;
   const { language } = useLanguage();
+  const covers = useCovers();
+  const movingImageHero = covers.movingImage || fallbackMovingImageHero;
   const { data: movingImageRecords } = useMovingImages();
   const [activeSection, setActiveSection] = useState('current-programs');
 
