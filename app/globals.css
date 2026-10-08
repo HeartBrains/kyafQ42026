@@ -866,9 +866,9 @@ html {
   opacity: 0.6;
 }
 
-/* Curated by and Additional Info are 25% smaller than their previous size. */
+/* Curated by is 25% smaller than the filter's text-xl/md:text-2xl scale. */
 .detail-curated-text {
-  font-size: calc(1.75rem * 0.5625);
+  font-size: calc(1.25rem * 0.75);
   margin-top: 2rem;
 }
 
@@ -882,6 +882,7 @@ html {
 
 @media (min-width: 48rem) {
   .detail-curated-text {
+    font-size: calc(1.5rem * 0.75);
     margin-top: 3rem;
   }
 }
@@ -905,6 +906,10 @@ html {
 
 .activity-detail-metadata .detail-additional-info .rich-content p {
   font-size: inherit;
+}
+
+.activity-detail-metadata .detail-curated-text {
+  font-size: 0.75em;
 }
 
 .moving-image-title {
