@@ -897,7 +897,7 @@ html {
   font-size: inherit;
 }
 
-/* Activity metadata matches the filter size from the shared text-xl/md:text-2xl scale. */
+/* Activity dates, categories, and filter share the text-xl/md:text-2xl scale. */
 .activity-detail-metadata .detail-curated-text,
 .activity-detail-metadata .detail-additional-info,
 .activity-detail-metadata > p {
@@ -908,7 +908,9 @@ html {
   font-size: inherit;
 }
 
-.activity-detail-metadata .detail-curated-text {
+/* Activity Curated by and Additional Info are 25% smaller than the filter. */
+.activity-detail-metadata .detail-curated-text,
+.activity-detail-metadata .detail-additional-info {
   font-size: 0.75em;
 }
 
