@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/utils/languageContext';
 import { RichContent } from '@/utils/richContent';
+import { CuratedByText } from '@/components/shared/CuratedByText';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '../ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { ArrowLeft } from 'lucide-react';
@@ -98,7 +99,13 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
               {dateDisplay && dateDisplay.split(',').map((d, i) => (
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
-              {curator && <p className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{language === 'th' ? 'ภัณฑารักษ์: ' : 'Curated by '}{curator}</p>}
+              {curator && (
+                <CuratedByText
+                  className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                  label={language === 'th' ? 'ภัณฑารักษ์:' : 'Curated by'}
+                  curator={curator}
+                />
+              )}
               {(data.additionalInfo?.[language] || data.additionalInfo?.en) && (
                 <div className="detail-additional-info text-black font-normal leading-relaxed">
                   <RichContent content={data.additionalInfo[language] || data.additionalInfo.en} />

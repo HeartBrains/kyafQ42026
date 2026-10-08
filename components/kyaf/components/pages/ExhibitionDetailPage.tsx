@@ -4,6 +4,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { RichContent } from '@/utils/richContent';
+import { CuratedByText } from '@/components/shared/CuratedByText';
 import { useLanguage } from '@/utils/languageContext';
 import { useKyafExhibitionBySlug } from '@/lib/useWPData';
 import { Reveal } from '../ui/Reveal';
@@ -178,9 +179,11 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                 {/* Curated by */}
                 {exhibitionData.curator?.en && (
                     <Reveal delay={0.12}>
-                        <p className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                            Curated by {language === 'th' ? (exhibitionData.curator.th || exhibitionData.curator.en) : exhibitionData.curator.en}
-                        </p>
+                        <CuratedByText
+                            className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                            label="Curated by"
+                            curator={language === 'th' ? (exhibitionData.curator.th || exhibitionData.curator.en) : exhibitionData.curator.en}
+                        />
                     </Reveal>
                 )}
 

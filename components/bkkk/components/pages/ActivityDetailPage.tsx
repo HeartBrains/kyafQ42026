@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/utils/languageContext';
 import { RichContent } from '@/utils/richContent';
+import { CuratedByText } from '@/components/shared/CuratedByText';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '../ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import { ArrowLeft } from 'lucide-react';
@@ -119,9 +120,11 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
               ))}
               {data.curator?.en && (
-                <p className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                  Curated by {language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}
-                </p>
+                <CuratedByText
+                  className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                  label="Curated by"
+                  curator={language === 'th' ? (data.curator.th || data.curator.en) : data.curator.en}
+                />
               )}
               {data.additionalInfo && (
                 <div className="detail-additional-info mt-6 text-black font-normal leading-relaxed">

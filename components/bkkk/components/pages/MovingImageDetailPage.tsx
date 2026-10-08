@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '@/utils/languageContext';
 import { RichContent } from '@/utils/richContent';
+import { CuratedByText } from '@/components/shared/CuratedByText';
 import { useMovingImageBySlug } from '@/lib/useWPData';
 import { ArrowLeft } from 'lucide-react';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from '../ui/carousel';
@@ -100,9 +101,11 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
             <div className="flex flex-col gap-0 px-0 md:px-[28px]">
               <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
               {curator && (
-                <p className={`detail-curated-text font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                  {language === 'th' ? `ภัณฑารักษ์: ${curator}` : `Curated by ${curator}`}
-                </p>
+                <CuratedByText
+                  className={`detail-curated-text font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                  label={language === 'th' ? 'ภัณฑารักษ์:' : 'Curated by'}
+                  curator={curator}
+                />
               )}
               {dateDisplay && dateDisplay.split(',').map((d, i) => (
                 <p key={i} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
