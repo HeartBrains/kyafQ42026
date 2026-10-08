@@ -9,7 +9,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafExhibitions, useSectionVisibility } from '@/lib/useWPData';
 import { siteConfig } from '@/components/kyaf/utils/siteConfig';
-import { KYAF_DEFAULT_COVERS } from '@/lib/defaultCovers';
+import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
 import { RichContent } from '@/utils/richContent';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 
@@ -116,7 +116,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
   return (
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       {/* Hero */}
-      <ParallaxHero image={covers.exhibitions || KYAF_DEFAULT_COVERS.exhibitions!} height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]">
+      <ParallaxHero image={covers.exhibitions || EXHIBITIONS_HERO_IMAGE} height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </ParallaxHero>
 
