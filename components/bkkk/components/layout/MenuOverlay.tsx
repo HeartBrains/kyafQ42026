@@ -8,6 +8,7 @@ import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
 import { siteConfig } from '@/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
+import { useSiteSwitchPreview } from '@/components/shared/useSiteSwitchPreview';
 
 const SITE_COVER_PREVIEWS = {
   bk: '/assets/c62c64ac454fd8fd1b5ba6a64e8e3a9305f2f778.png',
@@ -30,10 +31,20 @@ interface MenuItem {
 
 export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOverlayProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
-  const [siteCoverPreview, setSiteCoverPreview] = useState<keyof typeof SITE_COVER_PREVIEWS | null>(null);
+  const {
+    preview,
+    triggerRef,
+    previewLinkRef,
+    showFromHover,
+    showFromFocus,
+    pinPreview,
+    dismissPreview,
+    cancelHoverDismiss,
+    scheduleHoverDismiss,
+  } = useSiteSwitchPreview({ isOpen, onClose });
+  const siteCoverPreview = preview?.site ?? null;
 
   useEffect(() => {
-    if (!isOpen) setSiteCoverPreview(null);
     document.body.toggleAttribute('data-menu-open', isOpen);
     return () => document.body.removeAttribute('data-menu-open');
   }, [isOpen]);
@@ -175,7 +186,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
           onBlurCapture={(event) => {
             const nextFocusedElement = event.relatedTarget;
             if (!(nextFocusedElement instanceof Node) || !event.currentTarget.contains(nextFocusedElement)) {
-              setSiteCoverPreview(null);
+              dismissPreview();
             }
           }}
         >
@@ -189,11 +200,19 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             className={`pointer-events-none fixed inset-0 z-[1] bg-black/35 transition-opacity duration-700 ease-in-out motion-reduce:transition-none ${siteCoverPreview ? 'opacity-100' : 'opacity-0'}`}
           />
           {siteCoverPreview === 'kyaf' && (
-            <div className="pointer-events-none fixed inset-0 z-20 flex items-center justify-end pr-[6vw]">
+            <div
+              id="bk-site-switch-preview"
+              className="fixed inset-0 z-20 flex cursor-default items-center justify-end pr-[6vw]"
+              onClick={() => dismissPreview()}
+              onPointerEnter={cancelHoverDismiss}
+              onPointerLeave={scheduleHoverDismiss}
+            >
               <a
+                ref={previewLinkRef}
                 href="/kyaf"
                 aria-label="Open Khao Yai Art Forest"
-                className="pointer-events-auto block w-[min(31vw,22rem)]"
+                onClick={(event) => event.stopPropagation()}
+                className="block w-[min(70vw,22rem)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white md:w-[min(31vw,22rem)]"
               >
                 <Image
                   src="/assets/khao-yai-art-forest-wordmark.png"
@@ -215,9 +234,6 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
             exit={{ x: '-100%' }}
             transition={{ duration: 0.5, ease: "circOut" }}
             className="relative z-10 hidden h-full w-1/2 overflow-hidden md:block"
-            onPointerEnter={(event) => {
-              if (event.pointerType === 'mouse') setSiteCoverPreview(null);
-            }}
             onClick={onClose}
           >
             <div 
@@ -365,18 +381,17 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                     }}
                 >
                     <div className="flex w-full items-center gap-6">
-                        <a 
-                            href="/kyaf"
-                            aria-label="Open Khao Yai Art Forest"
-                            onClick={(event) => {
-                              if (window.matchMedia('(hover: none)').matches && !siteCoverPreview) {
-                                event.preventDefault();
-                                setSiteCoverPreview('kyaf');
-                              }
-                            }}
+                        <button
+                            ref={triggerRef}
+                            type="button"
+                            aria-label="Preview Khao Yai Art Forest"
+                            aria-controls="bk-site-switch-preview"
+                            aria-expanded={siteCoverPreview === 'kyaf'}
+                            onClick={() => pinPreview('kyaf')}
                             onPointerEnter={(event) => {
-                              if (event.pointerType === 'mouse') setSiteCoverPreview('kyaf');
+                              if (event.pointerType === 'mouse') showFromHover('kyaf');
                             }}
+                            onFocus={(event) => showFromFocus('kyaf', event.currentTarget.matches(':focus-visible'))}
                             className="ml-auto inline-flex items-center transition-opacity hover:opacity-75"
                         >
                             <Image
@@ -389,7 +404,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                               decoding="async"
                               className="h-auto w-36 object-contain md:w-40"
                             />
-                        </a>
+                        </button>
                     </div>
 
                     {siteConfig.menu.languageSwitcher && (

@@ -1,132 +1,97 @@
 # Workspace Specification
 
-## Active Plan: KYAF/BK Content and Layout Corrections
-
-### Deployment scope
-
-- Repository: `HeartBrains/kyafQ42026`, branch `master`.
-- Public staging site: `https://dev.khaoyaiart.org`.
-- WordPress source: `https://q42026.content.khaoyaiart.org`.
-- `/bk/` maps to internal site ID `bkkk`; `/kyaf/` maps to `kyaf`.
-- Changes are staging-only. Do not modify production repositories, WordPress endpoints, or hosting.
-- Preserve unrelated worktree changes. Do not commit generated `out/`, credentials, SSH keys, or unrelated artifacts in a normal source change; CI rebuilds `out/` after the source push.
+## Active Plan: Main Navigation Site-Switch Preview Interaction
 
 ### Objective
 
-Correct shared home, listing, detail, menu, footer, and related-content behavior for both Bangkok Kunsthalle (BK) and Khao Yai Art Forest (KYAF), with responsive behavior explicitly defined for desktop and mobile.
+Make the site-logo link in the hamburger/main navigation behave consistently on desktop and mobile for both BK and KYAF. Hovering, focusing, or clicking the site-logo trigger must reveal the destination site's full preview image and destination logo. The trigger itself must not navigate. Navigation occurs only when the visitor activates the logo displayed inside the preview. Clicking anywhere else dismisses the preview and returns to the still-open main menu.
 
 ### Requirements
 
-#### 1. Home hero hover treatment and controls
+1. Apply the interaction to both duplicated menu implementations:
+   - `/bk/` uses internal site ID `bkkk` and `components/bkkk/components/layout/MenuOverlay.tsx`.
+   - `/kyaf/` uses internal site ID `kyaf` and `components/kyaf/components/layout/MenuOverlay.tsx`.
+2. The footer/site-switch logo inside each open menu is a preview trigger, not a direct navigation link:
+   - Desktop mouse hover reveals the destination preview.
+   - Keyboard focus reveals the destination preview.
+   - Click, tap, Enter, or Space reveals and pins the destination preview.
+   - Activating the trigger must prevent navigation on every input type.
+3. The active preview displays the existing destination background image, dark overlay, and destination wordmark/logo. Only the wordmark/logo within the active preview is the final link to `/kyaf` or `/bk`.
+4. Activating the preview wordmark performs normal same-tab navigation to the destination site. It must not be treated as an outside click or close before navigation begins.
+5. Clicking or tapping any part of the preview other than the destination wordmark dismisses only the preview state. The hamburger menu remains open and returns to its normal menu content and image.
+6. Desktop hover must be stable while the pointer travels from the trigger to the preview wordmark. The preview must not disappear because the pointer crosses a gap or because a root-level `pointermove` handler resets state.
+7. A hover-opened preview may close after the pointer leaves both the trigger and preview interaction region. Use a short cancellable grace period if needed to prevent flicker. A click/tap-pinned preview remains visible until the destination wordmark is activated, an outside area is activated, Escape is pressed, or the hamburger menu closes.
+8. Escape closes the preview first when it is active; Escape may close the hamburger menu only when no preview is active. Closing the hamburger menu by any existing route must reset preview state.
+9. When preview mode is active, normal menu controls behind it must not receive pointer or keyboard input. When the preview is dismissed, focus and interaction return to the main menu without reopening or closing the menu unexpectedly.
+10. Keep the existing mobile behavior that hides the Back to Top control while the hamburger menu is open.
+11. Preserve current preview imagery, logos, routes, menu animation, language selector, navigation visibility settings, and BK/KYAF visual styling. Do not change WordPress content or configuration.
+12. Respect `prefers-reduced-motion`: state changes must remain usable without requiring animation.
 
-1. On both home pages, hovering a hero slide must keep the background image visible and apply a transparent dark overlay at 60% opacity (`rgba(0, 0, 0, 0.6)` or an equivalent existing design token), not replace the image with a solid grey background.
-2. Remove the visible `1/8`-style gallery/slide count from the home hero. Do not remove accessible slide state from assistive technology unless it is only the visual counter.
-3. Preserve the existing arrows, labels, links, keyboard focus, swipe behavior, autoplay, and reduced-motion handling unless another requirement changes them.
+### Interaction state model
 
-#### 2. Home hero image source
+Use one explicit preview state rather than independent hover and click booleans:
 
-1. Home hero slides for both BK and KYAF must be populated from the existing WordPress hero API/data source for each section.
-2. Each section’s configured hero image must map to the correct site and section; do not substitute a hard-coded unrelated image when an API value exists.
-3. Define and preserve a safe loading fallback for missing/unavailable API images using the existing site asset or existing fallback mechanism.
-4. Do not add a second content source or change the WordPress content model without evidence that the current hero API cannot provide the required data.
+```text
+closed
+  ├─ pointer enter / focus on site trigger ──> preview(site, hover)
+  └─ click / tap / Enter / Space ───────────> preview(site, pinned)
 
-#### 3. Moving Image Program title typography
+preview(site, hover)
+  ├─ click / tap trigger ───────────────────> preview(site, pinned)
+  ├─ enter preview region/logo ─────────────> remain visible
+  ├─ leave trigger + preview region ────────> closed (after short grace period)
+  ├─ outside click / Escape ────────────────> closed
+  └─ activate preview logo ─────────────────> navigate to destination
 
-Normalize Moving Image Program title typography on both sites so titles are the same size and line-height at the same breakpoint across all listing/card locations. Match the established typography used by the other content categories and the existing mobile scale. Do not alter title copy, localization, card ordering, or responsive layout beyond the required typography normalization.
+preview(site, pinned)
+  ├─ pointer movement ──────────────────────> remain visible
+  ├─ outside click / Escape ────────────────> closed
+  ├─ hamburger closes ──────────────────────> closed
+  └─ activate preview logo ─────────────────> navigate to destination
+```
 
-#### 4. Activities detail Additional Info typography
-
-Reduce the Activities detail-page `Additional Info` typography by 22% from its current rendered size on both BK and KYAF. Apply the reduction only to the Additional Info block (date/time/location and equivalent metadata), not the page title, main body copy, curator text, CTA labels, or image credits. Preserve Thai line-height and responsive readability.
-
-#### 5. Desktop sticky footer sizing and transition
-
-At desktop breakpoints only:
-
-1. Reduce the sticky footer menu logo by 25% from the current rendered size.
-2. Reduce the sticky footer’s vertical space by 30% from the current setting while preserving legibility, hit areas, safe-area handling, and menu navigation.
-3. Add a smooth slide-up transition when the sticky footer appears. Respect `prefers-reduced-motion` by disabling or minimizing the transition.
-4. Keep existing mobile sticky-footer sizing and behavior unchanged except where explicitly required by the mobile requirements below.
-
-#### 6. Related Content headings on all detail pages
-
-1. On every applicable BK and KYAF detail page, change the related-section heading currently rendered as `Related Artists` or `Related Residency` to exactly `Residency`.
-2. Apply the heading naming consistently to all related-content section titles so they match the corresponding primary navigation/content section names.
-3. Preserve related-record grouping, editorial order, links, localization, card layout, and empty-state behavior. Do not change WordPress relationships as part of this heading-only requirement.
-
-### Mobile-only requirements
-
-#### M1. Home hero arrows
-
-1. Hide the home hero arrow controls by default on mobile.
-2. Reveal them through a deliberate hero-area interaction (tap/click; hover may be supported on hybrid devices) with a smooth, reduced-motion-aware transition.
-3. Keep slide navigation accessible to keyboard and assistive-technology users, and preserve swipe navigation.
-
-#### M2. Hamburger-menu site link preview
-
-On mobile, tapping the cross-site logo/link in the hamburger menu must not immediately navigate. It must first display the same logo-and-picture preview interaction available on desktop; a subsequent explicit activation of the preview enters the destination site. Preserve an accessible direct-navigation fallback for keyboard and assistive-technology users, and ensure the menu can still be closed without entering the destination site.
-
-#### M3. Detail gallery hero height
-
-On mobile, for all BK and KYAF detail-page gallery/slideshow hero sections (`gallery_media`), force `height`, `min-height`, and `max-height` to `60vh`. Keep existing desktop detail-hero behavior unless another requirement specifies it. Prevent image distortion with the existing object-fit/overflow behavior.
-
-### Constraints
-
-- Implement in the shared components/styles where both sites use the same behavior; use site-specific components only where markup or content contracts differ.
-- Reuse the existing hero API/data hooks, image assets, typography tokens, menu controls, sticky footer, and related-content renderer.
-- Keep `/bk/`→`bkkk` and `/kyaf/`→`kyaf` routing intact. Do not add new routes or alter production mappings.
-- Preserve accessibility: semantic links/buttons, focus styles, accessible slide state, touch targets, and reduced-motion behavior.
-- Preserve WordPress as the content source. Do not expose new public write endpoints or commit credentials.
-- Do not include generated `out/` in the source change; verify CI rebuilds staging output using Node 20 and the staging WordPress API.
-- Before any push, review `git status`, remotes, target ancestry, and exact staged files. Push only to `https://github.com/HeartBrains/kyafQ42026.git` `master`.
+The state should include both the destination (`bk` or `kyaf`) and activation mode (`hover` or `pinned`). A shared hook or shared preview component is preferred so the two site menus cannot drift, while site-specific assets and destinations remain configuration inputs.
 
 ### Architecture
 
 ```text
-Staging WordPress hero API (q42026.content.khaoyaiart.org)
-  └─ existing hooks/mappers
-       └─ shared BK/KYAF home hero slide model
-            ├─ API-backed section images + existing fallbacks
-            ├─ image-preserving 60% hover overlay
-            ├─ visual counter removed; accessible slide state retained
-            └─ desktop/mobile arrow interaction and transitions
-
-BK/KYAF detail pages
-  ├─ existing gallery_media hero
-  │    └─ mobile h/min/max = 60vh
-  ├─ Activities Additional Info typography = current size × 0.78
-  ├─ Moving Image title typography = shared category title scale
-  └─ RelatedContentSection
-       └─ normalized section titles, including exact “Residency” heading
-
-BK/KYAF shell
-  └─ sticky footer
-       ├─ desktop logo scale = current × 0.75
-       ├─ desktop vertical space = current × 0.70
-       └─ reduced-motion-aware slide-up reveal
+BK or KYAF MenuOverlay
+  └─ site-switch trigger
+       ├─ hover/focus -> preview state (hover)
+       └─ click/tap/keyboard -> preview state (pinned)
+              │
+              v
+       shared preview layer/state controller
+       ├─ destination background + overlay
+       ├─ destination wordmark: only navigation link
+       ├─ outside interaction: dismiss preview only
+       ├─ Escape: dismiss preview first
+       └─ menu close: clear preview state
 ```
+
+The preview layer owns dismissal and final navigation boundaries. The normal menu becomes inert while the preview is active. Event propagation must be controlled locally: the wordmark stops dismissal and navigates, while the surrounding preview layer dismisses. Do not use global mouse-position logic that clears the state merely because the pointer moves over one half of the menu.
 
 ### Implementation steps
 
-1. Audit the current `HeroDualSwitcher`, hero API hooks/mappers, BK/KYAF menu overlays, sticky footer, detail gallery wrappers, Moving Image listing cards, Activities detail metadata, and `RelatedContentSection`; record current computed classes/tokens and API field names.
-2. Update home hero data resolution to use the existing per-section hero API values and explicit fallbacks. Update hover overlay opacity, remove only the visual slide counter, and implement desktop/mobile arrow visibility and transitions without breaking keyboard/swipe behavior.
-3. Normalize Moving Image title classes against the established listing title scale. Apply the 22% Activities Additional Info reduction in a scoped style/class. Set mobile detail gallery hero height constraints to `60vh`.
-4. Adjust desktop sticky-footer logo and spacing tokens by the specified percentages, add slide-up enter/exit motion, and add reduced-motion behavior.
-5. Update all related-content heading labels to the primary section names, including exact `Residency`, while preserving data/grouping behavior.
-6. Verify both `/bk/` and `/kyaf/` at desktop and mobile widths, API-backed hero images, hover/tap/focus states, swipe controls, typography, sticky-footer transitions, related headings, and detail-gallery heights. Run formatting/type/build checks available in the environment.
-7. Review only intended source files, push to `HeartBrains/kyafQ42026/master`, confirm the GitHub Actions staging build succeeds, and verify the resulting pages on `https://dev.khaoyaiart.org`.
+1. Audit both `MenuOverlay` components and identify the duplicated preview trigger, root pointer handlers, backdrop, destination wordmark, menu close handlers, focus behavior, and `data-menu-open` lifecycle.
+2. Introduce the explicit `hover`/`pinned` preview state, preferably through a small shared hook/component that accepts destination route, preview image, wordmark asset, dimensions, and accessible label.
+3. Change the menu site-logo trigger into a semantic button or link with prevented default navigation. Wire pointer enter, focus, click/tap, Enter, and Space to reveal or pin the preview without leaving the current site.
+4. Make the preview layer a stable interaction region. Keep hover previews alive while moving to the destination wordmark; add and clear a short leave timer only for hover mode. Remove conflicting root `pointermove`/`pointerenter` resets.
+5. Make the destination wordmark the only active navigation link. Add outside-click/tap dismissal that clears preview state but does not call the hamburger menu's `onClose`. Add Escape-first dismissal and restore sensible focus after closing the preview.
+6. Apply the same behavior to BK and KYAF, preserving site-specific preview assets and `/bk` ↔ `/kyaf` destination mapping. Confirm the mobile Back to Top control remains hidden while the main menu is open.
+7. Test desktop mouse, touchscreen, keyboard, reduced-motion, rapid pointer movement, repeated open/dismiss cycles, and menu close/reopen for both sites. Run the production static build, commit only intended source files, push to `HeartBrains/kyafQ42026/master`, and verify the staging deployment at `https://dev.khaoyaiart.org` after implementation is authorized.
 
 ### Success criteria
 
-- BK and KYAF home heroes use the configured per-section WordPress hero images; missing data uses the existing safe fallback.
-- Hover preserves the image with a 60% transparent overlay; no solid-grey takeover appears; the visual `1/8` counter is gone while slide accessibility remains.
-- Mobile arrows are hidden until hero interaction and animate smoothly; swipe, keyboard, focus, and reduced-motion behavior remain usable.
-- Moving Image titles match the established category title size/line-height at each breakpoint.
-- Activities detail Additional Info is exactly 22% smaller than its previous rendered scale, scoped only to that block.
-- Desktop sticky footer logo is 25% smaller, vertical space is 30% smaller, and appearance uses a smooth slide-up transition with reduced-motion support.
-- All related-content headings use the correct primary section names, with `Residency` used instead of `Related Artists`/`Related Residency`.
-- Mobile detail gallery heroes have `height`, `min-height`, and `max-height` of `60vh` on both sites.
-- No production domain or production WordPress endpoint changes are made.
-- Staging CI completes successfully and the implemented behavior is visible at `https://dev.khaoyaiart.org`.
+- On BK and KYAF, desktop hover or focus reveals the correct destination image and wordmark without navigating.
+- On desktop and mobile, the first click/tap on the menu's site-logo trigger reveals and pins the preview; it never navigates directly.
+- The preview remains visible while the pointer moves to its wordmark, and clicking that wordmark navigates to the correct destination.
+- Clicking/tapping anywhere outside the preview wordmark dismisses the preview only and leaves the hamburger menu open.
+- A pinned preview does not disappear because of mouse movement. Escape dismisses the preview before the hamburger menu.
+- Hidden menu controls are inert during preview mode and become usable again after dismissal; keyboard focus remains predictable.
+- Closing and reopening the hamburger menu starts with no stale preview state.
+- Mobile Back to Top remains hidden while the menu is open, and reduced-motion users retain the complete interaction.
+- Both site variants pass the production build and the `kyafQ42026` staging workflow after implementation.
 
 ## Prior Plan (reference): Related-Content Type Groups and Carousel Controls
 
