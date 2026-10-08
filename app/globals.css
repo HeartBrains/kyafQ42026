@@ -869,6 +869,7 @@ html {
 /* Detail metadata: Additional Info is 75% of the title size (text-xl/md:text-2xl). */
 .detail-curated-text {
   font-size: calc(1.75rem * 0.75);
+  margin-top: 2rem;
 }
 
 .detail-additional-info,
@@ -877,6 +878,10 @@ html {
 }
 
 @media (min-width: 48rem) {
+  .detail-curated-text {
+    margin-top: 3rem;
+  }
+
   .detail-additional-info,
   .detail-additional-info .rich-content p {
     font-size: calc(1.5rem * 0.75);

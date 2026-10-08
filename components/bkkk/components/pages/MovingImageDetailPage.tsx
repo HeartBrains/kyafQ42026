@@ -100,6 +100,9 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
           <div className="md:col-span-6 flex flex-col gap-8">
             <div className="flex flex-col gap-0 px-0 md:px-[28px]">
               <h1 className={`text-xl md:text-2xl font-bold text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{title}</h1>
+              {dateDisplay && dateDisplay.split(',').map((d, i) => (
+                <p key={i} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
+              ))}
               {curator && (
                 <CuratedByText
                   className={`detail-curated-text font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}
@@ -107,9 +110,6 @@ export function MovingImageDetailPage({ slug, onNavigate }: MovingImageDetailPag
                   curator={curator}
                 />
               )}
-              {dateDisplay && dateDisplay.split(',').map((d, i) => (
-                <p key={i} className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{d.trim()}</p>
-              ))}
               {data.additionalInfo && (
                 <div className="detail-additional-info mt-6 text-black font-normal leading-tight">
                   <RichContent content={data.additionalInfo} />

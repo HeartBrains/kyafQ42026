@@ -164,6 +164,13 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                                 <p key={i} className={`text-xl md:text-2xl text-black font-normal leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{part.trim()}</p>
                             ));
                         })()}
+                        {exhibitionData.curator?.en && (
+                            <CuratedByText
+                                className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}
+                                label="Curated by"
+                                curator={language === 'th' ? (exhibitionData.curator.th || exhibitionData.curator.en) : exhibitionData.curator.en}
+                            />
+                        )}
                     </div>
                 </Reveal>
 
@@ -173,17 +180,6 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                         <div className="detail-additional-info text-black font-normal leading-relaxed">
                             <RichContent content={exhibitionData.additionalInfo} />
                         </div>
-                    </Reveal>
-                )}
-
-                {/* Curated by */}
-                {exhibitionData.curator?.en && (
-                    <Reveal delay={0.12}>
-                        <CuratedByText
-                            className={`detail-curated-text text-black font-normal leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}
-                            label="Curated by"
-                            curator={language === 'th' ? (exhibitionData.curator.th || exhibitionData.curator.en) : exhibitionData.curator.en}
-                        />
                     </Reveal>
                 )}
 
