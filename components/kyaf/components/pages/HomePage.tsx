@@ -8,12 +8,14 @@ import { useKyafExhibitions, useKyafActivities } from '@/lib/useWPData';
 import { isHomeSectionVisible } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
+import { useCovers } from '@/lib/coversContext';
 import { useMemo, useState } from 'react';
 
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
   const { language } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
-  const homeHeroSlides = useMemo(() => getHomeHeroSlides(language), [language]);
+  const covers = useCovers();
+  const homeHeroSlides = useMemo(() => getHomeHeroSlides(language, covers), [language, covers]);
 
   const { data: allExhibitions } = useKyafExhibitions();
   const { data: allActivities }  = useKyafActivities();

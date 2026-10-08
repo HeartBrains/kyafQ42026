@@ -5,7 +5,7 @@ import { useLanguage } from '@/utils/languageContext';
 import KyafWhite from '../../imports/KyafWhite';
 import { MailingListSignup } from '@/components/common/MailingListSignup';
 
-export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) {
+export function Footer({ onNavigate, isSticky: _isSticky = false }: { onNavigate?: (page: string) => void; isSticky?: boolean }) {
   const { language } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
   const socialLinks = [
@@ -19,11 +19,11 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
   
   return (
     <>
-    <footer className="hidden md:block w-full bg-black text-white px-[6vw] border-t border-white/10 py-12">
+    <footer className="hidden md:block w-full bg-black text-white px-[6vw] border-t border-white/10 py-[34px]">
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-12 md:gap-0">
         
         {/* Left: Logo */}
-        <div className="flex flex-col w-[38vw] max-w-[160px] md:w-[10.8vw] md:max-w-none -ml-[20px] md:-ml-[15px]">
+        <div className="flex flex-col w-[38vw] max-w-[160px] md:w-[8.1vw] md:max-w-none -ml-[20px] md:-ml-[15px]">
           <svg 
             className="w-full h-auto" 
             fill="none" 

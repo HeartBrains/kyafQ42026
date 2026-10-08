@@ -9,11 +9,13 @@ import { siteConfig } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 import { RichContent, stripWrapperDivs } from '@/utils/richContent';
+import { useCovers } from '@/lib/coversContext';
 
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
   const { language, t } = useLanguage();
   const [activeSection, setActiveSection] = useState('current-exhibitions');
-  const homeHeroSlides = useMemo(() => getHomeHeroSlides(language), [language]);
+  const covers = useCovers();
+  const homeHeroSlides = useMemo(() => getHomeHeroSlides(language, covers), [language, covers]);
 
   const { data: allExhibitions } = useBkkkExhibitions();
   const { data: allActivities }  = useBkkkActivities();
@@ -172,7 +174,7 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en}</h3>
+                        <h3 className={`moving-image-title text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.title[language] || currentMovingImageProgram.title.en}</h3>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.artist?.[language] || currentMovingImageProgram.artist?.en}</p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{currentMovingImageProgram.dateDisplay?.[language] || currentMovingImageProgram.dateDisplay?.en}</p>
                       </div>

@@ -350,6 +350,12 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         <a 
                             href="/bk"
                             aria-label="Open Bangkok Kunsthalle"
+                            onClick={(event) => {
+                              if (window.matchMedia('(hover: none)').matches && !siteCoverPreview) {
+                                event.preventDefault();
+                                setSiteCoverPreview('bk');
+                              }
+                            }}
                             onPointerEnter={(event) => {
                               if (event.pointerType === 'mouse') setSiteCoverPreview('bk');
                             }}

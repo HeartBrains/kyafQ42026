@@ -5,7 +5,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { Logo } from '../ui/Logo';
 import { MailingListSignup } from '@/components/common/MailingListSignup';
 
-export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) {
+export function Footer({ onNavigate, isSticky: _isSticky = false }: { onNavigate?: (page: string) => void; isSticky?: boolean }) {
   const { language } = useLanguage();
   const [isExpanded, setIsExpanded] = useState(false);
   const socialLinks = [
@@ -19,13 +19,13 @@ export function Footer({ onNavigate }: { onNavigate?: (page: string) => void }) 
   
   return (
     <>
-    <footer className="hidden md:block w-full bg-black text-white md:px-12 p-[48px] pl-[24px] sm:p-[24px]">
+    <footer className="hidden md:block w-full bg-black text-white md:px-12 p-[34px] pl-[24px] sm:p-[24px]">
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-12 md:gap-0 mr-[5%] md:pr-[2%]">
         
         {/* Left: Logo */}
         <div className="flex flex-col -ml-[10px] md:ml-0 md:pl-[24px]">
           <Logo 
-            className="h-[40px] md:h-[60px] w-auto"
+            className="h-[40px] md:h-[45px] w-auto"
             white={true}
           />
         </div>

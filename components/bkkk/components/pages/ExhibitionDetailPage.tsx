@@ -46,7 +46,7 @@ export function ExhibitionDetailPage({ onNavigate, slug }: ExhibitionDetailPageP
             <CarouselContent className="-ml-0">
               {galleryImages.map((src, index) => (
                 <CarouselItem key={index} className="pl-0">
-                  <img src={src} alt={`${title} Gallery ${index + 1}`} className="w-full h-auto min-h-0 max-h-[50vh] object-cover block md:min-h-[50vh] md:max-h-[80vh]"
+                  <img src={src} alt={`${title} Gallery ${index + 1}`} className="w-full h-auto min-h-[60vh] max-h-[60vh] object-cover block md:min-h-[50vh] md:max-h-[80vh]"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />

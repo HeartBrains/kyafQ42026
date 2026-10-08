@@ -23,8 +23,10 @@ export function HeroDualSwitcher({
 }: HeroDualSwitcherProps) {
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isTouchActive, setIsTouchActive] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
   const pointerStartX = useRef<number | null>(null);
+  const pointerType = useRef<string>('mouse');
   const dragged = useRef(false);
   const activeSlides = slides[initialSite];
   const activeSlide = activeSlides[activeSlideIndex % activeSlides.length];
@@ -53,6 +55,7 @@ export function HeroDualSwitcher({
     if ((event.target as Element).closest('a, button')) return;
     if (event.pointerType === 'mouse' && event.button !== 0) return;
     pointerStartX.current = event.clientX;
+    pointerType.current = event.pointerType;
     dragged.current = false;
     event.currentTarget.setPointerCapture(event.pointerId);
   };
@@ -69,7 +72,8 @@ export function HeroDualSwitcher({
   return (
     <section
       className="dual-hero"
-      aria-label="Khao Yai Art Forest and Bangkok Kunsthalle"
+      data-controls-visible={isHovered || isTouchActive ? 'true' : 'false'}
+      aria-label={initialSite === 'kyaf' ? 'Khao Yai Art Forest' : 'Bangkok Kunsthalle'}
       onPointerEnter={(event) => event.pointerType === 'mouse' && setIsHovered(true)}
       onPointerLeave={(event) => event.pointerType === 'mouse' && setIsHovered(false)}
       onPointerDown={handlePointerDown}
@@ -80,7 +84,9 @@ export function HeroDualSwitcher({
           event.preventDefault();
           event.stopPropagation();
           dragged.current = false;
+          return;
         }
+        if (pointerType.current === 'touch') setIsTouchActive((visible) => !visible);
       }}
     >
       {activeSlides.map((slide, index) => (
@@ -96,9 +102,6 @@ export function HeroDualSwitcher({
       <Link className="dual-hero__slide-link text-xl md:text-2xl font-normal" href={activeSlide.href}>
         {activeSlide.label}
       </Link>
-      <div className="dual-hero__slide-count" aria-hidden="true">
-        {activeSlideIndex + 1} / {activeSlides.length}
-      </div>
       <div className="dual-hero__arrows" role="group" aria-label={navigationLabel}>
         <button
           className="dual-hero__arrow"

@@ -46,8 +46,6 @@ export function useScrollTriggeredFooter() {
       const footer = footerRef.current;
       if (!anchor || !footer) return;
 
-      // Keep the footer in normal document flow on phones and small tablets.
-      // This matches the site's `md` breakpoint for desktop sticky behavior.
       if (!window.matchMedia('(min-width: 768px)').matches) {
         setFooterHeight(0);
         setIsSticky(false);

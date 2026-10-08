@@ -76,7 +76,7 @@ export function ExhibitionDetailPage({ onNavigate, slug, backPage }: ExhibitionD
                          <ImageWithFallback
                             src={src}
                             alt={`${exhibitionData.title} Gallery ${index + 1}`}
-                            className="w-full h-auto min-h-0 max-h-[50vh] block opacity-90 object-cover md:min-h-[50vh] md:max-h-[80vh]"
+                            className="w-full h-auto min-h-[60vh] max-h-[60vh] block opacity-90 object-cover md:min-h-[50vh] md:max-h-[80vh]"
                          />
                       </CarouselItem>
                    ))}

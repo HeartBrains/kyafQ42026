@@ -318,7 +318,7 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
     exhibitions: { en: 'Related Exhibitions', th: 'นิทรรศการที่เกี่ยวข้อง' },
     activities: { en: 'Related Activities', th: 'กิจกรรมที่เกี่ยวข้อง' },
     'moving-image': { en: 'Related Moving Image', th: 'ภาพเคลื่อนไหวที่เกี่ยวข้อง' },
-    residency: { en: 'Related Artists / Residency', th: 'ศิลปิน / พำนักที่เกี่ยวข้อง' },
+    residency: { en: 'Residency', th: 'พำนัก' },
     blog: { en: 'Related Blogs', th: 'บล็อกที่เกี่ยวข้อง' },
   };
   const groups = groupOrder

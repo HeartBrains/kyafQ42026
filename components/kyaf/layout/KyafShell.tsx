@@ -59,8 +59,8 @@ export function KyafShell({ children, initialCovers, initialCss }: KyafShellProp
         <main className="pb-20 md:pb-0">{children}</main>
         <div ref={anchorRef} aria-hidden="true" />
         <div aria-hidden="true" style={{ height: isSticky ? footerHeight : 0 }} />
-        <div ref={footerRef} className={isSticky ? 'fixed inset-x-0 bottom-0 z-40' : undefined}>
-          <Footer onNavigate={navigate} />
+        <div ref={footerRef} className={`site-sticky-footer transition-transform duration-500 ease-out motion-reduce:transition-none ${isSticky ? 'fixed inset-x-0 bottom-0 z-40 translate-y-0' : ''}`}>
+          <Footer onNavigate={navigate} isSticky={isSticky} />
         </div>
         <BackToTop />
       </CoversContext.Provider>

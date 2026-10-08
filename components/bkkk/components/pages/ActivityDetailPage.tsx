@@ -61,7 +61,7 @@ export function ActivityDetailPage({ onNavigate, slug }: ActivityDetailPageProps
                   <img
                     src={src}
                     alt={`${title} Gallery ${index + 1}`}
-                    className="w-full h-auto min-h-0 max-h-[50vh] object-cover block md:min-h-[50vh] md:max-h-[80vh]"
+                    className="w-full h-auto min-h-[60vh] max-h-[60vh] object-cover block md:min-h-[50vh] md:max-h-[80vh]"
                     loading={index === 0 ? 'eager' : 'lazy'}
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                   />
