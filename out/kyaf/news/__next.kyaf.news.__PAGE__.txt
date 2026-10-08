@@ -2,5 +2,5 @@
 2:I[9778,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","4286","static/chunks/4286-3114d8a161acc5f7.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","1193","static/chunks/1193-4cf58d5848809353.js","6399","static/chunks/6399-b1202152b6301e6d.js","5749","static/chunks/5749-044bc40f0ce900ec.js","2519","static/chunks/2519-248f0a58cd087247.js","2783","static/chunks/2783-36a0003873ac6ac4.js","2068","static/chunks/2068-8b25b54bc6ffee92.js","5890","static/chunks/app/kyaf/news/page-0905a8435d784cd3.js"],"ClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"kyaf","component":"NewsPage"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"L6PuKhcPh2GfUVBNz8bUo"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"kyaf","component":"NewsPage"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"emSHEIK2wUPtgg0ASvIEe"}
 5:null
