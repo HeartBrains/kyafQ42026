@@ -61,16 +61,17 @@ export function useScrollTriggeredFooter() {
         ? hero.getBoundingClientRect().bottom <= 0
         : window.scrollY > 50;
       const footerIsBelowViewport = anchor.getBoundingClientRect().top > window.innerHeight;
+      const isAtPageEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
       const nextHeight = footer.offsetHeight;
 
       setFooterHeight((currentHeight) => currentHeight === nextHeight ? currentHeight : nextHeight);
       setIsSticky((currentState) => {
         const nextState = hasPassedHero && footerIsBelowViewport;
-        if (currentState && !nextState) {
+        if (currentState && !nextState && !isAtPageEnd) {
           if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
           setIsExiting(true);
           exitTimerRef.current = setTimeout(() => setIsExiting(false), 1000);
-        } else if (nextState) {
+        } else if (nextState || isAtPageEnd) {
           if (exitTimerRef.current) clearTimeout(exitTimerRef.current);
           setIsExiting(false);
         }
