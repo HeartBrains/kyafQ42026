@@ -214,6 +214,11 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
               id="bk-site-switch-preview"
               className="fixed inset-0 z-20 hidden cursor-default items-center justify-end pr-[6vw] md:flex"
               onClick={() => dismissPreview()}
+              onPointerMove={(event) => {
+                if (event.pointerType === 'mouse' && event.clientX <= window.innerWidth / 2) {
+                  dismissPreview();
+                }
+              }}
               onPointerEnter={cancelHoverDismiss}
               onPointerLeave={scheduleHoverDismiss}
             >
