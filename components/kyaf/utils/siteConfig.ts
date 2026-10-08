@@ -15,12 +15,12 @@ export const siteConfig = {
   menu: {
     home: true,
     exhibitions: true,
-    activities: false,
+    activities: true,
     blog: false,
-    press: true,
+    press: false,
     team: true,
     archives: false,
-    residency: false,
+    residency: true,
     visit: true,
     shop: false,
     about: true,
@@ -34,13 +34,18 @@ export const siteConfig = {
   visibility: {
     exhibitions: {
       current: true,
-      upcoming: true,
+      upcoming: false,
       past: true,
     },
     activities: {
       current: true,
       upcoming: true,
       past: false, // Hidden until content is ready
+    },
+    residency: {
+      current: true,
+      upcoming: true,
+      past: true,
     },
     blog: {
       recent: true,

@@ -5,7 +5,7 @@ import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
-import { siteConfig } from '@/utils/siteConfig';
+import { siteConfig } from '@/components/kyaf/utils/siteConfig';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafResidencyArtists, useSectionVisibility } from '@/lib/useWPData';
 import { IMG_FOG_SRC } from '@/utils/imageConstants';

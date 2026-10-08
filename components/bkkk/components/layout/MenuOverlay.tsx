@@ -93,7 +93,7 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
       past:     wpSections?.movingImage?.past     ?? siteConfig.visibility.movingImage.past,
     },
     residency: {
-      upcoming: wpSections?.residency?.upcoming ?? siteConfig.visibility.residency.upcoming,
+      upcoming: wpSections?.residency?.upcoming ?? false,
       current:  wpSections?.residency?.current  ?? siteConfig.visibility.residency.current,
       past:     wpSections?.residency?.past     ?? siteConfig.visibility.residency.past,
     },
@@ -409,7 +409,6 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
                 >
                     <div className="ml-auto flex w-full flex-col items-end gap-4">
                         {variant === 'mobile' && <div className="flex flex-col items-end gap-1">
-                          <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Mobile · click</span>
                           <button
                               type="button"
                               aria-label="Mobile preview Khao Yai Art Forest"
@@ -432,7 +431,6 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
                         </div>}
 
                         {variant === 'desktop' && <div className="flex flex-col items-end gap-1">
-                          <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Desktop · hover</span>
                           <button
                               ref={triggerRef}
                               type="button"

@@ -6,7 +6,7 @@ import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import type { ActivityItem } from '@/lib/wp-mappers';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
-import { siteConfig } from '@/utils/siteConfig';
+import { siteConfig } from '@/components/kyaf/utils/siteConfig';
 import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafActivities, useSectionVisibility } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';

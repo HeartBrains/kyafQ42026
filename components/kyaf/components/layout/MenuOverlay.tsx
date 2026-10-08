@@ -7,7 +7,7 @@ import { ASSETS as ROOT_ASSETS } from '@/utils/assets';
 import { ASSETS } from '@/components/kyaf/utils/assets';
 import { ExpandingSearch } from '../search/ExpandingSearch';
 import { useLanguage } from '@/utils/languageContext';
-import { siteConfig, isSectionVisible } from '@/utils/siteConfig';
+import { siteConfig as kyafSiteConfig } from '@/components/kyaf/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
 import { useSiteSwitchPreview } from '@/components/shared/useSiteSwitchPreview';
 import { MobileSiteSwitchPreview } from '@/components/shared/MobileSiteSwitchPreview';
@@ -61,14 +61,14 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
     };
   }, [isOpen, menuState]);
 
-  // WP-driven menu visibility — merges over siteConfig.kyafMenu; falls back to kyafMenu while loading
+  // WP-driven menu visibility — falls back to the KYAF-specific settings while loading.
   const wpMenu = useMenuConfig('kyaf');
-  const menu = { ...siteConfig.kyafMenu, ...(wpMenu ?? {}) };
-  const isVisible = (key: string) => (menu as Record<string, boolean>)[key] ?? (siteConfig.kyafMenu as Record<string, boolean>)[key] ?? true;
+  const menu = { ...kyafSiteConfig.menu, ...(wpMenu ?? {}) };
+  const isVisible = (key: string) => (menu as Record<string, boolean>)[key] ?? (kyafSiteConfig.menu as Record<string, boolean>)[key] ?? true;
   const wpSections = useSectionVisibility('kyaf');
   const sec = (cpt: string, section: string) => {
     const cptSec = wpSections?.[cpt as keyof typeof wpSections] as Record<string, boolean> | undefined;
-    const fallback = (siteConfig.visibility as Record<string, Record<string, boolean>>)?.[cpt]?.[section] ?? true;
+    const fallback = (kyafSiteConfig.visibility as Record<string, Record<string, boolean>>)?.[cpt]?.[section] ?? true;
     return cptSec?.[section] ?? fallback;
   };
 
@@ -137,7 +137,7 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
   ];
 
   // Map page names to menu config keys
-  const pageToMenuKey: Record<string, keyof typeof siteConfig.menu | null> = {
+  const pageToMenuKey: Record<string, keyof typeof kyafSiteConfig.menu | null> = {
     'home': 'home',
     'visit': 'visit',
     'exhibitions': 'exhibitions',
@@ -390,7 +390,6 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
                 >
                     <div className="ml-auto flex w-full flex-col items-end gap-4">
                         {variant === 'mobile' && <div className="flex flex-col items-end gap-1">
-                          <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Mobile · click</span>
                           <button
                               type="button"
                               aria-label="Mobile preview Bangkok Kunsthalle"
@@ -413,7 +412,6 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
                         </div>}
 
                         {variant === 'desktop' && <div className="flex flex-col items-end gap-1">
-                          <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Desktop · hover</span>
                           <button
                               ref={triggerRef}
                               type="button"

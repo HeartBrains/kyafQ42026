@@ -10,6 +10,7 @@ import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useBkkkExhibitions, useSectionVisibility } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 import { RichContent, stripWrapperDivs } from '@/utils/richContent';
+import { BKKK_DEFAULT_COVERS } from '@/lib/defaultCovers';
 
 // Categorize exhibition status using ISO dates
 function getExhibitionStatus(fromDate: string, toDate: string, explicitStatus: 'current' | 'upcoming' | 'past', referenceDate: Date): 'current' | 'upcoming' | 'past' | null {
@@ -182,7 +183,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
     <div className="w-full bg-white min-h-screen pb-24 font-sans text-black">
       {/* Hero Section */}
       <ParallaxHero 
-        image="https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-for-Exhibitions-list-83b680a4.jpg"
+        image={covers.exhibitions || BKKK_DEFAULT_COVERS.exhibitions!}
         height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]"
       >
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none md:hidden" />

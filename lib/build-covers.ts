@@ -1,44 +1,7 @@
 import { fetchMenuConfig, type CoverConfigMap } from './wp-api';
-import {
-  ABOUT_HERO_IMAGE,
-  VISIT_HERO_IMAGE,
-  TEAM_HERO_IMAGE,
-  EXHIBITIONS_HERO_IMAGE,
-  ACTIVITY_HERO_IMAGE,
-  IMG_FOG_SRC,
-  CONTACT_HERO_IMAGE,
-} from '@/utils/imageConstants';
+import { BKKK_DEFAULT_COVERS, KYAF_DEFAULT_COVERS } from './defaultCovers';
 
-const BKKK_TEAM_HERO = 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=1600&auto=format&fit=crop';
-const BKKK_ABOUT_HERO = 'https://irp.cdn-website.com/5516674f/dms3rep/multi/cover-for-history-34e22018.jpg';
-
-export const BKKK_DEFAULT_COVERS: CoverConfigMap = {
-  exhibitions: EXHIBITIONS_HERO_IMAGE,
-  activities:  ACTIVITY_HERO_IMAGE,
-  movingImage: IMG_FOG_SRC,
-  residency:   IMG_FOG_SRC,
-  blog:        IMG_FOG_SRC,
-  press:       IMG_FOG_SRC,
-  team:        BKKK_TEAM_HERO,
-  about:       BKKK_ABOUT_HERO,
-  visit:       VISIT_HERO_IMAGE,
-  contact:     CONTACT_HERO_IMAGE,
-  archives:    IMG_FOG_SRC,
-};
-
-export const KYAF_DEFAULT_COVERS: CoverConfigMap = {
-  exhibitions: EXHIBITIONS_HERO_IMAGE,
-  activities:  ACTIVITY_HERO_IMAGE,
-  movingImage: IMG_FOG_SRC,
-  residency:   IMG_FOG_SRC,
-  blog:        IMG_FOG_SRC,
-  press:       IMG_FOG_SRC,
-  team:        TEAM_HERO_IMAGE,
-  about:       ABOUT_HERO_IMAGE,
-  visit:       VISIT_HERO_IMAGE,
-  contact:     CONTACT_HERO_IMAGE,
-  archives:    IMG_FOG_SRC,
-};
+export { BKKK_DEFAULT_COVERS, KYAF_DEFAULT_COVERS } from './defaultCovers';
 
 interface BuildData {
   bkkk: CoverConfigMap;

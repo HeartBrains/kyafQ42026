@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ImageWithFallback } from '../figma/ImageWithFallback';
 import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
-import { siteConfig } from '@/utils/siteConfig';
+import { siteConfig } from '@/components/bkkk/utils/siteConfig';
 import { useAppNavigate } from '@/components/bkkk/utils/useAppNavigate';
 import { useResidencyArtists, useSectionVisibility } from '@/lib/useWPData';
 import { getTranslation } from '@/utils/translations';

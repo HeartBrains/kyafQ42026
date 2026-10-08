@@ -15,7 +15,7 @@ export const siteConfig = {
     visit:           true,
     exhibitions:     true,
     movingImage:     true,
-    activities:      false,   // ← set true to show Activities in menu
+    activities:      true,
     residency:       true,
     blog:            false,   // ← set true to show Blog in menu
     about:           true,
@@ -57,7 +57,7 @@ export const siteConfig = {
       screenings:    true,
     },
     residency: {
-      upcoming: true,
+      upcoming: false,
       current:  true,
       past:     true,
     },
