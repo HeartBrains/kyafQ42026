@@ -866,14 +866,14 @@ html {
   opacity: 0.6;
 }
 
-/* Curated by is 25% smaller than the filter's text-xl/md:text-2xl scale. */
-.detail-curated-text {
+/* Curated by and Additional Info are 75% of the filter's responsive text scale. */
+.detail-curated-text,
+.detail-additional-info {
   font-size: calc(1.25rem * 0.75);
-  margin-top: 2rem;
 }
 
-.detail-additional-info {
-  font-size: calc(1.75rem * 0.5625);
+.detail-curated-text {
+  margin-top: 2rem;
 }
 
 .detail-additional-info .rich-content p {
@@ -881,8 +881,12 @@ html {
 }
 
 @media (min-width: 48rem) {
-  .detail-curated-text {
+  .detail-curated-text,
+  .detail-additional-info {
     font-size: calc(1.5rem * 0.75);
+  }
+
+  .detail-curated-text {
     margin-top: 3rem;
   }
 }
