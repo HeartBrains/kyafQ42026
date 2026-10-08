@@ -1,6 +1,110 @@
 # Workspace Specification
 
-## Active Plan: Combined mobile-click and desktop-hover site-logo menu states
+## Active Plan: Separate mobile and desktop hamburger menu components
+
+### Objective
+
+Replace the currently combined responsive menu implementation with two distinct
+hamburger-menu components for both BK and KYAF. The mobile component must own
+the click/tap interaction, while the desktop component must own the hover/focus
+interaction. Only the component for the active viewport should be mounted, so
+the two event systems cannot compete or reset one another.
+
+### Requirements
+
+1. Add separate menu components for each site variant:
+   - `MobileMenuOverlay` for `/bk/` and `/kyaf/`, rendered below the desktop
+     breakpoint and driven by click/tap events only.
+   - `DesktopMenuOverlay` for `/bk/` and `/kyaf/`, rendered at the desktop
+     breakpoint and driven by hover/focus events.
+2. The responsive shell must mount only one menu component at a time. Do not
+   render both components with CSS hiding; this prevents duplicate document
+   listeners, duplicate focus targets, and conflicting preview state updates.
+3. Preserve the three menu states in both implementations:
+   - `hidden`: hamburger menu is closed;
+   - `expanded`: the side menu is visible;
+   - `picture`: the destination site preview is visible.
+4. Mobile behavior:
+   - the site-logo button changes `expanded` to `picture` on click/tap;
+   - no hover or mouse-pointer readiness handler is used;
+   - tapping outside the destination logo returns to `expanded`;
+   - tapping the destination logo navigates to the other site.
+5. Desktop behavior:
+   - hovering or focusing the site-logo trigger changes `expanded` to `picture`;
+   - a short leave grace period prevents flicker while moving to the preview;
+   - leaving the trigger and preview dismisses a hover preview, while a pinned
+     activation remains until explicit dismissal;
+   - the destination logo is the only navigation link in `picture` state.
+6. Keep the existing site-specific destinations, preview imagery, overlays,
+   menu navigation, language settings, Escape-first behavior, outside-click
+   dismissal, menu close reset, and mobile Back-to-Top hiding.
+7. The shared code may contain asset configuration, state types, and the
+   preview backdrop/logo primitive, but viewport-specific event handling and
+   menu component rendering must remain separate.
+
+### Constraints
+
+- Limit this phase to hamburger-menu components and their state wiring. Do not
+  update fallback images, WordPress records, page content, or unrelated layout.
+- Preserve `/bk/` → `bkkk` and `/kyaf/` → `kyaf` routing.
+- Do not leave duplicate responsive menus mounted in the DOM.
+- Do not add global pointer listeners to the inactive viewport component.
+- Preserve accessibility labels, keyboard focus behavior, reduced-motion support,
+  and normal same-tab navigation from the destination logo.
+
+### Architecture
+
+```text
+Site shell
+  └─ ResponsiveMenuController (one active child)
+       ├─ <MobileMenuOverlay />      (mobile only; click/tap handlers)
+       └─ <DesktopMenuOverlay />     (desktop only; hover/focus handlers)
+                 |
+                 v
+       shared menu state + preview primitive
+       ├─ hidden / expanded / picture
+       ├─ site destination and preview assets
+       ├─ outside dismissal and Escape-first rules
+       └─ destination-logo navigation
+```
+
+The shell owns whether the hamburger is open. The active viewport component
+owns its own trigger and pointer/focus lifecycle and reports `expanded` or
+`picture` transitions through a small shared state contract. The inactive
+component is not mounted, so it cannot receive focus, hover, click, or document
+events.
+
+### Implementation steps
+
+1. Extract the common menu data/navigation and preview asset configuration from
+   the current BK and KYAF `MenuOverlay` implementations.
+2. Create separate mobile and desktop menu components for each site, or a
+   site-configured pair of components, with independent event handlers and
+   viewport-specific markup.
+3. Add a responsive controller that selects exactly one component using the
+   existing desktop breakpoint and carries the three-state menu contract through
+   open, close, preview, outside-click, and Escape transitions.
+4. Retain the shared preview image/overlay/logo primitive and route mapping, but
+   ensure its event boundaries are supplied by the active component only.
+5. Verify mobile tap sequences and desktop hover/focus sequences independently
+   for BK and KYAF, including repeated open/close, outside dismissal, Escape,
+   destination-logo navigation, and viewport resize.
+6. Run type checks and the production build. After approval, push only intended
+   source files to `HeartBrains/kyafQ42026/master` and verify staging deployment.
+
+### Success criteria
+
+- At mobile width, only `MobileMenuOverlay` is mounted; site-logo click/tap
+  reliably reaches `picture` and outside tap returns to `expanded`.
+- At desktop width, only `DesktopMenuOverlay` is mounted; hover/focus reliably
+  reaches `picture` without mobile pointer logic interfering.
+- Both BK and KYAF expose all three states with correct destination imagery and
+  routes, and no duplicate menu/event listeners exist.
+- Existing accessibility, Escape, outside-click, reduced-motion, and
+  Back-to-Top behavior remain intact.
+- Type checks, production build, and staging deployment succeed.
+
+## Previous Active Plan: Combined mobile-click and desktop-hover site-logo menu states
 
 ### Objective
 

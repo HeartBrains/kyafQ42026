@@ -14,11 +14,12 @@ interface PreviewState {
 interface UseSiteSwitchPreviewOptions {
   isOpen: boolean;
   onClose: () => void;
+  enableHover?: boolean;
 }
 
 const HOVER_DISMISS_DELAY_MS = 160;
 
-export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOptions) {
+export function useSiteSwitchPreview({ isOpen, onClose, enableHover = true }: UseSiteSwitchPreviewOptions) {
   const [preview, setPreview] = useState<PreviewState | null>(null);
   const previewRef = useRef<PreviewState | null>(null);
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -101,7 +102,7 @@ export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOp
       return;
     }
 
-    pointerHoverReadyRef.current = false;
+    pointerHoverReadyRef.current = !enableHover;
 
     const handlePointerMove = (event: PointerEvent) => {
       if (event.pointerType !== 'mouse') return;
@@ -120,13 +121,13 @@ export function useSiteSwitchPreview({ isOpen, onClose }: UseSiteSwitchPreviewOp
       }
     };
 
-    document.addEventListener('pointermove', handlePointerMove);
+    if (enableHover) document.addEventListener('pointermove', handlePointerMove);
     document.addEventListener('keydown', handleKeyDown, true);
     return () => {
       document.removeEventListener('pointermove', handlePointerMove);
       document.removeEventListener('keydown', handleKeyDown, true);
     };
-  }, [clearDismissTimer, dismissPreview, isOpen, onClose, updatePreview]);
+  }, [clearDismissTimer, dismissPreview, enableHover, isOpen, onClose, updatePreview]);
 
   useEffect(() => () => clearDismissTimer(), [clearDismissTimer]);
 

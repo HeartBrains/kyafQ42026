@@ -10,6 +10,7 @@ import { siteConfig } from '@/utils/siteConfig';
 import { useMenuConfig, useSectionVisibility } from '@/lib/useWPData';
 import { useSiteSwitchPreview } from '@/components/shared/useSiteSwitchPreview';
 import { MobileSiteSwitchPreview } from '@/components/shared/MobileSiteSwitchPreview';
+import { useDesktopMediaQuery } from '@/components/shared/useDesktopMediaQuery';
 
 const SITE_COVER_PREVIEWS = {
   bk: '/assets/c62c64ac454fd8fd1b5ba6a64e8e3a9305f2f778.png',
@@ -23,6 +24,8 @@ interface MenuOverlayProps {
   activePage: string;
 }
 
+type MenuVariant = 'mobile' | 'desktop';
+
 interface MenuItem {
     label: string;
     page: string;
@@ -30,7 +33,7 @@ interface MenuItem {
     children?: MenuItem[];
 }
 
-export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOverlayProps) {
+function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }: MenuOverlayProps & { variant: MenuVariant }) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const {
     menuState,
@@ -43,7 +46,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
     dismissPreview,
     cancelHoverDismiss,
     scheduleHoverDismiss,
-  } = useSiteSwitchPreview({ isOpen, onClose });
+  } = useSiteSwitchPreview({ isOpen, onClose, enableHover: variant === 'desktop' });
   const siteCoverPreview = preview?.site ?? null;
 
   useEffect(() => {
@@ -400,7 +403,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                     }}
                 >
                     <div className="ml-auto flex w-full flex-col items-end gap-4">
-                        <div className="flex flex-col items-end gap-1">
+                        {variant === 'mobile' && <div className="flex flex-col items-end gap-1">
                           <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Mobile · click</span>
                           <button
                               type="button"
@@ -421,9 +424,9 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                                 className="h-auto w-36 object-contain md:w-40"
                               />
                           </button>
-                        </div>
+                        </div>}
 
-                        <div className="flex flex-col items-end gap-1">
+                        {variant === 'desktop' && <div className="flex flex-col items-end gap-1">
                           <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Desktop · hover</span>
                           <button
                               ref={triggerRef}
@@ -449,7 +452,7 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                                 className="h-auto w-36 object-contain md:w-40"
                               />
                           </button>
-                        </div>
+                        </div>}
                     </div>
 
                     {siteConfig.menu.languageSwitcher && (
@@ -477,4 +480,17 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
       )}
     </AnimatePresence>
   );
+}
+
+export function MobileMenuOverlay(props: MenuOverlayProps) {
+  return <MenuOverlayLayout {...props} variant="mobile" />;
+}
+
+export function DesktopMenuOverlay(props: MenuOverlayProps) {
+  return <MenuOverlayLayout {...props} variant="desktop" />;
+}
+
+export function MenuOverlay(props: MenuOverlayProps) {
+  const isDesktop = useDesktopMediaQuery();
+  return isDesktop ? <DesktopMenuOverlay {...props} /> : <MobileMenuOverlay {...props} />;
 }
