@@ -193,12 +193,12 @@ function MenuOverlayLayout({ isOpen, onClose, onNavigate, activePage, variant }:
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex text-white font-sans"
           data-menu-state={menuState}
-          onBlurCapture={(event) => {
+          onBlurCapture={variant === 'desktop' ? (event) => {
             const nextFocusedElement = event.relatedTarget;
             if (!(nextFocusedElement instanceof Node) || !event.currentTarget.contains(nextFocusedElement)) {
               dismissPreview();
             }
-          }}
+          } : undefined}
         >
           <div
             aria-hidden="true"
