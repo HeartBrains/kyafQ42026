@@ -393,31 +393,57 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         show: { opacity: 1, y: 0 }
                     }}
                 >
-                    <div className="flex w-full items-center gap-6">
-                        <button
-                            ref={triggerRef}
-                            type="button"
-                            aria-label="Preview Khao Yai Art Forest"
-                            aria-controls="bk-site-switch-preview"
-                            aria-expanded={siteCoverPreview === 'kyaf'}
-                            onClick={() => pinPreview('kyaf')}
-                            onPointerEnter={(event) => {
-                              if (event.pointerType === 'mouse') showFromHover('kyaf');
-                            }}
-                            onFocus={(event) => showFromFocus('kyaf', event.currentTarget.matches(':focus-visible'))}
-                            className="ml-auto inline-flex items-center transition-opacity hover:opacity-75"
-                        >
-                            <Image
-                              src="/assets/khao-yai-art-forest-wordmark.png"
-                              alt=""
-                              width={371}
-                              height={159}
-                              aria-hidden="true"
-                              loading="eager"
-                              decoding="async"
-                              className="h-auto w-36 object-contain md:w-40"
-                            />
-                        </button>
+                    <div className="ml-auto flex w-full flex-col items-end gap-4">
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Mobile · click</span>
+                          <button
+                              type="button"
+                              aria-label="Mobile preview Khao Yai Art Forest"
+                              aria-controls="bk-site-switch-preview"
+                              aria-expanded={siteCoverPreview === 'kyaf'}
+                              onClick={() => pinPreview('kyaf')}
+                              className="inline-flex items-center transition-opacity hover:opacity-75"
+                          >
+                              <Image
+                                src="/assets/khao-yai-art-forest-wordmark.png"
+                                alt=""
+                                width={371}
+                                height={159}
+                                aria-hidden="true"
+                                loading="eager"
+                                decoding="async"
+                                className="h-auto w-36 object-contain md:w-40"
+                              />
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Desktop · hover</span>
+                          <button
+                              ref={triggerRef}
+                              type="button"
+                              aria-label="Desktop preview Khao Yai Art Forest"
+                              aria-controls="bk-site-switch-preview"
+                              aria-expanded={siteCoverPreview === 'kyaf'}
+                              onClick={() => pinPreview('kyaf')}
+                              onPointerEnter={(event) => {
+                                if (event.pointerType === 'mouse') showFromHover('kyaf');
+                              }}
+                              onFocus={(event) => showFromFocus('kyaf', event.currentTarget.matches(':focus-visible'))}
+                              className="inline-flex items-center transition-opacity hover:opacity-75"
+                          >
+                              <Image
+                                src="/assets/khao-yai-art-forest-wordmark.png"
+                                alt=""
+                                width={371}
+                                height={159}
+                                aria-hidden="true"
+                                loading="eager"
+                                decoding="async"
+                                className="h-auto w-36 object-contain md:w-40"
+                              />
+                          </button>
+                        </div>
                     </div>
 
                     {siteConfig.menu.languageSwitcher && (

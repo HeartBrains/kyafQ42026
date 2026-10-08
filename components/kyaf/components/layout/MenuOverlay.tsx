@@ -374,31 +374,57 @@ export function MenuOverlay({ isOpen, onClose, onNavigate, activePage }: MenuOve
                         show: { opacity: 1, y: 0 }
                     }}
                 >
-                    <div className="flex w-full items-center gap-6">
-                        <button
-                            ref={triggerRef}
-                            type="button"
-                            aria-label="Preview Bangkok Kunsthalle"
-                            aria-controls="kyaf-site-switch-preview"
-                            aria-expanded={siteCoverPreview === 'bk'}
-                            onClick={() => pinPreview('bk')}
-                            onPointerEnter={(event) => {
-                              if (event.pointerType === 'mouse') showFromHover('bk');
-                            }}
-                            onFocus={(event) => showFromFocus('bk', event.currentTarget.matches(':focus-visible'))}
-                            className="ml-auto inline-flex items-center transition-opacity hover:opacity-75"
-                        >
-                            <Image
-                              src="/assets/bangkok-kunsthalle-wordmark.png"
-                              alt=""
-                              width={355}
-                              height={133}
-                              aria-hidden="true"
-                              loading="eager"
-                              decoding="async"
-                              className="h-auto w-36 object-contain md:w-40"
-                            />
-                        </button>
+                    <div className="ml-auto flex w-full flex-col items-end gap-4">
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Mobile · click</span>
+                          <button
+                              type="button"
+                              aria-label="Mobile preview Bangkok Kunsthalle"
+                              aria-controls="kyaf-site-switch-preview"
+                              aria-expanded={siteCoverPreview === 'bk'}
+                              onClick={() => pinPreview('bk')}
+                              className="inline-flex items-center transition-opacity hover:opacity-75"
+                          >
+                              <Image
+                                src="/assets/bangkok-kunsthalle-wordmark.png"
+                                alt=""
+                                width={355}
+                                height={133}
+                                aria-hidden="true"
+                                loading="eager"
+                                decoding="async"
+                                className="h-auto w-36 object-contain md:w-40"
+                              />
+                          </button>
+                        </div>
+
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-[10px] uppercase tracking-[0.18em] text-white/55">Desktop · hover</span>
+                          <button
+                              ref={triggerRef}
+                              type="button"
+                              aria-label="Desktop preview Bangkok Kunsthalle"
+                              aria-controls="kyaf-site-switch-preview"
+                              aria-expanded={siteCoverPreview === 'bk'}
+                              onClick={() => pinPreview('bk')}
+                              onPointerEnter={(event) => {
+                                if (event.pointerType === 'mouse') showFromHover('bk');
+                              }}
+                              onFocus={(event) => showFromFocus('bk', event.currentTarget.matches(':focus-visible'))}
+                              className="inline-flex items-center transition-opacity hover:opacity-75"
+                          >
+                              <Image
+                                src="/assets/bangkok-kunsthalle-wordmark.png"
+                                alt=""
+                                width={355}
+                                height={133}
+                                aria-hidden="true"
+                                loading="eager"
+                                decoding="async"
+                                className="h-auto w-36 object-contain md:w-40"
+                              />
+                          </button>
+                        </div>
                     </div>
 
                     {isVisible('languageSwitcher') && (  

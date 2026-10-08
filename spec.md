@@ -1,5 +1,219 @@
 # Workspace Specification
 
+## Active Plan: Combined mobile-click and desktop-hover site-logo menu states
+
+### Objective
+
+Update the hamburger menu on both `/bk/` and `/kyaf/` so the open menu visibly
+contains two separate site-logo controls at the same time: the mobile click-state
+control is displayed in the upper menu area, and the desktop hover-state control
+is displayed below it. This is intended to make the two state functions directly
+inspectable in one open menu rather than hiding one implementation behind a
+responsive breakpoint.
+
+### Phase scope
+
+This is Phase 1 and is limited to the hamburger-menu site-logo controls and
+preview state behavior. The fallback image/content refresh plan below is
+deferred until this menu phase is implemented, reviewed, and accepted. The
+combined two-control layout is the requested working state for this phase.
+
+### Requirements
+
+1. Apply the combined control layout to both site menus:
+   - `/bk/` (`bkkk`) points to the KYAF destination.
+   - `/kyaf/` (`kyaf`) points to the BK destination.
+2. Render the mobile test/control widget above the desktop test/control widget
+   while the hamburger menu is open. Both controls must be present in the DOM
+   and visibly labeled so their state behavior can be checked.
+3. The upper mobile control uses click/tap behavior only:
+   - clicking the site logo changes the menu into the preview/picture state;
+   - it must not rely on hover or pointer movement;
+   - clicking the preview area outside the destination logo returns to the menu
+     state;
+   - clicking the destination logo navigates to the other site.
+4. The lower desktop control uses hover behavior:
+   - pointer hover/focus reveals the preview state;
+   - leaving the trigger/preview region dismisses a hover preview after the
+     existing short grace period;
+   - the destination logo remains the only navigation link.
+5. Keep the two controls' state transitions independently observable. Activating
+   one control must not cause the other control's trigger to navigate or silently
+   reset the menu except through the shared, explicit preview dismissal rules.
+6. Preserve the existing preview background, overlay, destination logo assets,
+   `/bk` and `/kyaf` routes, Escape handling, outside-click dismissal, menu close
+   behavior, accessibility labels, and mobile Back-to-Top hiding.
+7. Do not change WordPress records, fallback content, production hosting, or the
+   desktop/mobile site layout outside the hamburger-menu site-logo controls.
+
+### State and architecture
+
+```text
+Open hamburger menu
+  ├─ upper MobileSiteSwitchControl
+  │    └─ click/tap -> pinned preview state
+  └─ lower DesktopSiteSwitchControl
+       └─ hover/focus -> hover preview state
+              |
+              v
+       shared preview controller
+       ├─ destination image + logo
+       ├─ outside preview -> menu state
+       ├─ destination logo -> navigate
+       └─ Escape -> dismiss preview first
+```
+
+The existing shared preview controller remains the source of truth for the
+active destination and mode (`hover` or `pinned`). The two visible controls are
+separate presentation components with separate event wiring: the upper control
+does not register hover handlers, while the lower control does not use a mobile
+click-only presentation. A single active preview layer may be shared so the
+destination image/logo and dismissal semantics cannot drift between BK and KYAF.
+
+### Implementation steps
+
+1. Confirm the current `MenuOverlay` footer trigger and shared
+   `useSiteSwitchPreview` boundaries for both sites; identify the current
+   breakpoint-hidden mobile widget and desktop trigger.
+2. Extract or add two explicit site-logo control components/configurations:
+   `MobileSiteSwitchControl` (upper, click-only) and
+   `DesktopSiteSwitchControl` (lower, hover/focus). Render both in each open
+   hamburger menu with clear labels or visually distinct spacing.
+3. Wire both controls to the shared preview controller while preserving the
+   existing pinned/hover mode, outside-click dismissal, destination-logo
+   navigation, Escape-first handling, and focus restoration.
+4. Verify BK and KYAF independently at desktop and mobile viewport sizes,
+   including click-only mobile activation, desktop hover activation, moving from
+   the lower trigger to the preview logo, clicking outside, repeated state
+   changes, and menu close/reopen.
+5. Run type checks and a production build. After implementation authorization,
+   push only intended source files to `HeartBrains/kyafQ42026/master` and verify
+   the staging deployment at `https://dev.khaoyaiart.org`.
+
+### Success criteria
+
+- Opening the BK or KYAF hamburger menu shows two visible site-logo controls,
+  with the mobile click control above the desktop hover control.
+- Clicking the upper control changes to the preview state without requiring
+  hover and without navigating immediately.
+- Hovering/focusing the lower control reveals the preview through desktop hover
+  behavior and remains stable while moving to its destination logo.
+- Clicking outside the destination logo returns to the normal menu; clicking the
+  destination logo navigates to the other site.
+- Both site variants retain accessible labels, Escape/outside-click behavior,
+  menu close reset, and mobile Back-to-Top hiding.
+- Build and staging deployment checks pass after implementation.
+
+### Phase decision
+
+For this phase, treat the combined two-control layout as the active hamburger
+menu design. Do not implement the deferred fallback refresh in the same change.
+
+## Active Plan: Refresh fallback images and content from current records
+
+### Status
+
+Planning only. No implementation changes are authorized until the content source,
+scope, and replacement policy are confirmed.
+
+### Current structure inventory
+
+- The current repository is `HeartBrains/kyafQ42026`; `/bk/` maps to internal site
+  ID `bkkk`, and `/kyaf/` maps to `kyaf`.
+- Build-time page shells load cover configuration through `lib/build-covers.ts`.
+  WordPress menu/config data overrides `BKKK_DEFAULT_COVERS` and
+  `KYAF_DEFAULT_COVERS`; the hardcoded cover map is used when the WordPress
+  request is unavailable or a cover key is absent.
+- Home hero slides are assembled by the shared
+  `components/shared/homeHeroSlides.ts` and consumed by both site home pages.
+  They combine the current cover map with section/record data and therefore need
+  to be checked separately from listing/detail fallback images.
+- Listing and detail records are fetched/mapped in `lib/useWPData.ts`,
+  `lib/wp-api.ts`, and `lib/wp-mappers.ts`. Featured image, gallery, and text
+  fallbacks are applied at mapper/component boundaries.
+- Additional hardcoded fallback content exists in both site trees, including
+  `AboutPage.tsx`, fallback slug lists in `app/bk/**/[slug]/page.tsx` and
+  `app/kyaf/**/[slug]/page.tsx`, default cover URLs, and legacy/local import
+  data under `components/bkkk/imports/` and `components/kyaf/imports/`.
+- The staging WordPress endpoint documented for this repository is
+  `https://q42026.content.khaoyaiart.org`; production WordPress and the
+  production repository remain out of scope unless separately approved.
+
+### Open decisions requiring confirmation
+
+1. **Source of truth:** Should the refresh use the staging WordPress records and
+   media at `q42026.content.khaoyaiart.org`, supplied files/URLs and copy, or a
+   combination of both?
+2. **Scope:** Should “current images and information” replace every fallback
+   cover, hero slide, listing/detail fallback record, fallback slug, and fallback
+   text on both BK and KYAF, or only named pages/sections?
+3. **Fallback policy:** When current WordPress data is missing a field, should
+   the old hardcoded fallback remain, be replaced by a neutral placeholder, or
+   be removed so the component shows its existing empty state?
+4. **WordPress writes:** Is this a frontend fallback refresh only, or should
+   missing/current records also be imported or edited in staging WordPress?
+5. **Deployment:** After implementation, should the source be pushed to
+   `KyafQ42026/master` for the normal staging deployment to
+   `https://dev.khaoyaiart.org`?
+
+### Provisional requirements (pending the decisions above)
+
+- Audit every fallback image/content path for both `bkkk` and `kyaf`, and produce
+  a source-to-render map before editing values.
+- Prefer current staging WordPress media/content when the confirmed scope allows
+  it; keep the static build resilient when WordPress is unavailable.
+- Do not overwrite WordPress records, production content, or unrelated source
+  data without explicit confirmation.
+- Preserve the existing `/bk/` and `/kyaf/` route mapping, bilingual behavior,
+  hero/listing/detail component contracts, accessibility, and image loading
+  behavior.
+- Do not commit generated `out/`, credentials, media binaries, or unrelated
+  untracked artifacts.
+
+### Provisional architecture
+
+```text
+Confirmed current content source
+  ├─ staging WordPress REST records/media (if approved)
+  ├─ supplied image URLs/files and copy (if approved)
+  └─ retained fallback/empty-state policy
+          |
+          v
+lib/wp-api.ts + lib/wp-mappers.ts + lib/build-covers.ts
+          |
+          ├─ shared homeHeroSlides
+          ├─ BK (`bkkk`) listing/detail pages
+          └─ KYAF (`kyaf`) listing/detail pages
+```
+
+### Provisional implementation steps
+
+1. Inventory all fallback cover URLs, hero slide defaults, fallback slug lists,
+   hardcoded fallback copy, and image-selection precedence for both sites.
+2. Compare the inventory with the confirmed current WordPress records/media and
+   any supplied replacement assets; list additions, replacements, missing fields,
+   and records that would otherwise become empty.
+3. Update only the approved source/configuration/component fallback layers,
+   preserving the existing REST contracts and site-specific route mapping.
+4. Run type checks, production build, and focused visual/data checks for both
+   `/bk/` and `/kyaf/`; verify no stale fallback is used when current content is
+   available and no broken image URL is introduced.
+5. After explicit deployment approval, commit intended source files only, push
+   to `HeartBrains/kyafQ42026/master`, and verify the staging Actions build and
+   generated deployment commit.
+
+### Provisional success criteria
+
+- A complete fallback inventory exists for both sites and is traceable to the
+  chosen current-content source.
+- Approved current images and information render in the intended home, listing,
+  and detail locations without changing unrelated layout or navigation.
+- Missing/unavailable current data follows the confirmed fallback policy and
+  does not cause build failures or broken images.
+- BK remains mapped to `bkkk`, KYAF remains mapped to `kyaf`, and WordPress data
+  is not overwritten unless explicitly authorized.
+- Checks/build/deployment pass after implementation, if deployment is approved.
+
 ## Active Plan: Main Navigation Site-Switch Preview Interaction
 
 ### Objective
