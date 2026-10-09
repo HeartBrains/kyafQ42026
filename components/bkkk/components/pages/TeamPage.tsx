@@ -50,7 +50,7 @@ export function TeamPage({ activePage }: TeamPageProps) {
 
   return (
     <div className="relative w-full min-h-screen bg-white pb-24">
-      <ParallaxHero image={covers.team || TEAM_HERO} height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]">
+      <ParallaxHero image={covers.team || TEAM_HERO} height="h-[60vh] min-h-[60vh] max-h-[60vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </ParallaxHero>
 

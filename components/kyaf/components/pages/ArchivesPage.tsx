@@ -122,7 +122,7 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
       <ParallaxHero 
         imageSrc={IMG_MADRID_SRC}
         imageAlt={language === 'th' ? 'คลังข้อมูล' : 'Archives'}
-        height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]"
+        height="h-[60vh] min-h-[60vh] max-h-[60vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]"
       />
 
       {/* Main Content */}

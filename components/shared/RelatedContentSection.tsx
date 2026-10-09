@@ -316,10 +316,10 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
   const groupOrder: RelatedGroupKey[] = ['activities', 'exhibitions', 'moving-image', 'residency', 'blog'];
   const groupLabels: Record<RelatedGroupKey, { en: string; th: string }> = {
     exhibitions: { en: 'Related Exhibitions', th: 'นิทรรศการที่เกี่ยวข้อง' },
-    activities: { en: 'Activities', th: 'กิจกรรม' },
-    'moving-image': { en: 'Moving Images Program', th: 'โปรแกรมภาพเคลื่อนไหว' },
-    residency: { en: 'Residency', th: 'พำนัก' },
-    blog: { en: 'Blogs', th: 'บล็อก' },
+    activities: { en: 'Related Activities', th: 'กิจกรรมที่เกี่ยวข้อง' },
+    'moving-image': { en: 'Related Moving Images Program', th: 'โปรแกรมภาพเคลื่อนไหวที่เกี่ยวข้อง' },
+    residency: { en: 'Related Residency', th: 'การพำนักที่เกี่ยวข้อง' },
+    blog: { en: 'Related Blogs', th: 'บล็อกที่เกี่ยวข้อง' },
   };
   const groups = groupOrder
     .map((key) => ({ key, items: visible.filter((item) => groupFor(item) === key) }))
