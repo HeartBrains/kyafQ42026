@@ -84,7 +84,7 @@ export function AboutLayout({ children, activePage, onNavigate }: AboutLayoutPro
       {/* Hero Section */}
       <ParallaxHero 
         image={ABOUT_HERO_IMAGE}
-        height="h-[50vh] min-h-[50vh] max-h-[50vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]"
+        height="h-[60vh] min-h-[60vh] max-h-[60vh] md:h-[80vh] md:min-h-[80vh] md:max-h-[80vh]"
       >
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/30 to-transparent pointer-events-none" />
       </ParallaxHero>
