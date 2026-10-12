@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
+import { BKKK_BASE_URL, KYAF_BASE_URL } from '@/lib/site-config';
 
-export const BKKK_BASE_URL = (process.env.BKKK_BASE_URL ?? 'https://dev.khaoyaiart.org/bk').replace(/\/$/, '');
-export const KYAF_BASE_URL = (process.env.KYAF_BASE_URL ?? 'https://dev.khaoyaiart.org/kyaf').replace(/\/$/, '');
+export { BKKK_BASE_URL, KYAF_BASE_URL };
 
 export const BKKK_DEFAULT_OG_IMAGE = `${BKKK_BASE_URL}/og-bkkk.jpg`;
 export const KYAF_DEFAULT_OG_IMAGE = `${KYAF_BASE_URL}/og-kyaf.jpg`;
