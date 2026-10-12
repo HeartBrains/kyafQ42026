@@ -11,6 +11,7 @@ on:
       - 'public/**'
       - '.github/workflows/**'
       - 'next.config.ts'
+      - 'next-sitemap.config.js'
       - 'package.json'
       - 'package-lock.json'
   repository_dispatch:

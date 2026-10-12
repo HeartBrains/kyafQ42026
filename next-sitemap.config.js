@@ -1,6 +1,11 @@
 /** @type {import('next-sitemap').IConfig} */
+const wpBaseUrl = (process.env.NEXT_PUBLIC_WP_BASE_URL || process.env.WP_BASE_URL || '').toLowerCase();
+const fallbackSiteUrl = wpBaseUrl.includes('q42026.content.khaoyaiart.org')
+  ? 'https://dev.khaoyaiart.org'
+  : 'https://khaoyaiart.org';
+
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://dev.khaoyaiart.org',
+  siteUrl: process.env.SITE_URL || fallbackSiteUrl,
   generateRobotsTxt: false, // robots.txt is managed manually in public/robots.txt
   outDir: './out',
   exclude: ['/404', '/500'],
