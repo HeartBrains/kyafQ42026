@@ -2,7 +2,7 @@
 /**
  * Plugin Name: BKKK Deploy Trigger
  * Description: Fires a GitHub Actions repository_dispatch event when content changes. Supports auto-trigger on save or manual trigger via a publish button.
- * Version:     1.5.0
+ * Version:     1.6.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -56,6 +56,16 @@ function bkkk_trigger_mode(): string {
 }
 
 /**
+ * The deployment target is explicit so dispatches from staging cannot build
+ * or publish the production site. Existing plugin installs default to staging.
+ */
+function bkkk_deploy_environment(): string {
+    return get_option( 'bkkk_deploy_environment', 'staging' ) === 'production'
+        ? 'production'
+        : 'staging';
+}
+
+/**
  * Debounce guard — returns true if a dispatch already fired within the last 10 seconds.
  * Prevents double-triggers when WP/JetEngine saves the post and its meta in separate passes.
  */
@@ -77,6 +87,10 @@ function bkkk_dispatch( string $event_type, array $payload = [] ): bool {
         error_log( '[BKKK Deploy] No GitHub token configured — skipping dispatch.' );
         return false;
     }
+
+    // The environment is applied last so callers cannot accidentally override
+    // the deployment target configured for this WordPress installation.
+    $payload['environment'] = bkkk_deploy_environment();
 
     $body = [ 'event_type' => $event_type ];
     if ( ! empty( $payload ) ) {
@@ -201,10 +215,17 @@ add_action( 'admin_init', function () {
         },
         'default' => 'auto',
     ] );
+    register_setting( 'bkkk_deploy', 'bkkk_deploy_environment', [
+        'sanitize_callback' => function( $v ) {
+            return $v === 'production' ? 'production' : 'staging';
+        },
+        'default' => 'staging',
+    ] );
 } );
 
 function bkkk_settings_page(): void {
     $mode = bkkk_trigger_mode();
+    $environment = bkkk_deploy_environment();
     ?>
     <div class="wrap">
         <h1>Deploy Trigger Settings</h1>
@@ -229,6 +250,22 @@ function bkkk_settings_page(): void {
                                value="<?php echo esc_attr( get_option( 'bkkk_gh_repo', 'HeartBrains/kyafQ42026' ) ); ?>"
                                class="regular-text" placeholder="owner/repo" />
                         <p class="description">For a fine-grained token, grant <code>Contents: Read and write</code> on the target repository. A classic token requires the <code>repo</code> scope.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Deploy Environment</th>
+                    <td>
+                        <label style="display:block;margin-bottom:6px;">
+                            <input type="radio" name="bkkk_deploy_environment" value="staging"
+                                   <?php checked( $environment, 'staging' ); ?> />
+                            <strong>Staging</strong> &mdash; build the <code>staging</code> branch for dev.khaoyaiart.org
+                        </label>
+                        <label style="display:block;">
+                            <input type="radio" name="bkkk_deploy_environment" value="production"
+                                   <?php checked( $environment, 'production' ); ?> />
+                            <strong>Production</strong> &mdash; build the <code>master</code> branch for khaoyaiart.org
+                        </label>
+                        <p class="description">Keep this set to Staging on q42026.content.khaoyaiart.org and Production on content.khaoyaiart.org.</p>
                     </td>
                 </tr>
                 <tr>

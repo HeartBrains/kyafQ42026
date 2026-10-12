@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { kyafMetadata } from '@/lib/seo';
+import { KYAF_BASE_URL, kyafMetadata } from '@/lib/seo';
 import { JsonLd, organizationJsonLd } from '@/lib/JsonLd';
 import { ClientPage } from '@/components/kyaf/ClientPage';
 
@@ -10,7 +10,7 @@ export default function Page() {
     <>
       <JsonLd data={organizationJsonLd({
         name: 'Khao Yai Art Forest',
-        url: 'https://khaoyaiart.org/kyaf',
+        url: KYAF_BASE_URL,
         description: 'Contemporary art space in the forests of Khao Yai, Thailand.',
         address: 'Khao Yai, Thailand',
         sameAs: ['https://www.instagram.com/khaoyaiartforest'],

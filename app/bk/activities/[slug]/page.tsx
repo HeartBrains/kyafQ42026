@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { mapActivity } from '@/lib/wp-mappers';
-import { bkkkMetadata } from '@/lib/seo';
+import { BKKK_BASE_URL, bkkkMetadata } from '@/lib/seo';
 import { JsonLd, exhibitionJsonLd, breadcrumbJsonLd } from '@/lib/JsonLd';
 import { ActivityDetailClientPage } from '@/components/bkkk/ActivityDetailClientPage';
 function str(v: string | { en: string; th: string } | undefined | null): string {
@@ -35,7 +35,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { slug } = await params;
   const post = await fetchCPTBySlug('activities', slug);
   const data = post ? mapActivity(post) : null;
-  const BASE = 'https://khaoyaiart.org/bk';
+  const BASE = BKKK_BASE_URL;
 
   return (
     <>

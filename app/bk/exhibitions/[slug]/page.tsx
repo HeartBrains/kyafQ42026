@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { exhibitions } from '@/components/bkkk/utils/exhibitionsDataNew';
 import { mapBkkkExhibition } from '@/lib/wp-mappers';
-import { bkkkMetadata } from '@/lib/seo';
+import { BKKK_BASE_URL, bkkkMetadata } from '@/lib/seo';
 import { JsonLd, exhibitionJsonLd, breadcrumbJsonLd } from '@/lib/JsonLd';
 import { ExhibitionDetailClientPage } from '@/components/bkkk/ExhibitionDetailClientPage';
 
@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { slug } = await params;
   const post = await fetchCPTBySlug('exhibitions', slug);
   const data = post ? mapBkkkExhibition(post) : null;
-  const BASE = 'https://khaoyaiart.org/bk';
+  const BASE = BKKK_BASE_URL;
 
   return (
     <>

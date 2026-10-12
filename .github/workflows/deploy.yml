@@ -2,7 +2,7 @@ name: Build & Deploy
 
 on:
   push:
-    branches: [master]
+    branches: [master, staging]
     paths:
       - 'app/**'
       - 'components/**'
@@ -12,9 +12,14 @@ on:
       - '.github/workflows/**'
       - 'next.config.ts'
       - 'package.json'
+      - 'package-lock.json'
   repository_dispatch:
     types: [wp_content_updated]
   workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.event_name == 'repository_dispatch' && github.event.client_payload.environment || github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   build-and-commit:
@@ -23,8 +28,52 @@ jobs:
       contents: write
 
     steps:
+      - name: Resolve deployment target
+        id: target
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          DISPATCH_ENVIRONMENT: ${{ github.event.client_payload.environment }}
+        run: |
+          if [[ "$EVENT_NAME" == "repository_dispatch" ]]; then
+            case "$DISPATCH_ENVIRONMENT" in
+              production)
+                DEPLOY_BRANCH=master
+                DEPLOY_ENVIRONMENT=production
+                ;;
+              staging)
+                DEPLOY_BRANCH=staging
+                DEPLOY_ENVIRONMENT=staging
+                ;;
+              *)
+                echo "Invalid or missing WP deploy environment '$DISPATCH_ENVIRONMENT'. Set the Deploy Environment in the WordPress Deploy Trigger settings to production or staging." >&2
+                exit 1
+                ;;
+            esac
+          else
+            case "$REF_NAME" in
+              master)
+                DEPLOY_BRANCH=master
+                DEPLOY_ENVIRONMENT=production
+                ;;
+              staging)
+                DEPLOY_BRANCH=staging
+                DEPLOY_ENVIRONMENT=staging
+                ;;
+              *)
+                echo "Unsupported deployment branch '$REF_NAME'; use master for production or staging for development." >&2
+                exit 1
+                ;;
+            esac
+          fi
+
+          echo "branch=$DEPLOY_BRANCH" >> "$GITHUB_OUTPUT"
+          echo "environment=$DEPLOY_ENVIRONMENT" >> "$GITHUB_OUTPUT"
+          echo "Building $DEPLOY_ENVIRONMENT from $DEPLOY_BRANCH"
+
       - uses: actions/checkout@v4
         with:
+          ref: ${{ steps.target.outputs.branch }}
           # Use the repository PAT so the generated-output push also triggers
           # Hostinger's Git deployment webhook.
           token: ${{ secrets.GH_PAT }}
@@ -37,27 +86,51 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Build production site
+        if: steps.target.outputs.environment == 'production'
         run: npm run build
         env:
-          WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL || 'https://q42026.content.khaoyaiart.org' }}
-          NEXT_PUBLIC_WP_BASE_URL: ${{ secrets.NEXT_PUBLIC_WP_BASE_URL || 'https://q42026.content.khaoyaiart.org' }}
+          WP_BASE_URL: https://content.khaoyaiart.org
+          NEXT_PUBLIC_WP_BASE_URL: https://content.khaoyaiart.org
+          WP_AUTH_USER: ${{ secrets.LIVE_WP_AUTH_USER }}
+          WP_AUTH_PASS: ${{ secrets.LIVE_WP_AUTH_PASS }}
+          BKKK_BASE_URL: https://khaoyaiart.org/bk
+          KYAF_BASE_URL: https://khaoyaiart.org/kyaf
+          SITE_URL: https://khaoyaiart.org
+          NEXT_PUBLIC_ENABLE_TRACKING: 'false'
+          NEXT_PUBLIC_ENABLE_GA4: 'true'
+          NEXT_PUBLIC_ALLOW_INDEXING: 'true'
+
+      - name: Build staging site
+        if: steps.target.outputs.environment == 'staging'
+        run: npm run build
+        env:
+          WP_BASE_URL: https://q42026.content.khaoyaiart.org
+          NEXT_PUBLIC_WP_BASE_URL: https://q42026.content.khaoyaiart.org
           WP_AUTH_USER: ${{ secrets.WP_AUTH_USER }}
           WP_AUTH_PASS: ${{ secrets.WP_AUTH_PASS }}
-          BKKK_BASE_URL: ${{ secrets.BKKK_BASE_URL || 'https://dev.khaoyaiart.org/bk' }}
-          KYAF_BASE_URL: ${{ secrets.KYAF_BASE_URL || 'https://dev.khaoyaiart.org/kyaf' }}
-          SITE_URL: ${{ secrets.SITE_URL || 'https://dev.khaoyaiart.org' }}
+          BKKK_BASE_URL: https://dev.khaoyaiart.org/bk
+          KYAF_BASE_URL: https://dev.khaoyaiart.org/kyaf
+          SITE_URL: https://dev.khaoyaiart.org
           NEXT_PUBLIC_ENABLE_TRACKING: 'false'
           NEXT_PUBLIC_ENABLE_GA4: 'true'
           NEXT_PUBLIC_ALLOW_INDEXING: 'false'
 
       - name: Commit build output
+        env:
+          DEPLOY_BRANCH: ${{ steps.target.outputs.branch }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin
-          git reset --soft origin/master
+          git fetch origin "$DEPLOY_BRANCH:refs/remotes/origin/$DEPLOY_BRANCH"
+          if [[ "$(git rev-parse HEAD)" != "$(git rev-parse "origin/$DEPLOY_BRANCH")" ]]; then
+            echo "The $DEPLOY_BRANCH branch changed while this build was running. Refusing to commit output built from a stale source revision; rerun the workflow." >&2
+            exit 1
+          fi
           git add out/
-          git diff --cached --quiet && exit 0
+          if git diff --cached --quiet; then
+            echo "Generated output is unchanged."
+            exit 0
+          fi
           git commit -m "SSG rebuild $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          git push
+          git push origin "HEAD:refs/heads/$DEPLOY_BRANCH"

@@ -2,7 +2,7 @@ import { exhibitions } from '@/components/kyaf/utils/exhibitionsDataNew';
 import type { Metadata } from 'next';
 import { fetchCPT, fetchCPTBySlug } from '@/lib/wp-api';
 import { mapKyafExhibition } from '@/lib/wp-mappers';
-import { kyafMetadata } from '@/lib/seo';
+import { KYAF_BASE_URL, kyafMetadata } from '@/lib/seo';
 import { JsonLd, exhibitionJsonLd, breadcrumbJsonLd } from '@/lib/JsonLd';
 import { ExhibitionDetailClientPage } from '@/components/kyaf/ExhibitionDetailClientPage';
 
@@ -38,7 +38,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const { slug } = await params;
   const post = await fetchCPTBySlug('exhibitions', slug);
   const data = post ? mapKyafExhibition(post) : null;
-  const BASE = 'https://khaoyaiart.org/kyaf';
+  const BASE = KYAF_BASE_URL;
 
   return (
     <>

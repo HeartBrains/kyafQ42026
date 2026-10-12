@@ -1,9 +1,10 @@
 import { MetadataRoute } from 'next';
 import { fetchCPT } from '@/lib/wp-api';
+import { KYAF_BASE_URL } from '@/lib/seo';
 
 export const dynamic = 'force-static';
 
-const BASE = 'https://khaoyaiart.org/kyaf';
+const BASE = KYAF_BASE_URL;
 
 const staticRoutes: { path: string; priority: number; changeFreq: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
   { path: '',               priority: 1.0, changeFreq: 'daily' },

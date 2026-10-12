@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { bkkkMetadata } from '@/lib/seo';
+import { BKKK_BASE_URL, bkkkMetadata } from '@/lib/seo';
 import { JsonLd, organizationJsonLd } from '@/lib/JsonLd';
 import { ClientPage } from '@/components/bkkk/ClientPage';
 
@@ -10,7 +10,7 @@ export default function Page() {
     <>
       <JsonLd data={organizationJsonLd({
         name: 'Bangkok Kunsthalle',
-        url: 'https://khaoyaiart.org/bk',
+        url: BKKK_BASE_URL,
         description: 'Contemporary art space in Bangkok, Thailand.',
         address: 'Bangkok, Thailand',
         sameAs: ['https://www.instagram.com/bangkokkunsthalle'],
