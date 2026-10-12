@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { LanguageProvider } from '@/utils/languageContext';
+import { SITE_URL } from '@/lib/site-config';
 
-const SITE_URL = (process.env.SITE_URL ?? 'https://dev.khaoyaiart.org').replace(/\/$/, '');
 const INDEXING_ENABLED = process.env.NEXT_PUBLIC_ALLOW_INDEXING === 'true';
 
 export const metadata: Metadata = {

@@ -1,4 +1,5 @@
-const WP_ORIGIN = (process.env.WP_BASE_URL ?? 'https://q42026.content.khaoyaiart.org').replace(/\/$/, '');
+import { WP_BASE_URL as WP_ORIGIN } from '@/lib/site-config';
+
 const WP_BASE = WP_ORIGIN.endsWith('/wp-json/wp/v2')
   ? WP_ORIGIN
   : `${WP_ORIGIN}/wp-json/wp/v2`;

@@ -1,8 +1,7 @@
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/site-config';
 
 export const dynamic = 'force-static';
-
-const SITE_URL = (process.env.SITE_URL ?? 'https://dev.khaoyaiart.org').replace(/\/$/, '');
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
