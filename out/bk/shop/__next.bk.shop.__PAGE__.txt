@@ -2,5 +2,5 @@
 2:I[5343,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","4286","static/chunks/4286-3114d8a161acc5f7.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","5881","static/chunks/5881-e8a5a48b01c372e9.js","6399","static/chunks/6399-9c79bd39c28ca9c3.js","2778","static/chunks/2778-fa5945105f417ab2.js","2579","static/chunks/2579-c50a1d916d1b845f.js","6169","static/chunks/6169-fd5f333fc65e6cba.js","4506","static/chunks/4506-c4529ffa51edc7c6.js","1425","static/chunks/app/bk/shop/page-e723fe91eba81f6c.js"],"ClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","component":"ShopPage"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"skFnotwAvv0HKykcG0L6N"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","component":"ShopPage"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"d_EQlx70uKvmBk3VAwNmj"}
 5:null
