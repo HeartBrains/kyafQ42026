@@ -90,7 +90,9 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.title[language] || exhibition.title.en}</h3>
-                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.artist[language] || exhibition.artist.en}</p>
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                          {exhibition.artist[language] || exhibition.artist.en || exhibition.curator?.[language] || exhibition.curator?.en}
+                        </p>
                         {exhibition.listingSummary && (
                           <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                             {exhibition.listingSummary[language] || exhibition.listingSummary.en}

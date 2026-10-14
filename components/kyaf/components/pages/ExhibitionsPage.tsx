@@ -99,9 +99,9 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
         <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
           {language === 'th' ? item.title.th : item.title.en}
         </h3>
-        {item.artist && (
+        {(item.artist?.[language] || item.artist?.en || item.curator?.[language] || item.curator?.en) && (
           <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            {language === 'th' ? item.artist.th : item.artist.en}
+            {item.artist?.[language] || item.artist?.en || item.curator?.[language] || item.curator?.en}
           </p>
         )}
         {item.listingSummary && (

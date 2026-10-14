@@ -8,7 +8,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { siteConfig } from '@/utils/siteConfig';
 import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
-import { RichContent, stripWrapperDivs } from '@/utils/richContent';
 import { useCovers } from '@/lib/coversContext';
 
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
@@ -120,13 +119,9 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
-                        {(item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
-                          <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                            <RichContent content={stripWrapperDivs(item.additionalInfo[language] || item.additionalInfo.en)} />
-                          </div>
-                        ) : (
-                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en || item.curator?.[language] || item.curator?.en}</p>
-                        )}
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                          {item.artist[language] || item.artist.en || item.curator?.[language] || item.curator?.en}
+                        </p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
                       </div>
                     </div>
@@ -148,13 +143,9 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                       )}
                       <div className="flex flex-col gap-1">
                         <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
-                        {(item.additionalInfo?.[language] || item.additionalInfo?.en) ? (
-                          <div className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                            <RichContent content={stripWrapperDivs(item.additionalInfo[language] || item.additionalInfo.en)} />
-                          </div>
-                        ) : (
-                          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en || item.curator?.[language] || item.curator?.en}</p>
-                        )}
+                        <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                          {item.artist[language] || item.artist.en || item.curator?.[language] || item.curator?.en}
+                        </p>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.dateDisplay[language] || item.dateDisplay.en}</p>
                       </div>
                     </div>
