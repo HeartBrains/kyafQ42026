@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { fetchBlogVideoPreviewBySlug, fetchFirstGalleryImageBySlug, type VideoPreviewMedia } from '@/lib/useWPData';
+import { fetchBlogVideoPreviewBySlug, fetchCanonicalRelatedSlug, fetchFirstGalleryImageBySlug, type VideoPreviewMedia } from '@/lib/useWPData';
 
 export interface RelatedContentItem {
   id: string;
@@ -74,8 +74,19 @@ function RelatedContentCard({
   const [videoPreview, setVideoPreview] = useState<VideoPreviewMedia | null>(null);
   const [videoPreviewLoaded, setVideoPreviewLoaded] = useState(false);
   const [isPreviewActive, setIsPreviewActive] = useState(false);
+  const [canonicalSlug, setCanonicalSlug] = useState<string | null>(null);
   const requestedGalleryImage = useRef(false);
   const previewVideoRef = useRef<HTMLVideoElement>(null);
+  const needsSlugLookup = item.slug.startsWith('-');
+
+  useEffect(() => {
+    if (!needsSlugLookup) return;
+    let active = true;
+    void fetchCanonicalRelatedSlug(relatedRestTypes[item.type], item.id, site).then((slug) => {
+      if (active && slug) setCanonicalSlug(slug);
+    });
+    return () => { active = false; };
+  }, [item.id, item.type, needsSlugLookup, site]);
 
   const requestGalleryPreview = () => {
     setIsPreviewActive(true);
@@ -110,16 +121,8 @@ function RelatedContentCard({
   }, [isPreviewActive, videoPreview]);
 
   const title = language === 'th' ? (item.title.th || item.title.en) : item.title.en;
-
-  return (
-    <Link
-      href={`${prefix}/${routeSegments[item.type]}/${item.slug}/`}
-      className="group block w-[82%] shrink-0 snap-start focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-[calc(50%_-_1rem)] lg:w-[calc(33.333%_-_1.333rem)]"
-      onPointerEnter={(event) => event.pointerType === 'mouse' && requestGalleryPreview()}
-      onPointerLeave={() => setIsPreviewActive(false)}
-      onFocus={requestGalleryPreview}
-      onBlur={() => setIsPreviewActive(false)}
-    >
+  const cardContent = (
+    <>
       <div data-related-carousel-image className="relative mb-4 aspect-[3/4] overflow-hidden bg-gray-100">
         {item.image ? (
           <img
@@ -172,6 +175,27 @@ function RelatedContentCard({
       {item.type === 'blog' && item.category && <p className="mb-1 text-xs uppercase tracking-wide text-gray-500">{item.category}</p>}
       <h3 className="text-lg font-bold leading-tight">{title}</h3>
       {item.date && <p className="mt-1 text-sm text-gray-600">{item.date}</p>}
+    </>
+  );
+  const cardClassName = "group block w-[82%] shrink-0 snap-start focus-visible:outline-2 focus-visible:outline-offset-4 sm:w-[calc(50%_-_1rem)] lg:w-[calc(33.333%_-_1.333rem)]";
+  const cardInteractions = {
+    onPointerEnter: (event: ReactPointerEvent<HTMLElement>) => event.pointerType === 'mouse' && requestGalleryPreview(),
+    onPointerLeave: () => setIsPreviewActive(false),
+    onFocus: requestGalleryPreview,
+    onBlur: () => setIsPreviewActive(false),
+  };
+
+  if (needsSlugLookup && !canonicalSlug) {
+    return <div className={cardClassName} aria-busy="true" {...cardInteractions}>{cardContent}</div>;
+  }
+
+  return (
+    <Link
+      href={`${prefix}/${routeSegments[item.type]}/${canonicalSlug ?? item.slug}/`}
+      className={cardClassName}
+      {...cardInteractions}
+    >
+      {cardContent}
     </Link>
   );
 }
