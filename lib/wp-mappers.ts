@@ -71,7 +71,8 @@ function relatedContent(post: WPRawPost) {
       const id = item.id == null ? '' : String(item.id);
       const slug = typeof item.slug === 'string' ? item.slug.trim() : '';
       const site = item.site === 'bkkk' || item.site === 'kyaf' ? item.site : undefined;
-      const titleEn = typeof item.title?.en === 'string' ? item.title.en.trim() : '';
+      const titleEn = typeof item.title?.en === 'string' ? decode(item.title.en.trim()) : '';
+      const titleTh = typeof item.title?.th === 'string' ? decode(item.title.th.trim()) : '';
       if (!type || !id || !slug || !site || !titleEn) return [];
 
       return [{
@@ -81,7 +82,7 @@ function relatedContent(post: WPRawPost) {
         site,
         title: {
           en: titleEn,
-          th: typeof item.title?.th === 'string' && item.title.th.trim() ? item.title.th : titleEn,
+          th: titleTh || titleEn,
         },
         date: typeof item.date === 'string' ? item.date : undefined,
         image: typeof item.image === 'string' ? item.image : undefined,
