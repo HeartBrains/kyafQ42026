@@ -2,5 +2,5 @@
 2:I[2567,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","5881","static/chunks/5881-504550203aa86bee.js","7681","static/chunks/app/bk/artists/%5Bslug%5D/page-3b7e4f8d9ed6eb13.js"],"ArtistDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"elekhlekha"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"vQqeD5_dp01XFl0HrTqgL"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"elekhlekha"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"rOZwAqvyY1t8FBPgWNn4y"}
 5:null
