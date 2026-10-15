@@ -77,7 +77,10 @@ function RelatedContentCard({
   const [canonicalSlug, setCanonicalSlug] = useState<string | null>(null);
   const requestedGalleryImage = useRef(false);
   const previewVideoRef = useRef<HTMLVideoElement>(null);
-  const needsSlugLookup = item.slug.startsWith('-');
+  // Relation metadata can contain stale slugs even when they don't look malformed
+  // (for example, a missing encoded middle-dot in an activity title). Always
+  // resolve activity links by stable WP ID before making them clickable.
+  const needsSlugLookup = item.type === 'activities';
 
   useEffect(() => {
     if (!needsSlugLookup) return;
@@ -341,7 +344,7 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
   const groupLabels: Record<RelatedGroupKey, { en: string; th: string }> = {
     exhibitions: { en: 'Related Exhibitions', th: 'นิทรรศการที่เกี่ยวข้อง' },
     activities: { en: 'Related Activities', th: 'กิจกรรมที่เกี่ยวข้อง' },
-    'moving-image': { en: 'Related Moving Images Program', th: 'โปรแกรมภาพเคลื่อนไหวที่เกี่ยวข้อง' },
+    'moving-image': { en: 'Related Moving Image Program', th: 'โปรแกรมภาพเคลื่อนไหวที่เกี่ยวข้อง' },
     residency: { en: 'Related Residency', th: 'การพำนักที่เกี่ยวข้อง' },
     blog: { en: 'Related Blogs', th: 'บล็อกที่เกี่ยวข้อง' },
   };
