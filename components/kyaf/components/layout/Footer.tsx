@@ -19,7 +19,7 @@ export function Footer({ onNavigate, isSticky: _isSticky = false }: { onNavigate
   
   return (
     <>
-    <footer className="hidden md:block w-full bg-black text-white px-[6vw] border-t border-white/10 py-[24px]">
+    <footer className="hidden md:block w-full bg-black text-white px-[6vw] py-[24px]">
       <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-end gap-12 md:gap-0">
         
         {/* Left: Logo */}
