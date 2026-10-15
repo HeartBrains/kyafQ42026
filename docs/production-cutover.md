@@ -1,5 +1,12 @@
 # Live and staging deployment cutover
 
+## Repository ownership
+
+`HeartBrains/kyafQ42026` is the canonical repository for this project. The
+former `HeartBrains/khaoyaiart-next` repository is retired for ongoing work and
+must not receive source changes or deployment pushes. All future production
+changes belong on `kyafQ42026/master`.
+
 This repository is configured to produce two isolated static sites:
 
 | Git branch / WordPress source | Site URL | Indexing |
