@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { fetchBlogVideoPreviewBySlug, fetchCanonicalRelatedSlug, fetchFirstGalleryImageBySlug, type VideoPreviewMedia } from '@/lib/useWPData';
+import { RichInlineContent, richTextToPlainText } from '@/utils/richContent';
 
 export interface RelatedContentItem {
   id: string;
@@ -130,7 +131,7 @@ function RelatedContentCard({
         {item.image ? (
           <img
             src={item.image}
-            alt={title}
+            alt={site === 'kyaf' ? richTextToPlainText(title) : title}
             loading="lazy"
             decoding="async"
             fetchPriority="low"
@@ -176,7 +177,9 @@ function RelatedContentCard({
         )}
       </div>
       {item.type === 'blog' && item.category && <p className="mb-1 text-xs uppercase tracking-wide text-gray-500">{item.category}</p>}
-      <h3 className="text-lg font-bold leading-tight">{title}</h3>
+      <h3 className="text-lg font-bold leading-tight">
+        {site === 'kyaf' ? <RichInlineContent content={title} /> : title}
+      </h3>
       {item.date && <p className="mt-1 text-sm text-gray-600">{item.date}</p>}
     </>
   );
@@ -362,13 +365,13 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
         {groups.map((group) => (
           <section key={group.key} aria-labelledby={`related-${currentId}-${group.key}`}>
             <h2 id={`related-${currentId}-${group.key}`} className="mb-5 text-xl md:text-2xl font-bold">
-              {groupLabels[group.key][language]}
+              {site === 'kyaf' && group.key === 'exhibitions' ? 'Related Artworks' : groupLabels[group.key][language]}
             </h2>
             <RelatedContentCarousel
               items={group.items}
               prefix={prefix}
               language={language}
-              label={groupLabels[group.key][language]}
+              label={site === 'kyaf' && group.key === 'exhibitions' ? 'Related Artworks' : groupLabels[group.key][language]}
             />
           </section>
         ))}

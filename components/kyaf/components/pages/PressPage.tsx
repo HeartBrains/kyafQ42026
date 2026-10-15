@@ -6,6 +6,7 @@ import { useLanguage } from '@/utils/languageContext';
 import { getTranslation } from '@/utils/translations';
 import { useKyafPressItems } from '@/lib/useWPData';
 import { PRESS_ITEMS } from '@/utils/pressDataBilingual';
+import { RichInlineContent } from '@/utils/richContent';
 
 export function PressPage() {
   const { language } = useLanguage();
@@ -51,7 +52,7 @@ export function PressPage() {
                     {language === 'th' ? item.dateTH : item.date}
                   </p>
                   <h2 className={`text-lg md:text-xl font-bold text-black mb-4 ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
-                    {language === 'th' ? item.titleTH : item.title}
+                    <RichInlineContent content={language === 'th' ? item.titleTH : item.title} />
                   </h2>
                   {item.link && item.link !== '#' ? (
                     <a

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import type { HomeHeroSlide } from './homeHeroSlides';
 
@@ -109,7 +110,7 @@ export function HeroDualSwitcher({
           aria-label={previousLabel}
           onClick={() => showSlide(-1)}
         >
-          <span aria-hidden="true">←</span>
+          <ArrowLeft aria-hidden="true" className="h-7 w-7 stroke-[1.5]" />
         </button>
         <button
           className="dual-hero__arrow"
@@ -117,7 +118,7 @@ export function HeroDualSwitcher({
           aria-label={nextLabel}
           onClick={() => showSlide(1)}
         >
-          <span aria-hidden="true">→</span>
+          <ArrowRight aria-hidden="true" className="h-7 w-7 stroke-[1.5]" />
         </button>
       </div>
     </section>

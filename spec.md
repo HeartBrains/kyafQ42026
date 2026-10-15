@@ -1,5 +1,126 @@
 # Workspace Specification
 
+## Current implementation plan: Home arrows, KYAF footer, listings, and related title
+
+This plan supersedes older “Active Plan” sections below for the requested work.
+Those sections remain as project history and are not part of this implementation.
+
+### Objective
+
+Make four focused presentation/content-rendering updates across the BK and KYAF
+sites: match both home hero arrows to the transparent white-arrow treatment in
+the detail hero reference; reduce the KYAF desktop footer height to match BK;
+correct HTML rendering in the KYAF activity listing and any other KYAF listing
+with the same issue; and rename KYAF’s related exhibitions heading to
+“Related Artworks”.
+
+### Requirements
+
+1. Update the shared home hero arrow controls used by both `/bk/` and `/kyaf/`:
+   - Use a transparent control surface with a white arrow, matching the
+     supplied detail-page hero reference.
+   - Remove the home hero’s visible black circular fill.
+   - Keep previous/next behavior, placement, responsive visibility, touch
+     affordance, keyboard access, and accessible labels.
+2. Reduce the KYAF desktop footer’s vertical footprint to match the BK desktop
+   footer. Keep KYAF’s own logo, navigation, social links, mailing-list signup,
+   and copyright. Do not change the mobile sticky footer as part of this item.
+3. Fix rich-text display in the KYAF activity listing (`/kyaf/activities/`):
+   record names/titles and available listing detail/summary must display their
+   intended formatting, rather than showing literal tags, double-encoded
+   entities, or flattened/broken markup.
+4. Audit other KYAF listing surfaces that render WordPress records, including
+   exhibitions, home-page record cards, archives, and blog listings. Apply the
+   same field-aware correction wherever titles or listing descriptions exhibit
+   the same HTML/entity rendering issue; leave already-correct plain text and
+   layout intact.
+5. For KYAF related-content groups of type `exhibitions`, show the heading
+   “Related Artworks” in both English and Thai language modes. Keep the heading
+   “Related Exhibitions” and its existing translations on BK. Do not rename
+   other related-content group headings.
+
+### Constraints
+
+- The requested work is approved for implementation and production deployment
+  through `HeartBrains/kyafQ42026/master`.
+- Keep `/bk/` mapped to `bkkk` and `/kyaf/` mapped to `kyaf`.
+- Keep the requested title change KYAF-only. “Related Artworks” remains
+  English even when KYAF is displayed in Thai.
+- Match only the KYAF desktop footer height; preserve mobile sticky footer
+  sizing and interactions.
+- Preserve home hero slide navigation, gestures, reduced-motion behavior,
+  focus visibility, and controls on touch devices.
+- Keep existing detail-page rich-content rendering behavior unchanged; scope the
+  new safe rich-text renderer to KYAF listing fields.
+- Render WordPress rich text through a safe, allow-listed formatting path.
+  Preserve supported semantic formatting and links, but do not execute scripts,
+  event handlers, or arbitrary embedded markup from record fields.
+- Do not change WordPress records, unrelated site layout, BK listing content,
+  detail-page content, routes, or CMS/hosting configuration.
+- The active repository is `HeartBrains/kyafQ42026`; production source changes
+  go to `master`, whose workflow builds and publishes `khaoyaiart.org`.
+
+### Architecture
+
+```text
+BK home ─┐
+         ├─ shared HeroDualSwitcher + hero CSS → transparent controls / white arrows
+KYAF home┘
+
+KYAF desktop Footer → BK-matched vertical spacing; KYAF content retained
+KYAF WP listing data → normalized rich fields → safe shared rich-text renderer
+RelatedContentSection(site, group)
+  ├─ BK exhibitions → “Related Exhibitions”
+  └─ KYAF exhibitions → “Related Artworks” (English in both language modes)
+```
+
+Keep the slide state and event behavior in `HeroDualSwitcher`; change only its
+arrow presentation and related styles in the shared hero CSS. Use the BK desktop
+footer’s rendered vertical spacing as the sizing reference for KYAF. At the
+WordPress boundary, preserve enough source formatting for the listing UI to
+render it intentionally; at the presentation boundary, use a safe rich-text
+renderer consistently for record names and summaries. Make the related heading
+selection conditional on both site and group so the shared section does not
+change BK labels or unrelated KYAF group names.
+
+### Implementation steps
+
+1. Confirm the home hero and detail hero arrow DOM/styles and the desktop footer
+   vertical dimensions on BK and KYAF. Inventory KYAF listing fields and their
+   mapper/rendering paths for title, detail, and summary content.
+2. Update `HeroDualSwitcher` and its shared CSS so both home pages use
+   transparent arrow controls with white arrows, preserving existing behavior
+   and accessible states.
+3. Adjust the KYAF desktop footer’s vertical spacing to the BK desktop
+   footprint while preserving KYAF footer content and leaving its mobile
+   sticky footer unchanged.
+4. Correct the KYAF activity mapper/card rich-text path, including available
+   listing detail/summary. Audit and fix the same malformed HTML/entity pattern
+   on other KYAF listing pages; use a safe allow-listed renderer and preserve
+   list-card typography and truncation behavior.
+5. Add site-aware related heading selection so KYAF exhibition groups use
+   “Related Artworks” in both language modes while BK keeps its current label.
+6. Review the diff, run the relevant type/build checks, and inspect both home
+   heroes, both desktop footers, KYAF activity and other affected listing pages,
+   and related-content headings. Push intended source changes to
+   `HeartBrains/kyafQ42026/master`, then verify the production workflow and
+   `https://khaoyaiart.org` deployment.
+
+### Success criteria
+
+- Both `/bk/` and `/kyaf/` home hero arrows have a transparent surface and a
+  visible white arrow matching the supplied detail-hero reference; slide
+  navigation and keyboard/touch behavior continue to work.
+- At desktop width, KYAF’s footer height/vertical spacing matches BK’s while
+  retaining all KYAF footer content. The mobile sticky footer is unchanged.
+- KYAF activity record titles and available listing details display intended
+  rich formatting with no raw tags or double-encoded entities. The audit finds
+  and corrects equivalent issues on other affected KYAF listing surfaces.
+- KYAF exhibition-related groups display “Related Artworks” in both EN and TH
+  modes; BK and all other related group labels remain unchanged.
+- Relevant checks pass, the production workflow for `kyafQ42026/master`
+  succeeds, and the live site serves the updated output.
+
 ## Active Plan: Separate mobile and desktop hamburger menu components
 
 ### Objective

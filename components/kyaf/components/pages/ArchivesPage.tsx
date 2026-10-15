@@ -7,6 +7,7 @@ import { ParallaxHero } from '../ui/ParallaxHero';
 import { useLanguage } from '@/utils/languageContext';
 import { useKyafExhibitions, useKyafActivities } from '@/lib/useWPData';
 import { IMG_MADRID_SRC } from '@/utils/imageConstants';
+import { RichInlineContent, richTextToPlainText } from '@/utils/richContent';
 
 // Helper to extract the relevant year from a date string
 const getYearFromDate = (dateStr: string): string => {
@@ -221,7 +222,7 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
                     <ImageWithFallback
                       src={item.featuredImage || ''}
                       hoverSrc={item.gallery?.[0]}
-                      alt={item.title}
+                      alt={richTextToPlainText(item.title)}
                       className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                       loading="lazy"
                       decoding="async"
@@ -229,11 +230,11 @@ export function ArchivesPage({ onNavigate }: ArchivesPageProps) {
                     />
                   </div>
                   <h3 className={`text-xl md:text-2xl font-bold text-black leading-tight mb-1 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                    {item.title}
+                    <RichInlineContent content={item.title} />
                   </h3>
                   {item.acf?.artist && (
                     <p className={`text-xl md:text-2xl font-normal text-black leading-tight mb-1 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                      {item.acf.artist}
+                      <RichInlineContent content={item.acf.artist} />
                     </p>
                   )}
                   <p className="text-sm text-gray-500">{item.date}</p>

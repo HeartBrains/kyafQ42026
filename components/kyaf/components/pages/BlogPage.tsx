@@ -7,6 +7,7 @@ import { useCovers } from '@/lib/coversContext';
 import { useLanguage } from '@/utils/languageContext';
 import { useKyafBlogPosts } from '@/lib/useWPData';
 import { IMG_FOG_SRC } from '@/utils/imageConstants';
+import { RichInlineContent, richTextToPlainText } from '@/utils/richContent';
 
 interface BlogPageProps {
   onNavigate: (page: string, slug?: string) => void;
@@ -100,7 +101,7 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
                                             site="kyaf"
                                             image={post.featuredImage}
                                             galleryImage={post.gallery?.[0]}
-                                            alt={post.title[language] || post.title.en}
+                                            alt={richTextToPlainText(post.title[language] || post.title.en)}
                                             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                                         />
                                     </div>
@@ -108,7 +109,7 @@ export function BlogPage({ onNavigate }: BlogPageProps) {
                                     {/* Text Content */}
                                     <div className="flex flex-col gap-1">
                                         <h3 className={`text-lg md:text-xl font-bold text-black leading-tight ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
-                                            {post.title[language] || post.title.en}
+                                            <RichInlineContent content={post.title[language] || post.title.en} />
                                         </h3>
                                         <p className={`text-lg md:text-xl font-normal text-black leading-tight ${language === 'th' ? 'font-sans leading-[1.82em]' : ''}`}>
                                             {post.date}

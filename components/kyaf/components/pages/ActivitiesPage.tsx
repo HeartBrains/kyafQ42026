@@ -12,6 +12,7 @@ import { useKyafActivities, useSectionVisibility } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 import { ActivityTagFilter, activityMatchesTag, rememberActivityListingUrl, type ActivityTagSlug } from '@/components/shared/ActivityTagFilter';
 import { PUBLIC_WP_ORIGIN } from '@/lib/wp-origin';
+import { SafeRichContent, RichInlineContent, richTextToPlainText } from '@/utils/richContent';
 
 interface ActivitiesPageProps {
   onNavigate?: (page: string, slug?: string) => void;
@@ -87,13 +88,18 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
     }}>
       {item.featuredImage && (
         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-          <ImageWithFallback src={item.featuredImage} hoverSrc={item.gallery?.[0]} alt={item.title[language] || item.title.en} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" decoding="async" fetchPriority="low" />
+          <ImageWithFallback src={item.featuredImage} hoverSrc={item.gallery?.[0]} alt={richTextToPlainText(item.title[language] || item.title.en)} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" loading="lazy" decoding="async" fetchPriority="low" />
         </div>
       )}
       <div className="flex flex-col gap-1">
-        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.title[language] || item.title.en}</h3>
+        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}><RichInlineContent content={item.title[language] || item.title.en} /></h3>
         {(item.artist?.[language] || item.artist?.en) && (
-          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{item.artist[language] || item.artist.en}</p>
+          <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}><RichInlineContent content={item.artist[language] || item.artist.en} /></p>
+        )}
+        {(item.listingSummary?.[language] || item.listingSummary?.en) && (
+          <div className={`mt-1 line-clamp-3 text-xl md:text-2xl font-normal text-gray-600 leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+            <SafeRichContent content={item.listingSummary[language] || item.listingSummary.en} className="listing-rich-content" />
+          </div>
         )}
         {(item.dateDisplay?.[language] || item.dateDisplay?.en) && (
           <div className="flex flex-col mt-2">
@@ -124,7 +130,7 @@ export function ActivitiesPage({ onNavigate: onNavigateProp, targetSectionId }: 
                   s.id === 'upcoming-activities' ? upcomingActivities :
                   s.id === 'current-activities'  ? currentActivities  :
                   pastActivities
-                ).map(a => ({ id: a.id, slug: a.slug, title: a.title[language] || a.title.en })),
+                ).map(a => ({ id: a.id, slug: a.slug, title: richTextToPlainText(a.title[language] || a.title.en) })),
               }))}
               activeSection={activeSection}
               onSectionClick={scrollToSection}

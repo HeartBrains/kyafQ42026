@@ -10,7 +10,7 @@ import { useAppNavigate } from '@/components/kyaf/utils/useAppNavigate';
 import { useKyafExhibitions, useSectionVisibility } from '@/lib/useWPData';
 import { siteConfig } from '@/components/kyaf/utils/siteConfig';
 import { EXHIBITIONS_HERO_IMAGE } from '@/utils/imageConstants';
-import { RichContent } from '@/utils/richContent';
+import { SafeRichContent, RichInlineContent, richTextToPlainText } from '@/utils/richContent';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 
 interface ExhibitionsPageProps {
@@ -88,7 +88,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
         <ImageWithFallback
           src={item.featuredImage}
           hoverSrc={item.gallery?.[0]}
-          alt={language === 'th' ? item.title.th : item.title.en}
+          alt={richTextToPlainText(language === 'th' ? item.title.th : item.title.en)}
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           loading="lazy"
           decoding="async"
@@ -97,16 +97,16 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
       </div>
       <div className="flex flex-col gap-1">
         <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-          {language === 'th' ? item.title.th : item.title.en}
+          <RichInlineContent content={language === 'th' ? item.title.th : item.title.en} />
         </h3>
         {(item.artist?.[language] || item.artist?.en || item.curator?.[language] || item.curator?.en) && (
           <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            {item.artist?.[language] || item.artist?.en || item.curator?.[language] || item.curator?.en}
+            <RichInlineContent content={item.artist?.[language] || item.artist?.en || item.curator?.[language] || item.curator?.en} />
           </p>
         )}
         {item.listingSummary && (
           <div className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight line-clamp-3 mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-            <RichContent content={language === 'th' ? item.listingSummary.th : item.listingSummary.en} />
+            <SafeRichContent content={language === 'th' ? item.listingSummary.th : item.listingSummary.en} className="listing-rich-content" />
           </div>
         )}
       </div>
@@ -132,7 +132,7 @@ export function ExhibitionsPage({ onNavigate: onNavigateProp, targetSectionId }:
                 records: s.items.map(item => ({
                   id: item.id,
                   slug: item.slug,
-                  title: language === 'th' ? item.title.th : item.title.en,
+                  title: richTextToPlainText(language === 'th' ? item.title.th : item.title.en),
                 })),
               }))}
               activeSection={activeSection}

@@ -231,8 +231,8 @@ export function mapKyafExhibition(post: WPRawPost) {
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     tags: { en: m(post, 'tags_en').split(',').map(t => t.trim()).filter(Boolean), th: [] },
     listingSummary: {
-      en: m(post, 'content_en').replace(/<[^>]+>/g, '').slice(0, 200),
-      th: m(post, 'content_th').replace(/<[^>]+>/g, '').slice(0, 200),
+      en: m(post, 'content_en') || post.content?.rendered || '',
+      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     content: {
       en: m(post, 'content_en') || post.content?.rendered || '',
@@ -375,8 +375,8 @@ export function mapActivity(post: WPRawPost, lang: Lang = 'en') {
     ctaLeft:  { label: m(post, 'cta_label'),  url: m(post, 'cta_url') },
     ctaRight: { label: m(post, 'cta2_label'), url: m(post, 'cta2_url') },
     listingSummary: {
-      en: m(post, 'content_en').replace(/<[^>]+>/g, '').slice(0, 200),
-      th: (m(post, 'content_th') || m(post, 'content_en')).replace(/<[^>]+>/g, '').slice(0, 200),
+      en: m(post, 'content_en') || post.content?.rendered || '',
+      th: m(post, 'content_th') || m(post, 'content_en') || post.content?.rendered || '',
     },
     content: {
       en: m(post, 'content_en') || post.content?.rendered || '',

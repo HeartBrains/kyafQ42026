@@ -192,14 +192,13 @@
   place-items: center;
   border: 0;
   border-radius: 50%;
-  background: #000;
-  color: inherit;
+  background: transparent;
+  color: #fff;
   font: inherit;
-  font-size: 1.25rem;
   opacity: 0;
   pointer-events: none;
   transform: scale(0.94);
-  transition: opacity 220ms ease, transform 220ms ease, background-color 180ms ease, color 180ms ease;
+  transition: opacity 220ms ease, transform 220ms ease;
   cursor: pointer;
 }
 
@@ -212,14 +211,23 @@
 }
 
 .dual-hero__arrows .dual-hero__arrow {
-  background: #000;
-  color: white;
+  background: transparent;
+  color: #fff;
 }
 
 .dual-hero__arrows .dual-hero__arrow:hover,
 .dual-hero__arrows .dual-hero__arrow:focus-visible {
-  background: #231F20;
-  color: white;
+  background: transparent;
+  color: #fff;
+}
+
+.dual-hero__arrows .dual-hero__arrow:hover {
+  transform: scale(1.08);
+}
+
+.dual-hero__arrows .dual-hero__arrow:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
 }
 
 @media (max-width: 640px) {
@@ -864,6 +872,15 @@ html {
 
 .rich-content a:hover {
   opacity: 0.6;
+}
+
+.rich-content.listing-rich-content p {
+  display: inline;
+  margin: 0;
+}
+
+.rich-content.listing-rich-content p + p::before {
+  content: ' ';
 }
 
 /* Curated by and Additional Info are 75% of the filter's responsive text scale. */

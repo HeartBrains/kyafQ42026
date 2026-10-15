@@ -10,6 +10,7 @@ import { useHomeAnchors } from '@/lib/useWPData';
 import { ListingAccordionNav } from '@/components/shared/ListingAccordionNav';
 import { useCovers } from '@/lib/coversContext';
 import { useMemo, useState } from 'react';
+import { SafeRichContent, RichInlineContent, richTextToPlainText } from '@/utils/richContent';
 
 export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: string) => void }) {
   const { language } = useLanguage();
@@ -58,8 +59,8 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                 label: s.label,
                 records: (
                   s.id === 'current-exhibitions'
-                    ? currentExhibitions.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en }))
-                    : currentActivities.map(i => ({ id: i.id, slug: i.slug, title: i.title[language] || i.title.en }))
+                    ? currentExhibitions.map(i => ({ id: i.id, slug: i.slug, title: richTextToPlainText(i.title[language] || i.title.en) }))
+                    : currentActivities.map(i => ({ id: i.id, slug: i.slug, title: richTextToPlainText(i.title[language] || i.title.en) }))
                 ),
               }))}
               activeSection={activeSection}
@@ -85,18 +86,18 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                     <div id={`record-${exhibition.slug}`} key={exhibition.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('exhibition-detail', exhibition.slug)}>
                       {exhibition.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback src={exhibition.featuredImage} hoverSrc={exhibition.gallery?.[0]} alt={exhibition.title[language] || exhibition.title.en} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={exhibition.featuredImage} hoverSrc={exhibition.gallery?.[0]} alt={richTextToPlainText(exhibition.title[language] || exhibition.title.en)} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{exhibition.title[language] || exhibition.title.en}</h3>
+                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}><RichInlineContent content={exhibition.title[language] || exhibition.title.en} /></h3>
                         <p className={`text-xl md:text-2xl font-normal text-black leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                          {exhibition.artist[language] || exhibition.artist.en || exhibition.curator?.[language] || exhibition.curator?.en}
+                          <RichInlineContent content={exhibition.artist[language] || exhibition.artist.en || exhibition.curator?.[language] || exhibition.curator?.en} />
                         </p>
                         {exhibition.listingSummary && (
-                          <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                            {exhibition.listingSummary[language] || exhibition.listingSummary.en}
-                          </p>
+                          <div className={`mt-1 line-clamp-2 text-xl md:text-2xl font-normal text-gray-600 leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            <SafeRichContent content={exhibition.listingSummary[language] || exhibition.listingSummary.en} className="listing-rich-content" />
+                          </div>
                         )}
                       </div>
                     </div>
@@ -113,15 +114,15 @@ export function HomePage({ onNavigate }: { onNavigate?: (page: string, slug?: st
                     <div id={`record-${activity.slug}`} key={activity.id} className="flex flex-col gap-6 w-full cursor-pointer group" onClick={() => onNavigate?.('activity-detail', activity.slug)}>
                       {activity.featuredImage && (
                         <div className="aspect-[3/4] w-full bg-gray-100 overflow-hidden relative">
-                          <ImageWithFallback src={activity.featuredImage} hoverSrc={activity.gallery?.[0]} alt={activity.title[language] || activity.title.en} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
+                          <ImageWithFallback src={activity.featuredImage} hoverSrc={activity.gallery?.[0]} alt={richTextToPlainText(activity.title[language] || activity.title.en)} loading="lazy" decoding="async" fetchPriority="low" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
                         </div>
                       )}
                       <div className="flex flex-col gap-1">
-                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>{activity.title[language] || activity.title.en}</h3>
+                        <h3 className={`text-xl md:text-2xl font-bold leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}><RichInlineContent content={activity.title[language] || activity.title.en} /></h3>
                         {activity.listingSummary && (
-                          <p className={`text-xl md:text-2xl font-normal text-gray-600 leading-tight mt-1 line-clamp-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
-                            {activity.listingSummary[language] || activity.listingSummary.en}
-                          </p>
+                          <div className={`mt-1 line-clamp-2 text-xl md:text-2xl font-normal text-gray-600 leading-tight ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
+                            <SafeRichContent content={activity.listingSummary[language] || activity.listingSummary.en} className="listing-rich-content" />
+                          </div>
                         )}
                       </div>
                     </div>
