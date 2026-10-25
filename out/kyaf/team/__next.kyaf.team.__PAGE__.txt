@@ -2,5 +2,5 @@
 2:I[2783,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","4286","static/chunks/4286-3114d8a161acc5f7.js","1760","static/chunks/1760-3a06467e24c1198f.js","5881","static/chunks/5881-97e76518b92c2b52.js","2783","static/chunks/2783-092393455d9e2b40.js","2292","static/chunks/app/kyaf/team/page-cc8c06d030e6a4c4.js"],"TeamPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"SYP9dhusYH42W9yLvCiZ2"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"67reQZ8Uraa_UW2Fz7AUo"}
 5:null
