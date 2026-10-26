@@ -61,12 +61,10 @@ function fetchBlogVideoPreview(item: RelatedContentItem, site: 'kyaf' | 'bkkk'):
 
 function RelatedContentCard({
   item,
-  prefix,
   site,
   language,
 }: {
   item: RelatedContentItem;
-  prefix: string;
   site: 'kyaf' | 'bkkk';
   language: 'en' | 'th';
 }) {
@@ -125,6 +123,7 @@ function RelatedContentCard({
   }, [isPreviewActive, videoPreview]);
 
   const title = language === 'th' ? (item.title.th || item.title.en) : item.title.en;
+  const prefix = site === 'bkkk' ? '/bk' : '/kyaf';
   const cardContent = (
     <>
       <div data-related-carousel-image className="relative mb-4 aspect-[3/4] overflow-hidden bg-gray-100">
@@ -216,12 +215,12 @@ const routeSegments: Record<RelatedContentItem['type'], string> = {
 
 function RelatedContentCarousel({
   items,
-  prefix,
+  site,
   language,
   label,
 }: {
   items: RelatedContentItem[];
-  prefix: string;
+  site: 'kyaf' | 'bkkk';
   language: 'en' | 'th';
   label: string;
 }) {
@@ -292,8 +291,7 @@ function RelatedContentCarousel({
           <RelatedContentCard
             key={`${item.type}:${item.id}`}
             item={item}
-            prefix={prefix}
-            site={item.site ?? (prefix === '/bk' ? 'bkkk' : 'kyaf')}
+            site={item.site ?? site}
             language={language}
           />
         ))}
@@ -330,7 +328,8 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
     // Exhibition pages intentionally recommend other types, not another
     // exhibition. Other detail pages can show curated records of their own type
     // (for example, related Activities or Moving Image records).
-    .filter((item) => item.id !== currentId && !(currentType === 'exhibitions' && item.type === 'exhibitions') && item.site === site && Boolean(routeSegments[item.type]))
+    // The card uses each record's site for its media lookup and destination URL.
+    .filter((item) => item.id !== currentId && !(currentType === 'exhibitions' && item.type === 'exhibitions') && Boolean(routeSegments[item.type]))
     .filter((item) => {
       const key = `${item.type}:${item.id}`;
       if (seen.has(key)) return false;
@@ -355,7 +354,6 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
     .map((key) => ({ key, items: visible.filter((item) => groupFor(item) === key) }))
     .filter((group) => group.items.length > 0);
 
-  const prefix = site === 'bkkk' ? '/bk' : '/kyaf';
   return (
     <section
       className="mt-20 border-t border-black/20 pt-6"
@@ -369,7 +367,7 @@ export function RelatedContentSection({ items, currentId, currentType, site, lan
             </h2>
             <RelatedContentCarousel
               items={group.items}
-              prefix={prefix}
+              site={site}
               language={language}
               label={site === 'kyaf' && group.key === 'exhibitions' ? 'Related Artworks' : groupLabels[group.key][language]}
             />

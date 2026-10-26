@@ -62,7 +62,6 @@ function relatedContent(post: WPRawPost) {
       blog_post: 'blog',
       blog: 'blog',
     };
-    const sourceSite = m(post, 'site') as WPSite;
     const seen = new Set<string>();
 
     return items.flatMap((item) => {
@@ -90,7 +89,8 @@ function relatedContent(post: WPRawPost) {
         status: item.status === 'current' || item.status === 'upcoming' || item.status === 'past' ? item.status : undefined,
       }];
     }).filter((item) => {
-      if (item.id === String(post.id) || item.site !== sourceSite) return false;
+      // Related records may belong to either site in the shared WordPress install.
+      if (item.id === String(post.id)) return false;
       const key = `${item.type}:${item.id}`;
       if (seen.has(key)) return false;
       seen.add(key);
