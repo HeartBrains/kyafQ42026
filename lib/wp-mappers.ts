@@ -59,6 +59,8 @@ function relatedContent(post: WPRawPost) {
       'moving-image': 'moving-image',
       residency_artist: 'residency',
       residency: 'residency',
+      artist: 'residency',
+      artists: 'residency',
       blog_post: 'blog',
       blog: 'blog',
     };
@@ -66,7 +68,7 @@ function relatedContent(post: WPRawPost) {
 
     return items.flatMap((item) => {
       if (!item || typeof item !== 'object') return [];
-      const type = typeAliases[String(item.type ?? '')];
+      const type = typeAliases[String(item.type ?? '').trim().toLowerCase()];
       const id = item.id == null ? '' : String(item.id);
       const slug = typeof item.slug === 'string' ? item.slug.trim() : '';
       const site = item.site === 'bkkk' || item.site === 'kyaf' ? item.site : undefined;
