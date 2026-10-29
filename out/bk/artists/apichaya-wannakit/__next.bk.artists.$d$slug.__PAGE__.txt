@@ -2,5 +2,5 @@
 2:I[2567,["2619","static/chunks/2619-fd64e7a5bd9005d5.js","8409","static/chunks/8409-baa9df2477416543.js","1760","static/chunks/1760-3a06467e24c1198f.js","1032","static/chunks/1032-bf3c69b0946ef93b.js","5881","static/chunks/5881-5907c129cde31e53.js","6338","static/chunks/6338-94b4385819118baf.js","7681","static/chunks/app/bk/artists/%5Bslug%5D/page-064889248428bbea.js"],"ArtistDetailClientPage"]
 3:I[484,[],"OutletBoundary"]
 4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"apichaya-wannakit"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"jZeiiwGcX4jIpxi51nlxL"}
+0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{"site":"bkkk","slug":"apichaya-wannakit"}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"3tCxq_AEUzUyQE3clkFbp"}
 5:null
