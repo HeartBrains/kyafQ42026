@@ -78,7 +78,7 @@ export function VisitPage() {
                                         </p>
                    <p className="text-xl md:text-2xl leading-relaxed font-normal">
                         <br/>Last visit at 17:00
-                        <br/></p>                </div>
+                        <br/></p>    <br/>            </div>
                                     <div>
                                         <p className="text-xl md:text-2xl leading-relaxed text-gray-600">
                                             {language === 'th' 
