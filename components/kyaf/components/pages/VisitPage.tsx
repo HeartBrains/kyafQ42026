@@ -76,7 +76,8 @@ export function VisitPage() {
                                         <p className="text-xl md:text-2xl leading-relaxed text-gray-600">
                                             {language === 'th' ? 'Fog Forest Experience: 11:30 และ 16:30 (10 นาที)' : 'Fog Forest Experience: 11:30 and 16:30 (10 minutes)'}
                                         </p>
-                    <p className="text-xl md:text-2xl leading-relaxed text-gray-600">Last visit at 17:00 </p>                </div>
+                   <p className="text-xl md:text-2xl leading-relaxed font-normal">
+                        <br/>Last visit at 17:00 </p>                </div>
                                     <div>
                                         <p className="text-xl md:text-2xl leading-relaxed text-gray-600">
                                             {language === 'th' 
