@@ -38,7 +38,7 @@ export function VisitInfo() {
                     <p className={`text-xl md:text-2xl font-sans text-black ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                       {language === 'th' ? 'วันพุธ - วันอาทิตย์' : 'Wednesday - Sunday'}
                     </p>
-                    <p className="text-xl md:text-2xl font-sans text-black">14:00 - 20:00</p>
+                    <p className="text-xl md:text-2xl font-sans text-black">13:00 - 21:00</p>
                     <p className={`text-xl md:text-2xl font-sans text-black mt-2 ${language === 'th' ? 'leading-[1.82em]' : ''}`}>
                       {language === 'th' ? 'ปิดทำการ: วันจันทร์ - วันอังคาร' : 'Closed: Monday - Tuesday'}
                     </p>
