@@ -63,7 +63,7 @@ export function VisitPage() {
                                 <div className="space-y-3">
                                     <div>
                                         <p className="text-xl md:text-2xl leading-relaxed font-normal">
-                                            {language === 'th' ? 'พระหัสบดี - ศุกร์: 12:30 - 18:00' : 'Thursday - Friday: 12:30 - 18:00'}
+                                            {language === 'th' ? 'พระหัสบดี - ศุกร์: 12:30 - 18:00' : 'Monday - Friday: 12:30 - 18:00'}
                                         </p>
                                         <p className="text-xl md:text-2xl leading-relaxed text-gray-600">
                                             {language === 'th' ? 'Fog Forest Experience: 16:30 (10 นาที)' : 'Fog Forest Experience: 16:30 (10 minutes)'}
@@ -77,7 +77,7 @@ export function VisitPage() {
                                             {language === 'th' ? 'Fog Forest Experience: 11:30 และ 16:30 (10 นาที)' : 'Fog Forest Experience: 11:30 and 16:30 (10 minutes)'}
                                         </p>
                    <p className="text-xl md:text-2xl leading-relaxed font-normal">
-                        <br/>Last visit at 17:00
+                        <br/>Last visit at 17:30
                         <br/></p>    <br/>            </div>
                                     <div>
                                         <p className="text-xl md:text-2xl leading-relaxed text-gray-600">
@@ -88,7 +88,7 @@ export function VisitPage() {
                                     </div>
                                     <div>
                                         <p className="text-xl md:text-2xl leading-relaxed font-normal">
-                                            {language === 'th' ? 'ปิดทำการ: จันทร์ - พุธ' : 'Closed: Monday - Wednesday'}
+                                            {language === 'th' ? 'ปิดทำการ: จันทร์ - พุธ' : ''}
                                         </p>
                                     </div>
                                 </div>
